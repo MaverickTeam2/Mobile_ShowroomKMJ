@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".loginSaveActivity">
+
+    <!-- Header -->
+    <FrameLayout
+        android:id="@+id/headerLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/login_bg"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Logo -->
+        <ImageView
+            android:id="@+id/logoKMJ"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/kmj_white_full"
+            android:contentDescription="Logo KMJ" />
+
+        <!-- Welcome text -->
+        <TextView
+            android:id="@+id/tvWelcome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|bottom"
+            android:layout_marginBottom="110dp"
+            android:fontFamily="@font/lato_black"
+            android:text="WELCOME"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"/>
+
+    </FrameLayout>
+
+    <!-- Gambar mobil -->
+
+    <!-- Tombol Login + Fingerprint -->
+    <LinearLayout
+        android:id="@+id/loginButtons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- Tombol Login -->
+        <Button
+            android:id="@+id/LoginPopup"
+            android:layout_width="300dp"
+            android:layout_height="48dp"
+            android:text="LOGIN"
+            android:background="@drawable/black_blue_r9"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"/>
+
+
+        <!-- Tombol Fingerprint -->
+        <ImageButton
+            android:id="@+id/btnFingerprint"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/black_blue_r9"
+            android:src="@drawable/ic_fingerprint"/>
+    </LinearLayout>
+
+    <!-- Credit bawah -->
+    <TextView
+        android:id="@+id/tvCredit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:text="Develop by Maverick"
+        android:textColor="#8F8F8F"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:id="@+id/imgCar"
+        android:layout_width="598dp"
+        android:layout_height="360dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/car"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.433"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.592" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
