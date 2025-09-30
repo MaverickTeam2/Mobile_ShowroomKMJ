@@ -2,6 +2,8 @@
     <string name="app_name">KMJ</string>
     <string name="title_activity_main_nav_bar">MainNavBar</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_car">Car</string>
+    <string name="title_transaksi">Transaksi</string>
+    <string name="title_akun">Akun</string>
+    <string name="title_report">Report</string>
 </resources>

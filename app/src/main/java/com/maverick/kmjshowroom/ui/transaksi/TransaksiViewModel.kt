@@ -1,10 +1,10 @@
-package com.maverick.kmjshowroom.ui.notifications
+package com.maverick.kmjshowroom.ui.transaksi
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NotificationsViewModel : ViewModel() {
+class TransaksiViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is notifications Fragment"

@@ -4,8 +4,10 @@
         <item name="colorPrimary">#001333</item>
         <item name="colorPrimaryVariant">#001333</item>
         <item name="colorOnPrimary">#FFFFFF</item>
-        <item name="android:forceDarkAllowed">false</item>
     </style>
 
     <style name="Theme.KMJShowroom" parent="Base.Theme.KMJShowroom" />
+    <style name="App.Custom.Indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/active_indicator</item>
+    </style>
 </resources>

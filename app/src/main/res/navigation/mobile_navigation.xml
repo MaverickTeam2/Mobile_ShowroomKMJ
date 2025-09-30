@@ -12,14 +12,26 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.maverick.kmjshowroom.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:id="@+id/navigation_car"
+        android:name="com.maverick.kmjshowroom.ui.car.CarFragment"
+        android:label="@string/title_car"
+        tools:layout="@layout/fragment_car" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.maverick.kmjshowroom.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_transaksi"
+        android:name="com.maverick.kmjshowroom.ui.transaksi.TransaksiFragment"
+        android:label="@string/title_transaksi"
+        tools:layout="@layout/fragment_transaksi" />
+
+    <fragment
+        android:id="@+id/navigation_akun"
+        android:name="com.maverick.kmjshowroom.ui.akun.AkunFragment"
+        android:label="@string/title_akun"
+        tools:layout="@layout/fragment_akun" />
+
+    <fragment
+        android:id="@+id/navigation_report"
+        android:name="com.maverick.kmjshowroom.ui.report.ReportFragment"
+        android:label="@string/title_report"
+        tools:layout="@layout/fragment_report" />
 </navigation>

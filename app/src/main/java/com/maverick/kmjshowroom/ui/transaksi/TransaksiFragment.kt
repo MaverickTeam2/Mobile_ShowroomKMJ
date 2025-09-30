@@ -1,4 +1,4 @@
-package com.maverick.kmjshowroom.ui.dashboard
+package com.maverick.kmjshowroom.ui.transaksi
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.maverick.kmjshowroom.databinding.FragmentDashboardBinding
+import com.maverick.kmjshowroom.databinding.FragmentTransaksiBinding
 
-class DashboardFragment : Fragment() {
+class TransaksiFragment : Fragment() {
 
-    private var _binding: FragmentDashboardBinding? = null
+    private var _binding: FragmentTransaksiBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class DashboardFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+        val transaksiViewModel =
+            ViewModelProvider(this).get(TransaksiViewModel::class.java)
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        _binding = FragmentTransaksiBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        dashboardViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textTransaksi
+        transaksiViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

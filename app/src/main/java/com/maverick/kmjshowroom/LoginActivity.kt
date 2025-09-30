@@ -36,6 +36,14 @@ class LoginActivity : AppCompatActivity() {
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Username & Password tidak boleh kosong", Toast.LENGTH_SHORT).show()
             } else {
+//                sharedPref\.edit()
+//                    .putString("USERNAME", username)
+//                    .apply()
+//
+//                Toast.makeText(this@LoginActivity, loginResponse.message, Toast.LENGTH_SHORT).show()
+//
+//                startActivity(Intent(this@LoginActivity, MainNavBar::class.java))
+//                finish()
                 loginUser(username, password)
             }
         }

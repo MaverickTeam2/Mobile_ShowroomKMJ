@@ -97,9 +97,9 @@
     <ImageView
         android:id="@+id/imgCar"
         android:layout_width="598dp"
-        android:layout_height="360dp"
+        android:layout_height="350dp"
         android:scaleType="centerInside"
-        android:src="@drawable/car"
+        android:src="@drawable/car_log"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.433"
