@@ -62,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
 
                         Toast.makeText(this@LoginActivity, loginResponse.message, Toast.LENGTH_SHORT).show()
 
-                        startActivity(Intent(this@LoginActivity, MainNavBar::class.java))
+                        startActivity(Intent(this@LoginActivity, MainNavBar::class.java) )
                         finish()
                     } else {
                         Toast.makeText(this@LoginActivity, loginResponse?.message ?: "Login gagal", Toast.LENGTH_SHORT).show()
