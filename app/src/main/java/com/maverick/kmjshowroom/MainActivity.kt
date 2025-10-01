@@ -14,8 +14,6 @@ class MainActivity : AppCompatActivity() {
         Handler(Looper.getMainLooper()).postDelayed({
             val sharedPref = getSharedPreferences("KMJ_PREF", MODE_PRIVATE)
             val savedUsername = sharedPref.getString("USERNAME", null)
-
-            // Jika username tersimpan, ke loginSaveActivity
             val intent = if (savedUsername.isNullOrEmpty()) {
                 Intent(this, LoginActivity::class.java)
             } else {

@@ -3,17 +3,27 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@drawable/home"
         android:title="home" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:id="@+id/navigation_car"
+        android:icon="@drawable/car2"
         android:title="katalog" />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="notifications" />
+        android:id="@+id/navigation_transaksi"
+        android:icon="@drawable/transaksi"
+        android:title="transaksi" />
+
+    <item
+        android:id="@+id/navigation_akun"
+        android:icon="@drawable/akun"
+        android:title="akun" />
+
+    <item
+        android:id="@+id/navigation_report"
+        android:icon="@drawable/laporan"
+        android:title="report" />
 
 </menu>

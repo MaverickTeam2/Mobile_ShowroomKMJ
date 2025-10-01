@@ -5,5 +5,5 @@
     <color name="loginText">#001333</color>
     <color name="loginGray">#8F8F8F</color>
     <color name="loginWhite">#FFFFFF</color>
-
+    <color name="active_indicator">#788293</color>
 </resources>
