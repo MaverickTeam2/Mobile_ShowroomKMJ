@@ -6,4 +6,8 @@
     <color name="loginGray">#8F8F8F</color>
     <color name="loginWhite">#FFFFFF</color>
     <color name="active_indicator">#788293</color>
+    <color name="green_status">#166534</color>
+    <color name="orange_status">#AF5E24</color>
+    <color name="red_status">#991B1B</color>
+    <color name="line_default">#C9C9C9</color>
 </resources>

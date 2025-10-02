@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardTransaction"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="5dp"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="2dp">
+
+            <TextView
+                android:id="@+id/txtTransactionId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="TXN-001"
+                android:layout_gravity="center"
+                android:fontFamily="@font/lato_black"
+                android:textSize="16sp"
+                android:textColor="#001333" />
+
+            <TextView
+                android:id="@+id/txtStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Completed"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:background="@drawable/bg_status_completed"
+                android:textColor="#1F9254" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txtDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="15-01-2025"
+            android:fontFamily="@font/lato_bold"
+            android:textSize="14sp"
+            android:textColor="#4B5563"
+            android:layout_marginBottom="8dp"/>
+
+        <TextView
+            android:id="@+id/txtCustomerName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mailkel Smith"
+            android:fontFamily="@font/lato_bold"
+            android:textSize="16sp"
+            android:textColor="#001333" />
+
+        <TextView
+            android:id="@+id/txtPhoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+62 812-3456-7890"
+            android:textSize="14sp"
+            android:fontFamily="@font/lato_bold"
+            android:textColor="#4B5563"
+            android:layout_marginBottom="8dp"/>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+            <TextView
+                android:id="@+id/txtCar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="2024 BMW X5"
+                android:fontFamily="@font/lato_bold"
+                android:textSize="14sp"
+                android:textColor="#4B5563"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="7dp"
+                app:layout_constraintHorizontal_bias="0" />
+
+            <TextView
+                android:id="@+id/txtDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deal Payment"
+                android:fontFamily="@font/lato_bold"
+                android:textSize="14sp"
+                android:textColor="#4B5563"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtCar"
+                app:layout_constraintBaseline_toBaselineOf="@id/txtDealPrice" />
+
+            <TextView
+                android:id="@+id/txtPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp. 50.000.000"
+                android:fontFamily="@font/lato_black"
+                android:textSize="20sp"
+                android:textColor="#417EFF"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/txtDealPrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rp. 48.000.000"
+                android:fontFamily="@font/lato_black"
+                android:textSize="16sp"
+                android:textColor="#001333"
+                app:layout_constraintTop_toBottomOf="@id/txtPrice"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="4dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/txtViewDetails"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View Details"
+            android:drawableStart="@drawable/ic_eye_blue"
+            android:drawablePadding="10dp"
+            android:layout_gravity="center"
+            android:textColor="#3366FF"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
