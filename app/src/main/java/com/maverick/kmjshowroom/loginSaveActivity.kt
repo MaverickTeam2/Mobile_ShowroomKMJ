@@ -6,6 +6,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.WindowManager
 import android.widget.*
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.biometric.BiometricManager
@@ -24,7 +25,6 @@ class loginSaveActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Matikan dark mode
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         setContentView(R.layout.activity_login_save)
@@ -34,11 +34,18 @@ class loginSaveActivity : AppCompatActivity() {
         val btnLoginPopup: Button = findViewById(R.id.LoginPopup)
         val btnFingerprint: ImageButton = findViewById(R.id.btnFingerprint)
 
-        // Tombol login manual
         btnLoginPopup.setOnClickListener { showLoginPopup() }
 
-        // Tombol login fingerprint langsung ke MainNavBar
-        btnFingerprint.setOnClickListener { checkBiometric() }
+        val biometricManager = BiometricManager.from(this)
+        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG)) {
+            BiometricManager.BIOMETRIC_SUCCESS -> {
+                btnFingerprint.visibility = View.VISIBLE
+                btnFingerprint.setOnClickListener { checkBiometric() }
+            }
+            else -> {
+                btnFingerprint.visibility = View.GONE
+            }
+        }
     }
 
     private fun showLoginPopup() {
@@ -47,7 +54,6 @@ class loginSaveActivity : AppCompatActivity() {
         val etPassword = dialogView.findViewById<EditText>(R.id.txtpassw)
         val changeAccount = dialogView.findViewById<TextView>(R.id.ChangeAccount)
 
-        // Ambil username tersimpan
         val savedUsername = pref.getString("USERNAME", "")
         tvUsername.text = savedUsername ?: ""
         tvUsername.isEnabled = false
@@ -57,7 +63,6 @@ class loginSaveActivity : AppCompatActivity() {
             finish()
         }
 
-        // Buat MaterialAlertDialog muncul di bawah, full width
         val dialog = MaterialAlertDialogBuilder(this)
             .setView(dialogView)
             .setCancelable(true)
@@ -115,7 +120,6 @@ class loginSaveActivity : AppCompatActivity() {
                     object : BiometricPrompt.AuthenticationCallback() {
                         override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                             super.onAuthenticationSucceeded(result)
-                            // Fingerprint langsung ke MainNavBar
                             startActivity(Intent(this@loginSaveActivity, MainNavBar::class.java))
                             finish()
                         }
