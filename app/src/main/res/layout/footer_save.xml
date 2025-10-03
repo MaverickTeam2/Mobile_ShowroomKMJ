@@ -23,7 +23,7 @@
         android:drawablePadding="6dp"
         android:backgroundTint="#FFFFFFFF"
         android:layout_marginRight="10dp"
-        app:strokeWidth="5dp"
+        app:strokeWidth="2dp"
         app:strokeColor="#B8B8B8"
         app:cornerRadius="12dp" />
     <com.google.android.material.button.MaterialButton
@@ -31,7 +31,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:text="next"
+        android:text="Next"
         android:textSize="13sp"
         android:gravity="center|center_vertical"
         android:textColor="#FFFFFF"
@@ -41,7 +41,5 @@
         android:drawablePadding="6dp"
         android:backgroundTint="#001333"
         android:layout_marginLeft="10dp"
-        app:strokeWidth="1dp"
-        app:strokeColor="#B8B8B8"
         app:cornerRadius="12dp" />
 </LinearLayout>
