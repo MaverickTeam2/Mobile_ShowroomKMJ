@@ -5,8 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    private const val BASE_URL = "http://192.168.1.25:8888/kmj_api/"
-    // NOTE: 10.0.2.2 untuk emulator Android
+    private const val BASE_URL = "http://10.10.181.90:8888/kmj_api/"
 
     val apiService: ApiService by lazy {
         val retrofit = Retrofit.Builder()
