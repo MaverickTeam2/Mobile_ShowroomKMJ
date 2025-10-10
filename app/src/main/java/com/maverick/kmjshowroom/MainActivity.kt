@@ -19,7 +19,6 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Intent(this, loginSaveActivity::class.java)
             }
-
             startActivity(intent)
             finish()
         }, 2000)

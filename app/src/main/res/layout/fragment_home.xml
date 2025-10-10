@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF0F5F9">
+    android:background="#FFF0F5F9"
+    android:orientation="vertical"
+    tools:context=".ui.home.HomeFragment">
 
     <include
         android:id="@+id/header_include"
@@ -22,7 +23,6 @@
             android:layout_height="wrap_content"
             android:padding="16dp">
 
-            <!-- Statistic Cards -->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
                         android:text="156"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:textColor="#001333" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
                         android:text="24"
                         android:textSize="20sp"
                         android:textStyle="bold"
-                        android:textColor="#000" />
+                        android:textColor="#001333" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -116,7 +116,7 @@
                         android:text="Rp. 36.000.000"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="#000" />
+                        android:textColor="#001333" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -145,7 +145,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="6"
-                        android:textColor="#000"
+                        android:textColor="#001333"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -162,9 +162,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Quick Action"
-                android:textStyle="bold"
+                android:fontFamily="@font/lato_black"
                 android:textSize="18sp"
-                android:textColor="#000"
+                android:textColor="#001333"
                 android:layout_marginTop="24dp" />
 
             <LinearLayout
@@ -237,9 +237,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Recent Activity"
-                android:textStyle="bold"
+                android:fontFamily="@font/lato_black"
                 android:textSize="18sp"
-                android:textColor="#000"
+                android:textColor="#001333"
                 android:layout_marginTop="24dp" />
 
             <LinearLayout

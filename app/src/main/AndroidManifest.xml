@@ -14,16 +14,27 @@
         android:theme="@style/Theme.KMJShowroom">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".loginSaveActivity" />
-        <activity android:name=".MainNavBar" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".loginSaveActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".MainNavBar"
+            android:screenOrientation="portrait" />
+
+
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
