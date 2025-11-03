@@ -51,4 +51,5 @@
         android:label="@string/title_report"
         tools:layout="@layout/fragment_report" />
 
+
 </navigation>

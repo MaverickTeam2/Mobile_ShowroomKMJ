@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F9FAFB"
+    android:padding="16dp">
+<!--    tools:context=".ProfileActivity">-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_card_tambah_akun"
+        android:padding="20dp"
+        android:elevation="2dp">
+
+        <!-- Judul utama -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Informasi Pribadi"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:paddingBottom="8dp" />
+
+        <!-- Teks "Profile" di tengah -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profile"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#555"
+            android:paddingTop="4dp"
+            android:paddingBottom="16dp" />
+
+        <!-- Field Nama Depan -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama depan"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etNamaDepan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Masukkan nama depan"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:inputType="textPersonName" />
+
+        <!-- Field Nama Belakang -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nama belakang"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etNamaBelakang"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Masukkan nama belakang"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:inputType="textPersonName" />
+
+        <!-- Field Username -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Masukkan username"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:inputType="textPersonName" />
+
+        <!-- Field No Telp -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No telp"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etNoTelp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="No telp"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:inputType="phone" />
+
+        <!-- Field Email -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Email"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="example@gmail.com"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:inputType="textEmailAddress" />
+
+        <!-- Field Password -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Password"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="********"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:inputType="textPassword" />
+
+        <!-- Field Konfirmasi Password -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Konfirmasi Password"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etKonfirmasiPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="********"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:layout_marginBottom="12dp"
+            android:inputType="textPassword" />
+
+        <!-- Field Alamat -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alamat"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etAlamat"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:hint="Masukkan alamat"
+            android:gravity="top|start"
+            android:background="@drawable/bg_input"
+            android:padding="12dp"
+            android:inputType="textMultiLine" />
+
+    </LinearLayout>
+</ScrollView>

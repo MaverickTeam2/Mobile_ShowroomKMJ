@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/setting_nav_graph"
+    app:startDestination="@id/settingMenuFragment">
+
+    <fragment
+        android:id="@+id/settingMenuFragment"
+        android:name="com.maverick.kmjshowroom.ui.setting.fragments.SettingMenuFragment"
+        android:label="Setting Menu"
+        tools:layout="@layout/fragment_setting_menu">
+        <action
+            android:id="@+id/action_to_general"
+            app:destination="@id/generalFragment" />
+        <action
+            android:id="@+id/action_to_editProfile"
+            app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_to_schedule"
+            app:destination="@id/scheduleFragment" />
+        <action
+            android:id="@+id/action_to_contactSocial"
+            app:destination="@id/contactSocialFragment" />
+        <action
+            android:id="@+id/action_to_backup"
+            app:destination="@id/backupFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/generalFragment"
+        android:name="com.maverick.kmjshowroom.ui.setting.fragments.GeneralFragment"
+        android:label="General"
+        tools:layout="@layout/fragment_setting_general" />
+
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.maverick.kmjshowroom.ui.setting.fragments.EditProfileFragment"
+        android:label="Edit Profil"
+        tools:layout="@layout/fragment_setting_edit_profile" />
+
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.maverick.kmjshowroom.ui.setting.fragments.ScheduleFragment"
+        android:label="Schedule"
+        tools:layout="@layout/fragment_setting_schedule" />
+
+    <fragment
+        android:id="@+id/contactSocialFragment"
+        android:name="com.maverick.kmjshowroom.ui.setting.fragments.ContactSocialFragment"
+        android:label="Kontak &amp; Tautan Sosial"
+        tools:layout="@layout/fragment_setting_contact" />
+
+    <fragment
+        android:id="@+id/backupFragment"
+        android:name="com.maverick.kmjshowroom.ui.setting.fragments.BackupFragment"
+        android:label="Backup &amp; Restore"
+        tools:layout="@layout/fragment_setting_backup" />
+</navigation>
