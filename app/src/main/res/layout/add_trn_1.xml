@@ -116,7 +116,7 @@
                         android:id="@+id/txttipe"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
+                        android:inputType="text"
                         android:fontFamily="@font/lato"
                         android:textColor="#001333" />
                 </com.google.android.material.textfield.TextInputLayout>

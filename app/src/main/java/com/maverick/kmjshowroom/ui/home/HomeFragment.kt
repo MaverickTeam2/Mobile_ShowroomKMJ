@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.maverick.kmjshowroom.databinding.FragmentHomeBinding
 import com.maverick.kmjshowroom.R
+import android.content.Intent
+import com.maverick.kmjshowroom.ui.setting.SettingActivity
 
 class HomeFragment : Fragment() {
 
@@ -23,13 +25,22 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        val homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         binding.headerInclude.textHeader.text = "HOME"
+        binding.headerInclude.iconProfile.setOnClickListener {
+            val intent = Intent(requireContext(), SettingActivity::class.java)
+            startActivity(intent)
+            requireActivity().overridePendingTransition(
+                android.R.anim.slide_in_left,
+                android.R.anim.slide_out_right
+            )
+        }
+
+        // 🔹 Data dummy untuk aktivitas terbaru
         val dummyData = listOf(
             RecentActivityItem("Mobil Ditambahkan", "2024 BMW X5 ditambahkan ke inventory", "2 jam lalu"),
             RecentActivityItem("Mobil Terjual", "2020 Avanza berhasil dijual", "Kemarin"),
@@ -53,7 +64,6 @@ class HomeFragment : Fragment() {
         }
 
         container.visibility = View.VISIBLE
-
         val inflater = LayoutInflater.from(requireContext())
 
         for (item in items.take(10)) {
@@ -66,7 +76,6 @@ class HomeFragment : Fragment() {
             container.addView(view)
         }
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()

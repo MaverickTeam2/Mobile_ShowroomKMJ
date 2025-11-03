@@ -47,11 +47,9 @@ class CarFragment : Fragment() {
             )
         )
 
-        //loop membuat card setiap mobil
         for (car in cars) {
             val cardView = layoutInflater.inflate(R.layout.card_mobil, binding.carContainer, false)
 
-            // Bind data ke card
             val imgCar = cardView.findViewById<ImageView>(R.id.imgCar)
             val txtTitle = cardView.findViewById<TextView>(R.id.txtTitle)
             val txtYear = cardView.findViewById<TextView>(R.id.txtYear)
