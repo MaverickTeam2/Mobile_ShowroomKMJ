@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+
+    <include
+        android:id="@+id/layout_headeradd"
+        layout="@layout/layout_headeradd" />
+
+    <include
+        android:id="@+id/add_newcar2"
+        layout="@layout/progres_car" />
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Informasi Mobil"
+                android:fontFamily="@font/lato_bold"
+                android:textStyle="bold"
+                android:textSize="24sp"
+                android:textColor="#000"
+                android:layout_marginBottom="24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nama Mobil *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Masukkan nama mobil"
+                android:background="@drawable/bg_card_inner"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jarak Tempuh *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="0"
+                android:inputType="number"
+                android:background="@drawable/bg_card_inner"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tipe Kendaraan *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold"/>
+            <AutoCompleteTextView
+                android:id="@+id/dropdownTipeKendaraan"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Pilih tipe Kendaraan"
+                android:inputType="none"
+                android:background="@drawable/bg_card_inner"
+                android:drawableEnd="@drawable/ic_drop_down"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Warna Exterior *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Gray, Black, Red, dll"
+                android:background="@drawable/bg_card_inner"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tahun *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold" />
+
+            <NumberPicker
+                android:id="@+id/yearPicker"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@drawable/bg_card_inner"
+                android:padding="8dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="16dp" />
+
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Jenis bahan bakar *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold"/>
+            <AutoCompleteTextView
+                android:id="@+id/dropdownBahanBakar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Pilih Jenis bahan bakar"
+                android:inputType="none"
+                android:background="@drawable/bg_card_inner"
+                android:drawableEnd="@drawable/ic_drop_down"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sistem Penggerak *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold"/>
+            <AutoCompleteTextView
+                android:id="@+id/dropdownSistemPenggerak"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Pilih sistem penggerak"
+                android:inputType="none"
+                android:background="@drawable/bg_card_inner"
+                android:drawableEnd="@drawable/ic_drop_down"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Warna Interior *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Gray, Black, Red, dll"
+                android:background="@drawable/bg_card_inner"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Full Price (Rp) *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="2500"
+                android:inputType="numberDecimal"
+                android:background="@drawable/bg_card_inner"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Uang Muka (Rp) *"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/lato_bold"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="2500"
+                android:inputType="numberDecimal"
+                android:background="@drawable/bg_card_inner"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:baselineAligned="false"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Angsuran (Rp) *"
+                        android:textColor="#000"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/lato_bold"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="2500"
+                        android:inputType="numberDecimal"
+                        android:background="@drawable/bg_card_inner"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:fontFamily="@font/lato_bold"/>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="X"
+                    android:textSize="20sp"
+                    android:textColor="@android:color/darker_gray"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/lato_bold"/>
+
+                <LinearLayout
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tenor *"
+                        android:textColor="#000"
+                        android:textStyle="bold"
+                        android:textSize="16sp"
+                        android:layout_marginBottom="8dp"
+                        android:fontFamily="@font/lato_bold"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:text="0"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:background="@drawable/bg_card_inner"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:fontFamily="@font/lato_bold"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/footer_save2"
+        layout="@layout/footer_save" />
+
+</LinearLayout>

@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F0F5F9"
+    android:orientation="vertical">
+
+    <!-- Header dan Progress -->
+    <include
+        android:id="@+id/layout_headeradd"
+        layout="@layout/layout_headeradd" />
+
+    <include
+        android:id="@+id/add_newcar3"
+        layout="@layout/progres_car" />
+
+    <!-- Konten Scroll -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Judul Utama -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato_bold"
+                android:text="Fitur Mobil"
+                android:textColor="#000"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <!-- ==================== FITUR KESELAMATAN ==================== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/lato_bold"
+                android:text="Fitur Keselamatan"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/cb_airbag_pengemudi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Airbag Pengemudi" />
+
+                <CheckBox
+                    android:id="@+id/cb_traction_control"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Traction Control" />
+
+                <CheckBox
+                    android:id="@+id/cb_blind_spot"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Blind Spot Monitoring" />
+
+                <CheckBox
+                    android:id="@+id/cb_forward_collision"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Forward Collision Warning" />
+
+                <CheckBox
+                    android:id="@+id/cb_rear_camera"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rearview Camera" />
+
+                <CheckBox
+                    android:id="@+id/cb_abs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ABS (Anti-lock Braking System)" />
+
+                <CheckBox
+                    android:id="@+id/cb_esc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="ESC (Electronic Stability Control)" />
+
+                <CheckBox
+                    android:id="@+id/cb_lane_departure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Lane Departure Warning" />
+
+                <CheckBox
+                    android:id="@+id/cb_emergency_braking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Emergency Braking" />
+
+                <CheckBox
+                    android:id="@+id/cb_parking_sensors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Parking Sensors" />
+            </LinearLayout>
+
+            <!-- ==================== FITUR KENYAMANAN & HIBURAN ==================== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/lato_bold"
+                android:text="Fitur Kenyamanan dan Hiburan"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/cb_ac"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Air Conditioning" />
+
+                <CheckBox
+                    android:id="@+id/cb_power_steering"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Power Steering" />
+
+                <CheckBox
+                    android:id="@+id/cb_central_locking"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Central Locking" />
+
+                <CheckBox
+                    android:id="@+id/cb_bluetooth"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bluetooth" />
+
+                <CheckBox
+                    android:id="@+id/cb_audio_system"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Premium Audio System" />
+
+                <CheckBox
+                    android:id="@+id/cb_heated_seats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Heated Seats" />
+
+                <CheckBox
+                    android:id="@+id/cb_climate_control"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Climate Control" />
+
+                <CheckBox
+                    android:id="@+id/cb_power_windows"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Power Windows" />
+
+                <CheckBox
+                    android:id="@+id/cb_usb_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="USB Port" />
+
+                <CheckBox
+                    android:id="@+id/cb_wireless_charging"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Wireless Charging" />
+
+                <CheckBox
+                    android:id="@+id/cb_navigation_seats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Navigation Seats" />
+
+                <CheckBox
+                    android:id="@+id/cb_ventilated_seats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Ventilated Seats" />
+            </LinearLayout>
+
+            <!-- ==================== FITUR EXTERIOR ==================== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/lato_bold"
+                android:text="Fitur Exterior"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/cb_led_headlights"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LED Headlights" />
+
+                <CheckBox
+                    android:id="@+id/cb_fog_lamps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fog Lamps" />
+
+                <CheckBox
+                    android:id="@+id/cb_panoramic_roof"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Panoramic Roof" />
+
+                <CheckBox
+                    android:id="@+id/cb_roof_rails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Roof Rails" />
+
+                <CheckBox
+                    android:id="@+id/cb_alloy_wheels"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Alloy Wheels" />
+
+                <CheckBox
+                    android:id="@+id/cb_led_taillights"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LED Taillights" />
+
+                <CheckBox
+                    android:id="@+id/cb_sunroof"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sunroof" />
+
+                <CheckBox
+                    android:id="@+id/cb_spoiler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Spoiler" />
+
+                <CheckBox
+                    android:id="@+id/cb_chrome_trim"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Chrome Trim" />
+
+                <CheckBox
+                    android:id="@+id/cb_runflat_tires"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Run-flat Tires" />
+            </LinearLayout>
+
+            <!-- ==================== FITUR TAMBAHAN ==================== -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/lato_bold"
+                android:text="Fitur Tambahan"
+                android:textColor="#000"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:orientation="vertical">
+
+                <CheckBox
+                    android:id="@+id/cb_engine_immobilizer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Engine Immobilizer" />
+
+                <CheckBox
+                    android:id="@+id/cb_push_button_start"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Push Button Start" />
+
+                <CheckBox
+                    android:id="@+id/cb_rain_sensing_wipers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Rain Sensing Wipers" />
+
+                <CheckBox
+                    android:id="@+id/cb_cruise_control"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Cruise Control" />
+
+                <CheckBox
+                    android:id="@+id/cb_hill_start_assist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hill Start Assist" />
+
+                <CheckBox
+                    android:id="@+id/cb_keyless_entry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Keyless Entry" />
+
+                <CheckBox
+                    android:id="@+id/cb_auto_headlamps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Auto Headlamps" />
+
+                <CheckBox
+                    android:id="@+id/cb_parking_assist"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Parking Assist" />
+
+                <CheckBox
+                    android:id="@+id/cb_adaptive_cruise"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Adaptive Cruise Control" />
+
+                <CheckBox
+                    android:id="@+id/cb_tire_pressure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Tire Pressure Monitoring" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/footer_save3"
+        layout="@layout/footer_save" />
+
+</LinearLayout>
