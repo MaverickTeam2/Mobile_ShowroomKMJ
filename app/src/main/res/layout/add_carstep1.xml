@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
+    android:id="@+id/addCarStep1"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -216,7 +217,7 @@
     </ScrollView>
 
     <include
-        android:id="@+id/draft_next1"
+        android:id="@+id/footer_save1"
         layout="@layout/footer_save" />
 
 </LinearLayout>

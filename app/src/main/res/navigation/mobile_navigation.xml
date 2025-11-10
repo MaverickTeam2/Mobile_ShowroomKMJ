@@ -16,22 +16,7 @@
         android:name="com.maverick.kmjshowroom.ui.car.CarFragment"
         android:label="@string/title_car"
         tools:layout="@layout/fragment_car">
-
-        <action
-            android:id="@+id/action_carFragment_to_addCarStep1Fragment"
-            app:destination="@id/addCarStep1Fragment" />
     </fragment>
-
-    <fragment
-        android:id="@+id/addCarStep1Fragment"
-        android:name="com.maverick.kmjshowroom.AddCarStep1Fragment"
-        android:label="Add Car Step 1"
-        tools:layout="@layout/add_carstep1" />
-    <fragment
-        android:id="@+id/addCarStep2Fragment"
-        android:name="com.maverick.kmjshowroom.AddCarStep2Fragment"
-        android:label="Add Car Step 2"
-        tools:layout="@layout/add_carstep2" />
 
     <fragment
         android:id="@+id/navigation_transaksi"

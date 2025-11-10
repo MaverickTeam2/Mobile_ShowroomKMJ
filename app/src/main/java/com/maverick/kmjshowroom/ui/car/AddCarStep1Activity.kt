@@ -1,81 +1,71 @@
-package com.maverick.kmjshowroom
+package com.maverick.kmjshowroom.ui.car
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import com.maverick.kmjshowroom.databinding.AddCarstep1Binding
 
-class AddCarStep1Fragment : Fragment() {
+class AddCarStep1Activity : AppCompatActivity() {
 
+    private lateinit var binding: AddCarstep1Binding
     private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
     private var currentTargetImageView: ImageView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = AddCarstep1Binding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        //Launcher untuk ambil hasil dari chooser
+        setupHeader()
+        setupImagePicker()
+        setupNextButton()
+    }
+
+    private fun setupHeader() {
+        binding.layoutHeaderadd.iconClose.setOnClickListener {
+            finish()
+        }
+    }
+
+    private fun setupImagePicker() {
         pickImageLauncher = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
-            if (result.resultCode == AppCompatActivity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 val uri: Uri? = result.data?.data
-                uri?.let {
-                    currentTargetImageView?.setImageURI(it)
-                }
+                uri?.let { currentTargetImageView?.setImageURI(it) }
             }
         }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.add_carstep1, container, false)
-
-        val closeButton: ImageView = view.findViewById(R.id.icon_close)
-        closeButton.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
-
-        val foto360 = view.findViewById<ImageView>(R.id.foto_360)
-        val fotoDepan = view.findViewById<ImageView>(R.id.foto_depan)
-        val fotoBelakang = view.findViewById<ImageView>(R.id.foto_belakang)
-        val fotoSamping = view.findViewById<ImageView>(R.id.tampilan_samping)
-        val addFoto1 = view.findViewById<ImageView>(R.id.addfoto_1)
-        val addFoto2 = view.findViewById<ImageView>(R.id.addfoto_2)
-        val addFoto3 = view.findViewById<ImageView>(R.id.addfoto_3)
-        val addFoto4 = view.findViewById<ImageView>(R.id.addfoto_4)
-        val addFoto5 = view.findViewById<ImageView>(R.id.addfoto_5)
-        val addFoto6 = view.findViewById<ImageView>(R.id.addfoto_6)
-
-        val allImageViews = listOf(
-            foto360, fotoDepan, fotoBelakang, fotoSamping,
-            addFoto1, addFoto2, addFoto3, addFoto4, addFoto5, addFoto6
+        val imageViews = listOf(
+            binding.foto360, binding.fotoDepan, binding.fotoBelakang, binding.tampilanSamping,
+            binding.addfoto1, binding.addfoto2, binding.addfoto3,
+            binding.addfoto4, binding.addfoto5, binding.addfoto6
         )
 
-        allImageViews.forEach { imageView ->
+        imageViews.forEach { imageView ->
             imageView.setOnClickListener {
                 currentTargetImageView = imageView
-                openImageChooser()
+                showImageSourceDialog()
             }
         }
-
-        return view
     }
 
-
-    private fun openImageChooser() {
-        val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+    private fun showImageSourceDialog() {
+        val intent = Intent(Intent.ACTION_PICK).apply {
             type = "image/*"
         }
-        val chooser = Intent.createChooser(intent, "Pilih Gambar dengan")
-        pickImageLauncher.launch(chooser)
+        pickImageLauncher.launch(intent)
+    }
+
+    private fun setupNextButton() {
+        binding.footerSave1.btnNext.setOnClickListener {
+            val intent = Intent(this, AddCarStep2Activity::class.java)
+            startActivity(intent)
+        }
     }
 }

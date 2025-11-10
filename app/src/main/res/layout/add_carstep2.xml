@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -87,6 +86,7 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/lato_bold"/>
             <AutoCompleteTextView
+                android:id="@+id/dropdownTipeKendaraan"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="Pilih tipe Kendaraan"
@@ -125,11 +125,18 @@
                 android:textStyle="bold"
                 android:textSize="16sp"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/lato_bold"/>
+                android:fontFamily="@font/lato_bold" />
+
             <NumberPicker
                 android:id="@+id/yearPicker"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="50dp"
+                android:background="@drawable/bg_card_inner"
+                android:padding="8dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_marginBottom="16dp" />
+
 
 
             <TextView
@@ -142,6 +149,7 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/lato_bold"/>
             <AutoCompleteTextView
+                android:id="@+id/dropdownBahanBakar"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="Pilih Jenis bahan bakar"
@@ -163,6 +171,7 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/lato_bold"/>
             <AutoCompleteTextView
+                android:id="@+id/dropdownSistemPenggerak"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:text="Pilih sistem penggerak"
@@ -307,7 +316,7 @@
     </ScrollView>
 
     <include
-        android:id="@+id/draft_next1"
+        android:id="@+id/footer_save2"
         layout="@layout/footer_save" />
 
 </LinearLayout>
