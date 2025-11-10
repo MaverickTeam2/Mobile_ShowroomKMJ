@@ -36,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
             if (username.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Username & Password tidak boleh kosong", Toast.LENGTH_SHORT).show()
             } else {
-//                sharedPref\.edit()
+//                sharedPref.edit()
 //                    .putString("USERNAME", username)
 //                    .apply()
 //

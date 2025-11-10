@@ -29,6 +29,14 @@ class loginSaveActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_login_save)
 
+        window.decorView.apply {
+            systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    )
+        }
+
         pref = getSharedPreferences("KMJ_PREF", MODE_PRIVATE)
 
         val btnLoginPopup: Button = findViewById(R.id.LoginPopup)

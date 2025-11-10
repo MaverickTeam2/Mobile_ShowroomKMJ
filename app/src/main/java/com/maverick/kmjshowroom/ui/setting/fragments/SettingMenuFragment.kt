@@ -40,4 +40,17 @@ class SettingMenuFragment : Fragment() {
             findNavController().navigate(R.id.action_to_backup)
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Sembunyikan status bar dan navigation bar
+        requireActivity().window.decorView.apply {
+            systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            or View.SYSTEM_UI_FLAG_FULLSCREEN
+                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    )
+        }
+    }
 }

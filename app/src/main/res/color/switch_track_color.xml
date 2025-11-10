@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Saat aktif -->
+    <item android:color="#88F07D" android:state_checked="true" /> <!-- hijau muda -->
+    <!-- Saat tidak aktif -->
+    <item android:color="#969696" />
+</selector>

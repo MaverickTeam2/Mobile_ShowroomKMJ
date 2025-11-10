@@ -40,7 +40,6 @@ class HomeFragment : Fragment() {
             )
         }
 
-        // 🔹 Data dummy untuk aktivitas terbaru
         val dummyData = listOf(
             RecentActivityItem("Mobil Ditambahkan", "2024 BMW X5 ditambahkan ke inventory", "2 jam lalu"),
             RecentActivityItem("Mobil Terjual", "2020 Avanza berhasil dijual", "Kemarin"),

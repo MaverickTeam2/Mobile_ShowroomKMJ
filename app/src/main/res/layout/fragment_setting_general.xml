@@ -3,15 +3,221 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.setting.fragments.GeneralFragment">
+    tools:context=".ui.setting.fragments.GeneralFragment"
+    android:background="#FFF0F5F9">
 
     <include
         android:id="@+id/header_include"
         layout="@layout/layout_headeradd"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        app:layout_constraintTop_toBottomOf="@id/header_include"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Header -->
+            <TextView
+                android:id="@+id/tvTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="General"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#001333"
+                android:fontFamily="@font/lato_black" />
+
+            <TextView
+                android:id="@+id/tvSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Kelola informasi dasar dan preferensi toko anda"
+                android:textColor="#4B5563"
+                android:fontFamily="@font/lato" />
+
+            <!-- Card 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/bg_card_inner"
+                android:elevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.85"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Showroom status"
+                            android:textSize="16sp"
+                            android:textColor="#001333"
+                            android:fontFamily="@font/lato_bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manual buka atau tutup showroom online anda untuk pelanggan"
+                            android:textColor="#6B7280"
+                            android:fontFamily="@font/lato"
+                            android:textSize="13sp"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/switchShowroom"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:minWidth="48dp"
+                        android:minHeight="48dp"
+                        android:checked="true"
+                        android:thumbTint="@color/switch_thumb_color"
+                        android:trackTint="@color/switch_track_color"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Card 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/bg_card_inner"
+                android:elevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.85"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Jual mobil"
+                            android:textSize="16sp"
+                            android:textColor="#001333"
+                            android:fontFamily="@font/lato_bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manual buka atau tutup untuk pelanggan menjual mobil"
+                            android:textColor="#6B7280"
+                            android:fontFamily="@font/lato"
+                            android:textSize="13sp"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/switchSellCar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:minWidth="48dp"
+                        android:minHeight="48dp"
+                        android:checked="false"
+                        android:thumbTint="@color/switch_thumb_color"
+                        android:trackTint="@color/switch_track_color"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Card 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:background="@drawable/bg_card_inner"
+                android:elevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:weightSum="1">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.85"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Schedule pelanggan"
+                            android:textSize="16sp"
+                            android:textColor="#001333"
+                            android:fontFamily="@font/lato_bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Manual buka atau tutup untuk pelanggan membuat schedule"
+                            android:textColor="#6B7280"
+                            android:fontFamily="@font/lato"
+                            android:textSize="13sp"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <Switch
+                        android:id="@+id/switchSchedule"
+                        android:layout_width="wrap_content"
+                        android:layout_height="48dp"
+                        android:minWidth="48dp"
+                        android:minHeight="48dp"
+                        android:checked="true"
+                        android:thumbTint="@color/switch_thumb_color"
+                        android:trackTint="@color/switch_track_color"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:id="@+id/save"
+        layout="@layout/footer_save_1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
