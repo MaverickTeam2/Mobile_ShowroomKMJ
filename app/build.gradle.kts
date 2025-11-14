@@ -39,8 +39,6 @@ android {
 }
 
 dependencies {
-
-    implementation("androidx.biometric:biometric:1.2.0-alpha05")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -62,4 +60,5 @@ dependencies {
     val nav_version = "2.8.3"
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation("androidx.biometric:biometric:1.2.0-alpha05")
 }
