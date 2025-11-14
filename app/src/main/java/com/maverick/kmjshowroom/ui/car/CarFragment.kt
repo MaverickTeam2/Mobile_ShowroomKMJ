@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.maverick.kmjshowroom.Model.CarData
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.databinding.FragmentCarBinding
+import com.maverick.kmjshowroom.ui.setting.SettingActivity
 
 class CarFragment : Fragment() {
 
@@ -20,9 +21,7 @@ class CarFragment : Fragment() {
     private lateinit var carAdapter: CarAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCarBinding.inflate(inflater, container, false)
         return binding.root
@@ -33,19 +32,35 @@ class CarFragment : Fragment() {
 
         val cars = listOf(
             CarData(
-                "Bugatti Tourbillon Widebody", "2023", "Black",
-                R.drawable.bugatti, "Available", "20.000 km", "Bensin",
-                "Rp. 30.000.000 x 20", "Rp. 20.000.000"
-            ),
-            CarData(
-                "Lamborghini Aventador", "2022", "Yellow",
-                R.drawable.lamborghini, "Available", "15.000 km", "Bensin",
-                "Rp. 25.000.000 x 18", "Rp. 18.000.000"
-            ),
-            CarData(
-                "Ferrari F8 Tributo", "2021", "Red",
-                R.drawable.ferrari, "Sold Out", "30.000 km", "Bensin",
-                "Rp. 22.000.000 x 24", "Rp. 15.000.000"
+                "Bugatti Tourbillon Widebody",
+                "2023",
+                "Black",
+                R.drawable.bugatti,
+                "Available",
+                "20.000 km",
+                "Bensin",
+                "Rp. 30.000.000 x 20",
+                "Rp. 20.000.000"
+            ), CarData(
+                "Lamborghini Aventador",
+                "2022",
+                "Yellow",
+                R.drawable.lamborghini,
+                "Available",
+                "15.000 km",
+                "Bensin",
+                "Rp. 25.000.000 x 18",
+                "Rp. 18.000.000"
+            ), CarData(
+                "Ferrari F8 Tributo",
+                "2021",
+                "Red",
+                R.drawable.ferrari,
+                "Sold Out",
+                "30.000 km",
+                "Bensin",
+                "Rp. 22.000.000 x 24",
+                "Rp. 15.000.000"
             )
         )
 
@@ -60,10 +75,19 @@ class CarFragment : Fragment() {
             val intent = Intent(requireContext(), AddCarStep1Activity::class.java)
             startActivity(intent)
         }
+        binding.headerInclude.iconProfile.setOnClickListener{
+            val intent = Intent(requireContext(), SettingActivity::class.java)
+            startActivity(intent)
+            android.R.anim.slide_in_left
+            android.R.anim.slide_out_right
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
+
 }

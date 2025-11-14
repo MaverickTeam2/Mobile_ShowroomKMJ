@@ -1,8 +1,11 @@
 package com.maverick.kmjshowroom.ui.car
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.ArrayAdapter
+import android.widget.NumberPicker
 import androidx.appcompat.app.AppCompatActivity
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.databinding.AddCarstep2Binding
@@ -20,9 +23,12 @@ class AddCarStep2Activity : AppCompatActivity() {
 
         setupHeader()
         setupDropDowns()
-        setupYearPicker()
-        setupNextButton()
         setupProgressIndicator()
+        setupNextButton()
+
+        binding.btnPilihTahun.setOnClickListener {
+            showYearPickerDialog()
+        }
     }
 
     private fun setupHeader() {
@@ -41,33 +47,38 @@ class AddCarStep2Activity : AppCompatActivity() {
             "4WD (Four Wheel Drive)"
         )
 
-        val adapterTipe = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tipeKendaraan)
-        val adapterBahan = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bahanBakar)
-        val adapterSistem = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, sistemPenggerak)
+        val adapterTipe = ArrayAdapter(this, android.R.layout.simple_spinner_item, tipeKendaraan)
+        val adapterBahan = ArrayAdapter(this, android.R.layout.simple_spinner_item, bahanBakar)
+        val adapterSistem = ArrayAdapter(this, android.R.layout.simple_spinner_item, sistemPenggerak)
 
-        binding.dropdownTipeKendaraan.setAdapter(adapterTipe)
-        binding.dropdownBahanBakar.setAdapter(adapterBahan)
-        binding.dropdownSistemPenggerak.setAdapter(adapterSistem)
+        adapterTipe.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterBahan.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        adapterSistem.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        binding.dropdownTipeKendaraan.setOnClickListener { binding.dropdownTipeKendaraan.showDropDown() }
-        binding.dropdownBahanBakar.setOnClickListener { binding.dropdownBahanBakar.showDropDown() }
-        binding.dropdownSistemPenggerak.setOnClickListener { binding.dropdownSistemPenggerak.showDropDown() }
+        binding.dropdownTipeKendaraan.adapter = adapterTipe
+        binding.dropdownBahanBakar.adapter = adapterBahan
+        binding.dropdownSistemPenggerak.adapter = adapterSistem
     }
 
-    private fun setupYearPicker() {
-        val yearPicker = binding.yearPicker
+    private fun showYearPickerDialog() {
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.year_picker, null)
+        val yearPicker = dialogView.findViewById<NumberPicker>(R.id.yearPicker)
 
         yearPicker.minValue = 1990
         yearPicker.maxValue = currentYear + 1
-        yearPicker.value = currentYear
+        yearPicker.value = selectedYear.takeIf { it != 0 } ?: currentYear
         yearPicker.wrapSelectorWheel = false
 
-        selectedYear = currentYear
-
-        yearPicker.setOnValueChangedListener { _, _, newVal ->
-            selectedYear = newVal
-        }
+        AlertDialog.Builder(this)
+            .setTitle("Pilih Tahun")
+            .setView(dialogView)
+            .setPositiveButton("OK") { _, _ ->
+                selectedYear = yearPicker.value
+                binding.btnPilihTahun.text = selectedYear.toString()
+            }
+            .setNegativeButton("Batal", null)
+            .show()
     }
 
     private fun setupNextButton() {

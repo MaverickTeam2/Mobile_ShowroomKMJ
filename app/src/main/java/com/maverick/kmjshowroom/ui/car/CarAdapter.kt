@@ -14,7 +14,6 @@ class CarAdapter(private val carList: List<CarData>) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(car: CarData) {
-            // Mengisi data ke view menggunakan binding
             binding.imgCar.setImageResource(car.imageRes)
             binding.txtTitle.text = car.title
             binding.txtYear.text = car.year
@@ -35,19 +34,15 @@ class CarAdapter(private val carList: List<CarData>) :
         }
     }
 
-    // Fungsi ini dipanggil saat RecyclerView perlu membuat ViewHolder baru
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarViewHolder {
-        // Membuat binding untuk layout 'card_mobil.xml'
         val binding = CardMobilBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CarViewHolder(binding)
     }
 
-    // Fungsi ini mengembalikan jumlah total item dalam daftar
     override fun getItemCount(): Int {
         return carList.size
     }
 
-    // Fungsi ini dipanggil untuk menghubungkan data pada posisi tertentu dengan ViewHolder
     override fun onBindViewHolder(holder: CarViewHolder, position: Int) {
         holder.bind(carList[position])
     }
