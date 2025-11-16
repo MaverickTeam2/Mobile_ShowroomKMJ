@@ -19,6 +19,7 @@ class AddCarStep3Activity : AppCompatActivity() {
         setupHeader()
         setupButtons()
         setupProgressIndicator()
+        getSelectedFeatures()
     }
 
     private fun setupHeader() {
