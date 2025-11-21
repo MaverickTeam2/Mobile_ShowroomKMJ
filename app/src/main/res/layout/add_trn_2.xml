@@ -23,7 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <include
-            android:id="@+id/progres"
+            android:id="@+id/progres2"
             layout="@layout/stepper_progress" />
     </FrameLayout>
 

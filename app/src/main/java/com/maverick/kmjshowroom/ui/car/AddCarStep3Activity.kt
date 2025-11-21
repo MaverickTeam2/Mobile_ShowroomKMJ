@@ -33,7 +33,7 @@ class AddCarStep3Activity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.footerSave3.btnDraft.setOnClickListener {
+        binding.footerSave3.btnSaveDraft.setOnClickListener {
             Toast.makeText(this, "Data disimpan sebagai draft", Toast.LENGTH_SHORT).show()
             finish()
         }

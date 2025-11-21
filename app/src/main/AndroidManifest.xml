@@ -36,14 +36,15 @@
         <activity
             android:name=".MainNavBar"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.car.AddCarStep1Activity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ui.car.AddCarStep2Activity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ui.car.AddCarStep3Activity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ui.car.AddCarStep4Activity"
-            android:screenOrientation="portrait" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
 
     </application>
 

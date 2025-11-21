@@ -11,6 +11,12 @@
         android:label="@string/title_home"
         tools:layout="@layout/fragment_home" />
 
+
+
+
+
+
+
     <fragment
         android:id="@+id/navigation_car"
         android:name="com.maverick.kmjshowroom.ui.car.CarFragment"
@@ -22,8 +28,33 @@
         android:id="@+id/navigation_transaksi"
         android:name="com.maverick.kmjshowroom.ui.transaksi.TransaksiFragment"
         android:label="@string/title_transaksi"
-        tools:layout="@layout/fragment_transaksi" />
+        tools:layout="@layout/fragment_transaksi" >
+        <action
+            android:id="@+id/action_transaksiFragment_to_addTrnActivity1fragment"
+            app:destination="@id/addTrnActivity1fragment" />
+    </fragment>
 
+
+
+
+    <fragment
+        android:id="@+id/addTrnActivity1fragment"
+        android:name="com.maverick.kmjshowroom.ui.transaksi.AddTrnActivity1"
+        android:label="Tambah Transaksi"
+        tools:layout="@layout/add_trn_1" >
+        <action
+            android:id="@+id/action_addTrnActivity1fragment_to_addTrnActivity2fragment"
+            app:destination="@id/addTrnActivity2fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/addTrnActivity2fragment"
+        android:name="com.maverick.kmjshowroom.ui.transaksi.AddTrnActivity2"
+        android:label="AddTrnActivity2" >
+        <action
+            android:id="@+id/action_addTrnActivity2fragment_to_addTrnActivity3fragment"
+            app:destination="@id/addTrnActivity3fragment" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_akun"
         android:name="com.maverick.kmjshowroom.ui.akun.AkunFragment"
@@ -35,6 +66,13 @@
         android:name="com.maverick.kmjshowroom.ui.report.ReportFragment"
         android:label="@string/title_report"
         tools:layout="@layout/fragment_report" />
-
+    <fragment
+        android:id="@+id/addTrnActivity3fragment"
+        android:name="com.maverick.kmjshowroom.ui.transaksi.AddTrnActivity3"
+        android:label="Rangkuman Transaksi" >
+        <action
+            android:id="@+id/action_addTrnActivity3fragment_to_navigation_transaksi"
+            app:destination="@id/navigation_transaksi" />
+    </fragment>
 
 </navigation>

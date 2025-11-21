@@ -78,3 +78,52 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 }
+
+
+//
+//package com.maverick.kmjshowroom
+//
+//import android.content.Intent
+//import android.content.SharedPreferences
+//import android.os.Bundle
+//import android.widget.Button
+//import android.widget.EditText
+//import android.widget.Toast
+//import androidx.appcompat.app.AppCompatActivity
+//import androidx.appcompat.app.AppCompatDelegate
+//
+//class LoginActivity : AppCompatActivity() {
+//
+//    private lateinit var sharedPref: SharedPreferences
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+//        setContentView(R.layout.activity_login)
+//
+//        sharedPref = getSharedPreferences("KMJ_PREF", MODE_PRIVATE)
+//
+//        val etUsername = findViewById<EditText>(R.id.txtusername)
+//        val etPassword = findViewById<EditText>(R.id.txtPass)
+//        val btnLogin = findViewById<Button>(R.id.btnLogin)
+//
+//        btnLogin.setOnClickListener {
+//            val username = etUsername.text.toString().trim()
+//            val password = etPassword.text.toString().trim()
+//
+//            if (username.isEmpty() || password.isEmpty()) {
+//                Toast.makeText(this, "Username & Password tidak boleh kosong", Toast.LENGTH_SHORT).show()
+//            } else {
+//                // 🔹 LEWATI LOGIN — langsung simpan username dan masuk ke MainNavBar
+//                sharedPref.edit()
+//                    .putString("USERNAME", username)
+//                    .apply()
+//
+//                Toast.makeText(this, "Login dilewati (langsung masuk)", Toast.LENGTH_SHORT).show()
+//
+//                startActivity(Intent(this@LoginActivity, MainNavBar::class.java))
+//                finish()
+//            }
+//        }
+//    }
+//}

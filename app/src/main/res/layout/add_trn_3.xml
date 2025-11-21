@@ -23,7 +23,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <include
-            android:id="@+id/progres"
+            android:id="@+id/progres3"
             layout="@layout/stepper_progress" />
     </FrameLayout>
 
@@ -287,7 +287,7 @@
 
     <include
         android:id="@+id/save"
-        layout="@layout/footer_save"
+        layout="@layout/footer_finish"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
