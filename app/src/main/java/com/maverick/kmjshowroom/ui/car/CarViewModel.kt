@@ -24,15 +24,15 @@ class CarViewModel(application: Application) : AndroidViewModel(application) {
                 val body = response.body()
 
                 if (response.isSuccessful && body != null && body.success) {
-                    mobilListLiveData.value = body.data
+                    mobilListLiveData.postValue(body.data)
                 } else {
-                    errorLiveData.value = "Gagal memuat data dari server"
+                    errorLiveData.postValue("Gagal memuat data dari server")
                 }
 
             } catch (e: Exception) {
-                errorLiveData.value = e.localizedMessage ?: "Terjadi kesalahan tak terduga"
+                errorLiveData.postValue(e.localizedMessage ?: "Terjadi kesalahan tak terduga")
             } finally {
-                loadingLiveData.value = false
+                loadingLiveData.postValue(false)
             }
         }
     }

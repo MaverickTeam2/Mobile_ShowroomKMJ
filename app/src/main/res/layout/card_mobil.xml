@@ -12,12 +12,13 @@
     android:clipToPadding="false">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/cardRoot"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp"
         app:cardElevation="4dp">
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -71,7 +72,7 @@
                     android:fontFamily="@font/lato_black"
                     android:text="2023"
                     android:textColor="#82868C"
-                    android:textSize="10sp"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -86,7 +87,7 @@
                         android:fontFamily="@font/lato_bold"
                         android:text="Warna:"
                         android:textColor="#82868C"
-                        android:textSize="10sp" />
+                        android:textSize="12sp" />
                     <TextView
                         android:id="@+id/txtWarnaValue"
                         android:layout_width="wrap_content"
@@ -110,7 +111,7 @@
                         android:fontFamily="@font/lato_bold"
                         android:text="Jarak Tempuh:"
                         android:textColor="#82868C"
-                        android:textSize="10sp" />
+                        android:textSize="12sp" />
                     <TextView
                         android:id="@+id/txtJaraktempuhValue"
                         android:layout_width="wrap_content"
@@ -134,7 +135,7 @@
                         android:fontFamily="@font/lato_bold"
                         android:text="Bahan Bakar:"
                         android:textColor="#82868C"
-                        android:textSize="10sp" />
+                        android:textSize="12sp" />
                     <TextView
                         android:id="@+id/txtBahanabakarValue"
                         android:layout_width="wrap_content"
@@ -177,29 +178,15 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/lato_bold"
                             android:text="Dp. Rp. 20.000.000"
-                            android:textColor="#444444"
-                            android:textSize="12sp" />
+                            android:textColor="#82868C"
+                            android:textSize="13sp" />
                     </LinearLayout>
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        android:orientation="horizontal">
-                        <ImageButton
-                            android:id="@+id/btnEdit"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:background="@android:color/transparent"
-                            android:src="@drawable/ic_edit" />
-                        <ImageButton
-                            android:id="@+id/btnDelete"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_marginStart="8dp"
-                            android:background="@android:color/transparent"
-                            android:src="@drawable/ic_delete" />
-                    </LinearLayout>
+                        android:orientation="horizontal"/>
                 </RelativeLayout>
             </LinearLayout>
 

@@ -9,7 +9,7 @@ import com.maverick.kmjshowroom.databinding.CardMobilBinding
 
 class CarAdapter(
     private var list: List<MobilItem>,
-    private val onClick: (MobilItem) -> Unit
+    private val onItemClick: (MobilItem) -> Unit
 ) : RecyclerView.Adapter<CarAdapter.CarViewHolder>() {
 
     inner class CarViewHolder(val binding: CardMobilBinding) :
@@ -17,7 +17,9 @@ class CarAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarViewHolder {
         val binding = CardMobilBinding.inflate(
-            LayoutInflater.from(parent.context), parent, false
+            LayoutInflater.from(parent.context),
+            parent,
+            false
         )
         return CarViewHolder(binding)
     }
@@ -26,28 +28,38 @@ class CarAdapter(
         val item = list[position]
         val b = holder.binding
 
+        // Judul
         b.txtTitle.text = item.nama_mobil
 
+        // Status
         b.txtStatus.text = item.status
 
+        // Tahun
         b.txtYear.text = item.tahun_mobil.toString()
 
+        // Warna
         b.txtWarnaValue.text = item.warna_exterior
 
+        // Jarak Tempuh
         b.txtJaraktempuhValue.text = "${item.jarak_tempuh} km"
 
+        // Bahan Bakar
         b.txtBahanabakarValue.text = item.tipe_bahan_bakar
 
-        b.txtAngsuran.text = "Rp ${item.angsuran}"
-
+        // DP & Angsuran
+        b.txtAngsuran.text = "Rp ${item.angsuran} x ${item.tenor}"
         b.txtDp.text = "DP Rp ${item.dp}"
 
+        // Foto mobil
         Glide.with(b.root.context)
             .load(item.foto)
             .centerCrop()
             .into(b.imgCar)
 
-        b.root.setOnClickListener { onClick(item) }
+        // 🔥 Klik Card -> DetailMobilActivity
+        b.cardRoot.setOnClickListener {
+            onItemClick(item)
+        }
     }
 
     override fun getItemCount(): Int = list.size

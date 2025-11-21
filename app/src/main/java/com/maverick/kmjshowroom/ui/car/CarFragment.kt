@@ -1,12 +1,15 @@
 package com.maverick.kmjshowroom.ui.car
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.maverick.kmjshowroom.Model.MobilItem
 import com.maverick.kmjshowroom.databinding.FragmentCarBinding
 
 class CarFragment : Fragment() {
@@ -25,19 +28,29 @@ class CarFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = CarAdapter(emptyList()) { mobil ->
-            // Klik card → buka detail activity
-            // Intent ke detail
-        }
 
-        binding.carRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext())
+        adapter = CarAdapter(
+            emptyList(),
+            onItemClick = { mobil -> openDetailMobil(mobil) }
+        )
 
-        binding.carRecyclerView.adapter = adapter
-
+        setupRecyclerView()
+        setupButtonListener()
         observeViewModel()
 
-        viewModel.loadMobilList() // Panggil API
+        viewModel.loadMobilList()
+    }
+
+    private fun setupRecyclerView() {
+        binding.carRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.carRecyclerView.adapter = adapter
+    }
+
+    private fun setupButtonListener() {
+        binding.btnTambah.setOnClickListener {
+            val intent = Intent(requireContext(), AddCarStep1Activity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun observeViewModel() {
@@ -52,8 +65,15 @@ class CarFragment : Fragment() {
 
         viewModel.errorLiveData.observe(viewLifecycleOwner) { error ->
             if (error != null) {
-                // bisa pakai Toast atau Snackbar
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    // 🔥 Klik card langsung buka DetailMobilActivity
+    private fun openDetailMobil(mobil: MobilItem) {
+        val intent = Intent(requireContext(), DetailMobilActivity::class.java)
+        intent.putExtra("kode_mobil", mobil.kode_mobil)
+        startActivity(intent)
     }
 }

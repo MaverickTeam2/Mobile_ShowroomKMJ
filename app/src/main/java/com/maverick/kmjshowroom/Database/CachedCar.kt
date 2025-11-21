@@ -2,13 +2,14 @@ package com.maverick.kmjshowroom.Database
 
 data class CachedCar(
     val kodeMobil: String,
-    val title: String,
-    val tahun: String,
-    val warna: String,
-    val status: String,
+    val namaMobil: String,
+    val tahunMobil: String,
+    val warnaExterior: String,
+    val tipeBahanBakar: String,
     val jarakTempuh: String,
-    val bahanBakar: String,
-    val hargaAngsuran: String,
-    val hargaDp: String,
-    val fotoUtama: String // URL foto utama
+    val angsuran: String,
+    val tenor: String,
+    val dp: String,
+    val status: String,
+    val fotoUtama: String
 )

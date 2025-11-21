@@ -12,14 +12,15 @@ class CarDao(context: Context) {
     fun insertOrUpdate(car: CachedCar) {
         val values = ContentValues().apply {
             put("kode_mobil", car.kodeMobil)
-            put("title", car.title)
-            put("tahun", car.tahun)
-            put("warna", car.warna)
-            put("status", car.status)
+            put("nama_mobil", car.namaMobil)
+            put("tahun_mobil", car.tahunMobil)
+            put("warna_exterior", car.warnaExterior)
+            put("tipe_bahan_bakar", car.tipeBahanBakar)
             put("jarak_tempuh", car.jarakTempuh)
-            put("bahan_bakar", car.bahanBakar)
-            put("harga_angsuran", car.hargaAngsuran)
-            put("harga_dp", car.hargaDp)
+            put("angsuran", car.angsuran)
+            put("tenor", car.tenor)
+            put("dp", car.dp)
+            put("status", car.status)
             put("foto_utama", car.fotoUtama)
         }
 
@@ -39,16 +40,17 @@ class CarDao(context: Context) {
             do {
                 list.add(
                     CachedCar(
-                        cursor.getString(0),
-                        cursor.getString(1),
-                        cursor.getString(2),
-                        cursor.getString(3),
-                        cursor.getString(4),
-                        cursor.getString(5),
-                        cursor.getString(6),
-                        cursor.getString(7),
-                        cursor.getString(8),
-                        cursor.getString(9)
+                        kodeMobil = cursor.getString(0),
+                        namaMobil = cursor.getString(1),
+                        tahunMobil = cursor.getString(2),
+                        warnaExterior = cursor.getString(3),
+                        tipeBahanBakar = cursor.getString(4),
+                        jarakTempuh = cursor.getString(5),
+                        angsuran = cursor.getString(6),
+                        tenor = cursor.getString(7),
+                        dp = cursor.getString(8),
+                        status = cursor.getString(9),
+                        fotoUtama = cursor.getString(10)
                     )
                 )
             } while (cursor.moveToNext())
