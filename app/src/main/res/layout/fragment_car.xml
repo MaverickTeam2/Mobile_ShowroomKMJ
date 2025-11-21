@@ -7,7 +7,6 @@
     android:background="#FFF0F5F9"
     tools:context=".ui.car.CarFragment">
 
-    <!-- Header -->
     <include
         android:id="@+id/header_include"
         layout="@layout/layout_header"
@@ -15,7 +14,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Tombol tambah mobil (desain lama) ditempatkan di sini -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnTambah"
         android:layout_width="wrap_content"
@@ -36,7 +34,6 @@
         app:layout_constraintTop_toBottomOf="@id/header_include"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- RecyclerView untuk menampilkan daftar mobil -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/carRecyclerView"
         android:layout_width="0dp"
@@ -50,5 +47,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/card_mobil" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

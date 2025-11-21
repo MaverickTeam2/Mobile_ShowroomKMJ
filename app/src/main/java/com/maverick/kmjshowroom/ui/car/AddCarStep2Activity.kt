@@ -1,86 +1,175 @@
 package com.maverick.kmjshowroom.ui.car
 
+import MobilDetailResponse
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.ArrayAdapter
+import android.widget.NumberPicker
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.maverick.kmjshowroom.R
+import com.maverick.kmjshowroom.API.ApiClient
 import com.maverick.kmjshowroom.databinding.AddCarstep2Binding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.util.Calendar
+import kotlin.jvm.java
 
 class AddCarStep2Activity : AppCompatActivity() {
 
     private lateinit var binding: AddCarstep2Binding
-    private var selectedYear: Int = 0
+
+    private var selectedYear = 0
+    private var isEdit = false
+    private var kodeMobil: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = AddCarstep2Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        isEdit = intent.getBooleanExtra("is_edit", false)
+        kodeMobil = intent.getStringExtra("kode_mobil")
+
         setupHeader()
         setupDropDowns()
-        setupYearPicker()
-        setupNextButton()
         setupProgressIndicator()
-    }
+        setupNextButton()
+        binding.btnPilihTahun.setOnClickListener { showYearPickerDialog() }
 
-    private fun setupHeader() {
-        binding.layoutHeaderadd.iconClose.setOnClickListener {
-            finish()
+        if (isEdit && kodeMobil != null) {
+            loadMobilDetail(kodeMobil!!)
+        } else {
+            // if coming from step1, prefill possible image extras (we forward only when go to next)
         }
     }
+
+    private fun setupHeader() { binding.layoutHeaderadd.iconClose.setOnClickListener { finish() } }
 
     private fun setupDropDowns() {
         val tipeKendaraan = listOf("SUV", "Sedan", "Hatchback", "Pickup", "Sport", "Convertible")
         val bahanBakar = listOf("Bensin", "Diesel", "Hybrid", "Listrik")
-        val sistemPenggerak = listOf(
-            "FWD (Front Wheel Drive)",
-            "RWD (Rear Wheel Drive)",
-            "AWD (All Wheel Drive)",
-            "4WD (Four Wheel Drive)"
-        )
+        val sistemPenggerak = listOf("FWD (Front Wheel Drive)", "RWD (Rear Wheel Drive)", "AWD (All Wheel Drive)", "4WD (Four Wheel Drive)")
 
-        val adapterTipe = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, tipeKendaraan)
-        val adapterBahan = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, bahanBakar)
-        val adapterSistem = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, sistemPenggerak)
-
-        binding.dropdownTipeKendaraan.setAdapter(adapterTipe)
-        binding.dropdownBahanBakar.setAdapter(adapterBahan)
-        binding.dropdownSistemPenggerak.setAdapter(adapterSistem)
-
-        binding.dropdownTipeKendaraan.setOnClickListener { binding.dropdownTipeKendaraan.showDropDown() }
-        binding.dropdownBahanBakar.setOnClickListener { binding.dropdownBahanBakar.showDropDown() }
-        binding.dropdownSistemPenggerak.setOnClickListener { binding.dropdownSistemPenggerak.showDropDown() }
+        binding.dropdownTipeKendaraan.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, tipeKendaraan)
+        binding.dropdownBahanBakar.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, bahanBakar)
+        binding.dropdownSistemPenggerak.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sistemPenggerak)
     }
 
-    private fun setupYearPicker() {
-        val yearPicker = binding.yearPicker
+    private fun showYearPickerDialog() {
         val currentYear = Calendar.getInstance().get(Calendar.YEAR)
-
+        val dialogView = LayoutInflater.from(this).inflate(com.maverick.kmjshowroom.R.layout.year_picker, null)
+        val yearPicker = dialogView.findViewById<NumberPicker>(com.maverick.kmjshowroom.R.id.yearPicker)
         yearPicker.minValue = 1990
         yearPicker.maxValue = currentYear + 1
-        yearPicker.value = currentYear
+        yearPicker.value = if (selectedYear != 0) selectedYear else currentYear
         yearPicker.wrapSelectorWheel = false
 
-        selectedYear = currentYear
-
-        yearPicker.setOnValueChangedListener { _, _, newVal ->
-            selectedYear = newVal
-        }
+        AlertDialog.Builder(this)
+            .setTitle("Pilih Tahun")
+            .setView(dialogView)
+            .setPositiveButton("OK") { _, _ ->
+                selectedYear = yearPicker.value
+                binding.btnPilihTahun.text = selectedYear.toString()
+            }
+            .setNegativeButton("Batal", null)
+            .show()
     }
 
     private fun setupNextButton() {
         binding.footerSave2.btnNext.setOnClickListener {
-            val intent = Intent(this, AddCarStep3Activity::class.java)
-            startActivity(intent)
+            // validate required fields
+            val nama = binding.namaMobil.text.toString().trim()
+            val jarak = binding.jarakTempuh.text.toString().trim()
+            val warnaExterior = binding.warnaExterior.text.toString().trim()
+            val warnaInterior = binding.warnaInterior.text.toString().trim()
+            val fullPrice = binding.fullPrice.text.toString().trim()
+            val uangMuka = binding.uangMuka.text.toString().trim()
+            val angsuran = binding.angsuran.text.toString().trim()
+            val tenor = binding.tenor.text.toString().trim()
+
+            if (nama.isEmpty() || jarak.isEmpty() || warnaExterior.isEmpty() || warnaInterior.isEmpty()
+                || fullPrice.isEmpty() || uangMuka.isEmpty() || angsuran.isEmpty() || tenor.isEmpty() || selectedYear == 0) {
+                Toast.makeText(this, "Semua field wajib diisi", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
+            val intentNext = Intent(this, AddCarStep3Activity::class.java)
+            // forward is_edit & kode_mobil
+            intentNext.putExtra("is_edit", isEdit)
+            intentNext.putExtra("kode_mobil", kodeMobil)
+
+            // forward step1 images if present (received from previous)
+            intentNext.putExtra("foto_360", intent.getStringExtra("foto_360"))
+            intentNext.putExtra("foto_depan", intent.getStringExtra("foto_depan"))
+            intentNext.putExtra("foto_belakang", intent.getStringExtra("foto_belakang"))
+            intentNext.putExtra("foto_samping", intent.getStringExtra("foto_samping"))
+            intentNext.putExtra("foto_tambahan", intent.getStringArrayExtra("foto_tambahan"))
+
+            // forward step2 data
+            intentNext.putExtra("nama_mobil", nama)
+            intentNext.putExtra("tahun", selectedYear.toString())
+            intentNext.putExtra("jarak_tempuh", jarak)
+            intentNext.putExtra("full_prize", fullPrice)
+            intentNext.putExtra("uang_muka", uangMuka)
+            intentNext.putExtra("angsuran", angsuran)
+            intentNext.putExtra("tenor", tenor)
+            intentNext.putExtra("warna_interior", warnaInterior)
+            intentNext.putExtra("warna_exterior", warnaExterior)
+
+
+            // spinners
+            intentNext.putExtra("tipe_kendaraan", binding.dropdownTipeKendaraan.selectedItem.toString())
+            intentNext.putExtra("bahan_bakar", binding.dropdownBahanBakar.selectedItem.toString())
+            intentNext.putExtra("sistem_penggerak", binding.dropdownSistemPenggerak.selectedItem.toString())
+
+            startActivity(intentNext)
         }
     }
 
     private fun setupProgressIndicator() {
-        binding.addNewcar2.apply {
-            step1Icon.setImageResource(R.drawable.ic_check_blue)
-            step2Icon.setImageResource(R.drawable.ic_number2_blue)
+        binding.addNewcar2.step1Icon.setImageResource(com.maverick.kmjshowroom.R.drawable.ic_check_blue)
+        binding.addNewcar2.step2Icon.setImageResource(com.maverick.kmjshowroom.R.drawable.ic_number2_blue)
+    }
+
+    private fun loadMobilDetail(kode: String) {
+        ApiClient.apiService.getMobilDetail(kode)
+            .enqueue(object : Callback<MobilDetailResponse> {
+                override fun onResponse(call: Call<MobilDetailResponse>, response: Response<MobilDetailResponse>) {
+                    val body = response.body() ?: return
+                    if (!body.success) return
+                    val m = body.mobil
+                    // Prefill based on response field names
+                    binding.namaMobil.setText(m.nama_mobil)
+                    binding.jarakTempuh.setText(m.jarak_tempuh)
+                    binding.warnaExterior.setText(m.warna_exterior)
+                    binding.warnaInterior.setText(m.warna_interior)
+                    binding.fullPrice.setText(m.full_prize)
+                    binding.uangMuka.setText(m.uang_muka)
+                    binding.angsuran.setText(m.angsuran)
+                    binding.tenor.setText(m.tenor)
+
+                    selectedYear = m.tahun_mobil.toInt()
+                    binding.btnPilihTahun.text = selectedYear.toString()
+
+                    setSpinnerValue(binding.dropdownTipeKendaraan, m.jenis_kendaraan)
+                    setSpinnerValue(binding.dropdownBahanBakar, m.tipe_bahan_bakar)
+                    setSpinnerValue(binding.dropdownSistemPenggerak, m.sistem_penggerak)
+                }
+
+                override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {}
+            })
+    }
+
+    private fun setSpinnerValue(spinner: android.widget.Spinner, value: String) {
+        val adapter = spinner.adapter ?: return
+        for (i in 0 until adapter.count) {
+            if (adapter.getItem(i).toString().equals(value, ignoreCase = true)) {
+                spinner.setSelection(i)
+                break
+            }
         }
     }
 }

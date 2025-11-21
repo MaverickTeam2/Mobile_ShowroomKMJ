@@ -1,13 +1,18 @@
 package com.maverick.kmjshowroom.Model
 
 data class LoginResponse(
-    val success: Boolean,
-    val message: String,
-    val user: User? = null
+    val code: Int,
+    val message: String?,
+    val token: String?,
+    val user: UserData?
 )
 
-data class User(
-    val id: String,
-    val username: String
+data class UserData(
+    val kode_user: String?,
+    val username: String?,
+    val full_name: String?,
+    val email: String?,
+    val role: String?,
+    val avatar_url: String?,
+    val provider_type: String?
 )
-
