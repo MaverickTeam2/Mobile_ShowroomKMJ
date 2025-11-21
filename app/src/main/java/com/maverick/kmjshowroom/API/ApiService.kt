@@ -20,12 +20,10 @@ import retrofit2.Response
 import retrofit2.http.*
 
 interface ApiService {
-
     @POST("admin/login.php")
     fun login(
         @Body body: Map<String, String>
     ): Call<LoginResponse>
-
 
     @POST("admin/register.php")
     fun registerUser(
@@ -53,16 +51,13 @@ interface ApiService {
 
     @POST("admin/update_general.php")
     suspend fun updateGeneral(@Body body: Map<String, Int>): Response<UpdateGeneralResponse>
-}
 
     @GET("admin/mobil_list.php")
     suspend fun getMobilList(): Response<MobilListResponse>
 
-    // DETAIL MOBIL
     @GET("admin/mobil_detail.php")
     fun getMobilDetail(@Query("kode_mobil") kode: String): Call<MobilDetailResponse>
 
-    // INSERT / UPDATE MOBIL (smart mode)
     @Multipart
     @POST("admin/mobil_tambah.php")
     fun uploadMobil(
@@ -70,7 +65,6 @@ interface ApiService {
         @Part images: List<MultipartBody.Part>
     ): Call<GenericResponse>
 
-    // DELETE MOBIL
     @FormUrlEncoded
     @POST("admin/mobil_tambah.php")
     fun deleteMobil(
