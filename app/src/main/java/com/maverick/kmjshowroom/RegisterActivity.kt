@@ -1,10 +1,13 @@
 package com.maverick.kmjshowroom
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.maverick.kmjshowroom.API.ApiClient
 import com.maverick.kmjshowroom.Database.UserDatabaseHelper
 import com.maverick.kmjshowroom.Model.RegisterResponse
@@ -59,36 +62,73 @@ class RegisterActivity : AppCompatActivity() {
         )
 
         ApiClient.apiService.registerUser(requestBody).enqueue(object : Callback<RegisterResponse> {
-            override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
+            override fun onResponse(
+                call: Call<RegisterResponse>,
+                response: Response<RegisterResponse>
+            ) {
                 if (response.isSuccessful) {
                     val body = response.body()
+
                     if (body != null && body.code == 200) {
+
                         val userData = UserData(
                             kode_user = body.kode_user ?: "",
                             username = username,
                             email = email,
                             full_name = fullName,
                             role = "owner",
+                            avatar_url = body.avatar_url,
                             provider_type = "local"
                         )
-
                         dbHelper.insertUser(userData)
 
-                        Toast.makeText(this@RegisterActivity, "Registrasi berhasil!", Toast.LENGTH_SHORT).show()
+                        body.token?.let { saveToken(it) }
 
-                        startActivity(Intent(this@RegisterActivity, MainNavBar::class.java))
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            "Registrasi berhasil!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                        startActivity(Intent(this@RegisterActivity, MainNavBar::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
                         finish()
+
                     } else {
-                        Toast.makeText(this@RegisterActivity, body?.message ?: "Gagal registrasi", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@RegisterActivity,
+                            body?.message ?: "Gagal registrasi",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+
                 } else {
-                    Toast.makeText(this@RegisterActivity, "Response error", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@RegisterActivity, "Response error", Toast.LENGTH_SHORT)
+                        .show()
                 }
             }
 
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                Toast.makeText(this@RegisterActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@RegisterActivity, "Error: ${t.message}", Toast.LENGTH_SHORT)
+                    .show()
             }
         })
+    }
+
+    private fun saveToken(token: String) {
+        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val sharedPrefs = EncryptedSharedPreferences.create(
+            "auth_prefs",
+            masterKeyAlias,
+            this,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+
+        with(sharedPrefs.edit()) {
+            putString("token", token)
+            apply()
+        }
     }
 }

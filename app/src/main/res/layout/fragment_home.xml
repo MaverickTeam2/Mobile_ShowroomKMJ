@@ -12,242 +12,262 @@
         android:id="@+id/header_include"
         layout="@layout/layout_header" />
 
-    <ScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
-            <GridLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:rowCount="2"
-                android:alignmentMode="alignMargins"
-                android:columnOrderPreserved="false"
-                android:useDefaultMargins="true">
+                android:orientation="vertical"
+                android:padding="16dp">
 
-                <!-- Card 1 -->
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:alignmentMode="alignMargins"
+                    android:columnCount="2"
+                    android:columnOrderPreserved="false"
+                    android:rowCount="2"
+                    android:useDefaultMargins="true">
+
+                    <!-- Card 1 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="108dp"
+                        android:layout_columnWeight="1"
+                        android:background="@drawable/card_bg"
+                        android:elevation="2dp"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_car" />
+
+                        <TextView
+                            android:id="@+id/l_total_car"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="156"
+                            android:textColor="#001333"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mobil Available"
+                            android:textColor="#666" />
+                    </LinearLayout>
+
+                    <!-- Card 2 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="108dp"
+                        android:layout_columnWeight="1"
+                        android:background="@drawable/card_bg"
+                        android:elevation="2dp"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_chart" />
+
+                        <TextView
+                            android:id="@+id/l_total_penjualan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="24"
+                            android:textColor="#001333"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Penjualan Bulanan"
+                            android:textColor="#666" />
+                    </LinearLayout>
+
+                    <!-- Card 3 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="108dp"
+                        android:layout_columnWeight="1"
+                        android:background="@drawable/card_bg"
+                        android:elevation="2dp"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_income" />
+
+                        <TextView
+                            android:id="@+id/l_income"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Rp. 36.000.000"
+                            android:textColor="#001333"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Pendapatan Bulanan"
+                            android:textColor="#666" />
+                    </LinearLayout>
+
+                    <!-- Card 4 -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="108dp"
+                        android:layout_columnWeight="1"
+                        android:background="@drawable/card_bg"
+                        android:elevation="2dp"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:src="@drawable/ic_reserved" />
+
+                        <TextView
+                            android:id="@+id/l_reserved"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="6"
+                            android:textColor="#001333"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mobil Reserved"
+                            android:textColor="#666" />
+                    </LinearLayout>
+                </GridLayout>
+
+                <!-- Quick Action -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/lato_black"
+                    android:text="Quick Action"
+                    android:textColor="#001333"
+                    android:textSize="18sp" />
+
                 <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="108dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/card_bg"
-                    android:padding="16dp"
-                    android:elevation="2dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_car" />
-
-                    <TextView
-                        android:id="@+id/l_total_car"
-                        android:layout_width="wrap_content"
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="156"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="#001333" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Total Mobil"
-                        android:textColor="#666" />
-                </LinearLayout>
-
-                <!-- Card 2 -->
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="108dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/card_bg"
-                    android:padding="16dp"
-                    android:elevation="2dp">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_chart" />
-
-                    <TextView
-                        android:id="@+id/l_total_penjualan"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="24"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="#001333" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Penjualan Bulanan"
-                        android:textColor="#666" />
-                </LinearLayout>
-
-                <!-- Card 3 -->
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="0dp"
-                    android:layout_height="108dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/card_bg"
-                    android:padding="16dp"
-                    android:elevation="2dp">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_income" />
-
-                    <TextView
-                        android:id="@+id/l_income"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Rp. 36.000.000"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#001333" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Pendapatan Bulanan"
-                        android:textColor="#666" />
-                </LinearLayout>
-
-                <!-- Card 4 -->
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="108dp"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/card_bg"
-                    android:elevation="2dp"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:src="@drawable/ic_reserved" />
-
-                    <TextView
-                        android:id="@+id/l_reserved"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="6"
+                        android:layout_weight="1"
+                        android:backgroundTint="#FFFFFFFF"
+                        android:drawableLeft="@drawable/ic_plus"
+                        android:drawablePadding="6dp"
+                        android:fontFamily="@font/lato_bold"
+                        android:gravity="start|center_vertical"
+                        android:paddingHorizontal="12dp"
+                        android:paddingStart="10dp"
+                        android:text="Tambah Mobil"
                         android:textColor="#001333"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:textSize="11sp"
+                        app:cornerRadius="12dp"
+                        app:strokeColor="#3676FF"
+                        app:strokeWidth="1dp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="Mobil Reserved"
-                        android:textColor="#666" />
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#FFFFFFFF"
+                        android:drawableLeft="@drawable/ic_transaksi"
+                        android:drawablePadding="6dp"
+                        android:fontFamily="@font/lato_bold"
+                        android:gravity="start|center_vertical"
+                        android:paddingHorizontal="12dp"
+                        android:paddingStart="10dp"
+                        android:text="Transaksi Baru"
+                        android:textColor="#001333"
+                        android:textSize="11sp"
+                        app:cornerRadius="12dp"
+                        app:strokeColor="#00C080"
+                        app:strokeWidth="1dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="#FFFFFFFF"
+                        android:drawableLeft="@drawable/ic_report"
+                        android:drawablePadding="6dp"
+                        android:fontFamily="@font/lato_bold"
+                        android:gravity="start|center_vertical"
+                        android:paddingHorizontal="12dp"
+                        android:paddingStart="10dp"
+                        android:text="Generate Laporan"
+                        android:textColor="#001333"
+                        android:textSize="11sp"
+                        app:cornerRadius="12dp"
+                        app:strokeColor="#9938FE"
+                        app:strokeWidth="1dp" />
                 </LinearLayout>
-            </GridLayout>
 
-            <!-- Quick Action -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Quick Action"
-                android:fontFamily="@font/lato_black"
-                android:textSize="18sp"
-                android:textColor="#001333"
-                android:layout_marginTop="24dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:weightSum="3">
-
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="0dp"
+                <!-- Recent Activity -->
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Tambah Mobil"
-                    android:textSize="11sp"
-                    android:gravity="start|center_vertical"
+                    android:layout_marginTop="24dp"
+                    android:fontFamily="@font/lato_black"
+                    android:text="Recent Activity"
                     android:textColor="#001333"
-                    android:fontFamily="@font/lato_bold"
-                    android:paddingStart="10dp"
-                    android:drawableLeft="@drawable/ic_plus"
-                    android:paddingHorizontal="12dp"
-                    android:drawablePadding="6dp"
-                    android:backgroundTint="#FFFFFFFF"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#3676FF"
-                    app:cornerRadius="12dp" />
+                    android:textSize="18sp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="0dp"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_recent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Transaksi Baru"
-                    android:textSize="11sp"
-                    android:gravity="start|center_vertical"
-                    android:textColor="#001333"
-                    android:fontFamily="@font/lato_bold"
-                    android:paddingStart="10dp"
-                    android:drawableLeft="@drawable/ic_transaksi"
-                    android:paddingHorizontal="12dp"
-                    android:drawablePadding="6dp"
-                    android:backgroundTint="#FFFFFFFF"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#00C080"
-                    app:cornerRadius="12dp"
-                    android:layout_marginLeft="5dp"/>
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/btn_show_more"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Generate Laporan"
-                    android:textSize="11sp"
-                    android:gravity="start|center_vertical"
-                    android:textColor="#001333"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
                     android:fontFamily="@font/lato_bold"
-                    android:paddingStart="10dp"
-                    android:drawableLeft="@drawable/ic_report"
-                    android:paddingHorizontal="12dp"
-                    android:drawablePadding="6dp"
-                    android:backgroundTint="#FFFFFFFF"
-                    app:strokeWidth="1dp"
-                    app:strokeColor="#9938FE"
-                    app:cornerRadius="12dp"
-                    android:layout_marginLeft="5dp"/>
+                    android:paddingVertical="8dp"
+                    android:text="Tampilkan lainnya"
+                    android:textColor="#3676FF"
+                    android:textSize="14sp"
+                    android:visibility="gone" />
+
             </LinearLayout>
-
-            <!-- Recent Activity -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Recent Activity"
-                android:fontFamily="@font/lato_black"
-                android:textSize="18sp"
-                android:textColor="#001333"
-                android:layout_marginTop="24dp" />
-
-            <LinearLayout
-                android:id="@+id/recent_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical" />
-
-        </LinearLayout>
-    </ScrollView>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

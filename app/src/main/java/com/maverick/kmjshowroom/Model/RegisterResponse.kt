@@ -5,5 +5,6 @@ data class RegisterResponse(
     val message: String?,
     val role: String?,
     val kode_user: String?,
-    val email_verified: Int?
+    val avatar_url: String?,
+    val token: String?
 )

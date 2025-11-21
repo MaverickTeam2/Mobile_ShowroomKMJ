@@ -1,24 +1,30 @@
 package com.maverick.kmjshowroom.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.maverick.kmjshowroom.API.ApiClient
+import com.maverick.kmjshowroom.Model.ActivityItem
+import com.maverick.kmjshowroom.Model.DashboardResponse
 import com.maverick.kmjshowroom.databinding.FragmentHomeBinding
-import com.maverick.kmjshowroom.R
-import android.content.Intent
 import com.maverick.kmjshowroom.ui.setting.SettingActivity
+import kotlinx.coroutines.launch
+import java.text.NumberFormat
+import java.util.*
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    data class RecentActivityItem(val title: String, val description: String, val time: String)
+    private lateinit var adapter: RecentActivityAdapter
+    private val recentList = mutableListOf<ActivityItem>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,49 +37,99 @@ class HomeFragment : Fragment() {
         val root: View = binding.root
 
         binding.headerInclude.textHeader.text = "HOME"
+
         binding.headerInclude.iconProfile.setOnClickListener {
-            val intent = Intent(requireContext(), SettingActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(requireContext(), SettingActivity::class.java))
             requireActivity().overridePendingTransition(
                 android.R.anim.slide_in_left,
                 android.R.anim.slide_out_right
             )
         }
 
-        val dummyData = listOf(
-            RecentActivityItem("Mobil Ditambahkan", "2024 BMW X5 ditambahkan ke inventory", "2 jam lalu"),
-            RecentActivityItem("Mobil Terjual", "2020 Avanza berhasil dijual", "Kemarin"),
-            RecentActivityItem("Laporan Dibuat", "Laporan bulanan telah di-generate", "3 hari lalu"),
-            RecentActivityItem("Unit Service", "Mitsubishi Xpander masuk service", "5 hari lalu"),
-            RecentActivityItem("Mobil Ditambahkan", "2023 Honda HR-V masuk ke sistem", "1 minggu lalu")
-        )
+        binding.swipeRefresh.setOnRefreshListener {
+            refreshData()
+        }
 
-        populateRecentActivity(dummyData)
+        initRecycler()
+        loadRecentActivity()
+        loadDashboardStats()
 
         return root
     }
 
-    private fun populateRecentActivity(items: List<RecentActivityItem>) {
-        val container = binding.root.findViewById<LinearLayout>(R.id.recent_container)
-        container.removeAllViews()
-
-        if (items.isEmpty()) {
-            container.visibility = View.GONE
-            return
+    // Setup RecyclerView
+    private fun initRecycler() {
+        adapter = RecentActivityAdapter(recentList) { item ->
+            val intent = Intent(requireContext(), RecentDetailActivity::class.java)
+            intent.putExtra("id", item.id)
+            startActivity(intent)
         }
 
-        container.visibility = View.VISIBLE
-        val inflater = LayoutInflater.from(requireContext())
+        binding.recyclerRecent.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerRecent.adapter = adapter
+    }
 
-        for (item in items.take(10)) {
-            val view = inflater.inflate(R.layout.item_recent_activity, container, false)
-
-            view.findViewById<TextView>(R.id.tv_title).text = item.title
-            view.findViewById<TextView>(R.id.tv_description).text = item.description
-            view.findViewById<TextView>(R.id.tv_time).text = item.time
-
-            container.addView(view)
+    private fun refreshData() {
+        lifecycleScope.launch {
+            try {
+                loadRecentActivity()
+                loadDashboardStats()
+            } finally {
+                binding.swipeRefresh.isRefreshing = false
+            }
         }
+    }
+
+    private fun loadRecentActivity() {
+        lifecycleScope.launch {
+            try {
+                val res = ApiClient.apiService.getRecentActivity(1000)
+                if (res.isSuccessful && res.body()?.code == 200) {
+
+                    val all = res.body()!!.data
+                    recentList.clear()
+                    recentList.addAll(all.take(5))
+                    adapter.notifyDataSetChanged()
+
+                    binding.btnShowMore.visibility =
+                        if (all.size > 5) View.VISIBLE else View.GONE
+
+                    binding.btnShowMore.setOnClickListener {
+                        startActivity(
+                            Intent(requireContext(), RecentAllActivity::class.java)
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    // Load Dashboard Stats
+    private fun loadDashboardStats() {
+        lifecycleScope.launch {
+            try {
+                val response = ApiClient.apiService.getDashboardStats()
+                if (response.isSuccessful) {
+                    val result: DashboardResponse? = response.body()
+                    result?.data?.let { d ->
+                        binding.lTotalCar.text = d.total_mobil_available.toString()
+                        binding.lTotalPenjualan.text = d.total_transaksi_bulan_ini.toString()
+                        binding.lIncome.text = formatRupiah(d.total_pendapatan_bulan_ini)
+                        binding.lReserved.text = d.total_mobil_reserved.toString()
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    // Format rupiah
+    private fun formatRupiah(value: Int): String {
+        val format = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+        return format.format(value).replace(",00", "")
     }
 
     override fun onDestroyView() {

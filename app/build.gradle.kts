@@ -61,4 +61,6 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
     implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
 }

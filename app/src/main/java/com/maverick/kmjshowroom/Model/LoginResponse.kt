@@ -3,6 +3,7 @@ package com.maverick.kmjshowroom.Model
 data class LoginResponse(
     val code: Int,
     val message: String?,
+    val token: String?,
     val user: UserData?
 )
 
@@ -12,5 +13,6 @@ data class UserData(
     val full_name: String?,
     val email: String?,
     val role: String?,
+    val avatar_url: String?,
     val provider_type: String?
 )

@@ -16,6 +16,12 @@
         android:theme="@style/Theme.KMJShowroom"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ui.home.RecentDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.home.RecentAllActivity"
+            android:exported="false" />
+        <activity
             android:name=".RegisterActivity"
             android:exported="false" />
         <activity

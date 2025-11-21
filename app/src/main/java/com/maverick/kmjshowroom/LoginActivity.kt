@@ -8,6 +8,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.maverick.kmjshowroom.API.ApiClient
 import com.maverick.kmjshowroom.Database.UserDatabaseHelper
 import com.maverick.kmjshowroom.Model.LoginResponse
@@ -27,13 +29,11 @@ class LoginActivity : AppCompatActivity() {
 
         dbHelper = UserDatabaseHelper(this)
 
-        window.decorView.apply {
-            systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_FULLSCREEN
-                            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    )
-        }
+        window.decorView.systemUiVisibility = (
+                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_FULLSCREEN
+                        or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                )
 
         val etUsername = findViewById<EditText>(R.id.txtusername)
         val etPassword = findViewById<EditText>(R.id.txtPass)
@@ -69,8 +69,10 @@ class LoginActivity : AppCompatActivity() {
 
                     if (loginResponse != null && loginResponse.code == 200) {
                         val user = loginResponse.user
+                        val token = loginResponse.token ?: ""
 
                         if (user != null) {
+                            // Hapus user lama
                             if (dbHelper.getUserCount() > 0) {
                                 val db = dbHelper.writableDatabase
                                 db.delete("users", null, null)
@@ -79,13 +81,17 @@ class LoginActivity : AppCompatActivity() {
 
                             dbHelper.insertUser(user)
 
+                            saveToken(token) // simpan token di EncryptedSharedPreferences
+
                             Toast.makeText(
                                 this@LoginActivity,
-                                "${user.full_name}, ${loginResponse.message}",
+                                "${user.full_name}, ${loginResponse.message ?: "Login berhasil"}",
                                 Toast.LENGTH_SHORT
                             ).show()
 
-                            startActivity(Intent(this@LoginActivity, MainNavBar::class.java))
+                            startActivity(Intent(this@LoginActivity, MainNavBar::class.java).apply {
+                                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            })
                             finish()
                         } else {
                             Toast.makeText(
@@ -95,6 +101,12 @@ class LoginActivity : AppCompatActivity() {
                             ).show()
                         }
 
+                    } else if (loginResponse?.code == 403) {
+                        Toast.makeText(
+                            this@LoginActivity,
+                            loginResponse.message ?: "Akun dinonaktifkan. Silahkan hubungi Owner.",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
                         Toast.makeText(
                             this@LoginActivity,
@@ -120,5 +132,33 @@ class LoginActivity : AppCompatActivity() {
                 ).show()
             }
         })
+    }
+
+    // SHARED PREFERENCES TOKEN
+    private fun saveToken(token: String) {
+        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val sharedPrefs = EncryptedSharedPreferences.create(
+            "auth_prefs",
+            masterKeyAlias,
+            this,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+        with(sharedPrefs.edit()) {
+            putString("token", token)
+            apply()
+        }
+    }
+
+    private fun getToken(): String? {
+        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val sharedPrefs = EncryptedSharedPreferences.create(
+            "auth_prefs",
+            masterKeyAlias,
+            this,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+        return sharedPrefs.getString("token", null)
     }
 }
