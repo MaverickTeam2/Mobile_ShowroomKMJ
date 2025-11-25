@@ -154,20 +154,26 @@ class AddCarStep3Activity : AppCompatActivity() {
                 override fun onResponse(call: Call<MobilDetailResponse>, response: Response<MobilDetailResponse>) {
                     val body = response.body() ?: return
 
-                    // ✅ SIMPAN DATA DETAIL MOBIL
+                    if (body.code != 200) return
+
                     mobilDetail = body
 
-                    body.fitur.forEach { id ->
-                        val index = id - 1
+                    // Sekarang fitur = List<FiturData>
+                    body.fitur.forEach { fitur ->
+                        val id = fitur.id          // ambil ID fitur
+                        val index = id - 1         // checkbox berdasarkan urutan ID
                         if (index in listCheckBox.indices) {
                             listCheckBox[index].isChecked = true
                         }
                     }
                 }
 
-                override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {}
+                override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {
+                    Toast.makeText(this@AddCarStep3Activity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
             })
     }
+
 
     private fun getSelectedFitur(): List<Int> {
         val sel = mutableListOf<Int>()

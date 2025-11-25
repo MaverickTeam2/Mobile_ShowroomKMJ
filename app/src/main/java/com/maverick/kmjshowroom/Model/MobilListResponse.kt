@@ -1,7 +1,6 @@
 package com.maverick.kmjshowroom.Model
 
 data class MobilListResponse(
-    val success: Boolean,
     val code: Int,
     val data: List<MobilItem>
 )
