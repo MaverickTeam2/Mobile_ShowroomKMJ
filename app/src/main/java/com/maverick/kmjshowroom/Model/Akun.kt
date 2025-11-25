@@ -5,6 +5,6 @@ data class Akun(
     val email: String,
     val lastLogin: String,
     val role: String,
-    val status: String,
+    val status: Int,
     val aktif: Boolean
 )

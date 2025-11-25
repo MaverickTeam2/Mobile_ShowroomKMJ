@@ -23,10 +23,17 @@ class AkunFragment : Fragment() {
 
     // --- Dummy data akun
     private val akunList = listOf(
-        Akun("Michael Owen", "michael.owen@gmail.com", "Last login: 2 hours ago", "Admin", "Aktif", true),
-        Akun("Samantha Ray", "sam.ray@yahoo.com", "Last login: 3 days ago", "Staff", "Aktif", true),
-        Akun("Jonathan Vega", "jon.vega@outlook.com", "Last login: 2 weeks ago", "Viewer", "Nonaktif", false),
-        Akun("Ananta Widayani", "ananta.wi@gmail.com", "Last login: 1 month ago", "Admin", "Aktif", true)
+        Akun("Michael Owen", "michael.owen@gmail.com", "Last login: 2 hours ago", "Admin", 1, true),
+        Akun("Samantha Ray", "sam.ray@yahoo.com", "Last login: 3 days ago", "Staff", 1, true),
+        Akun(
+            "Jonathan Vega",
+            "jon.vega@outlook.com",
+            "Last login: 2 weeks ago",
+            "Viewer",
+            0,
+            false
+        ),
+        Akun("Ananta Widayani", "ananta.wi@gmail.com", "Last login: 1 month ago", "Admin", 0, true)
     )
 
     override fun onCreateView(
@@ -64,11 +71,11 @@ class AkunFragment : Fragment() {
             txtEmail.text = akun.email
             txtLogin.text = akun.lastLogin
             badgeRole.text = akun.role
-            badgeStatus.text = akun.status
+            badgeStatus.text = if (akun.status == 1) "Aktif" else "Nonaktif"
             switchActive.isChecked = akun.aktif
 
             // --- Ganti tampilan status badge
-            if (akun.status == "Aktif") {
+            if (akun.status == 1) {
                 badgeStatus.setBackgroundResource(R.drawable.bg_badge_active)
                 badgeStatus.setTextColor(ContextCompat.getColor(context, R.color.green_status))
             } else {

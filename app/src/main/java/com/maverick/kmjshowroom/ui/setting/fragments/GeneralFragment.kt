@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -32,6 +33,10 @@ class GeneralFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         HeaderHelper.setupBackButton(requireActivity(), view.findViewById(R.id.header_include))
+
+        val headerView = view.findViewById<View>(R.id.header_include)
+        val tvHeader: TextView = headerView.findViewById(R.id.text_header)
+        tvHeader.text = "General Setting"
 
         switchShowroom = view.findViewById(R.id.switchShowroom)
         switchSellCar = view.findViewById(R.id.switchSellCar)

@@ -16,8 +16,8 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.maverick.kmjshowroom.API.ApiClient
 import com.maverick.kmjshowroom.Database.UserDatabaseHelper
+import com.maverick.kmjshowroom.Model.Akun
 import com.maverick.kmjshowroom.Model.LoginResponse
-import com.maverick.kmjshowroom.Model.UserData
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -115,18 +115,19 @@ class loginSaveActivity : AppCompatActivity() {
                         when (body.code) {
                             200 -> {
                                 val user = body.user
-                                val token = body.token ?: ""
+                                val token = body.token
 
                                 if (user != null) {
-                                    // Hapus user lama
+                                    // Bersihkan data lama
                                     if (dbHelper.getUserCount() > 0) {
                                         val db = dbHelper.writableDatabase
                                         db.delete("users", null, null)
                                         db.close()
                                     }
-
                                     dbHelper.insertUser(user)
-                                    saveToken(token)
+
+                                    // Simpan token hanya kalau ada
+                                    if (!token.isNullOrEmpty()) saveToken(token)
 
                                     Toast.makeText(
                                         this@loginSaveActivity,
@@ -135,17 +136,17 @@ class loginSaveActivity : AppCompatActivity() {
                                     ).show()
 
                                     dialog?.dismiss()
-                                    startActivity(Intent(this@loginSaveActivity, MainNavBar::class.java).apply {
-                                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                                    })
-                                    finish()
-                                } else {
-                                    Toast.makeText(this@loginSaveActivity, "Data user tidak ditemukan", Toast.LENGTH_SHORT).show()
+                                    loginSuccess(Akun(
+                                        nama = user.full_name ?: "",
+                                        email = user.email ?: "",
+                                        lastLogin = "",
+                                        role = user.role ?: "",
+                                        status = user.status ?: 1,
+                                        aktif = (user.status == 1)
+                                    ))
                                 }
                             }
-                            401 -> Toast.makeText(this@loginSaveActivity, body.message ?: "Username atau password salah", Toast.LENGTH_SHORT).show()
-                            500 -> Toast.makeText(this@loginSaveActivity, body.message ?: "Terjadi kesalahan server", Toast.LENGTH_SHORT).show()
-                            else -> Toast.makeText(this@loginSaveActivity, body.message ?: "Login gagal (kode: ${body.code})", Toast.LENGTH_SHORT).show()
+                            else -> Toast.makeText(this@loginSaveActivity, body.message ?: "Login gagal", Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         Toast.makeText(this@loginSaveActivity, "Response kosong dari server", Toast.LENGTH_SHORT).show()
@@ -156,45 +157,80 @@ class loginSaveActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                Toast.makeText(this@loginSaveActivity, "Tidak bisa terhubung ke server: ${t.localizedMessage}", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@loginSaveActivity, "Tidak bisa terhubung ke server: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
     private fun checkBiometric() {
-        val biometricManager = BiometricManager.from(this)
-        if (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG) ==
-            BiometricManager.BIOMETRIC_SUCCESS
-        ) {
-            val executor = ContextCompat.getMainExecutor(this)
-            val biometricPrompt = BiometricPrompt(this, executor, object : BiometricPrompt.AuthenticationCallback() {
+        val executor = ContextCompat.getMainExecutor(this)
+        val biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
                 override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
                     super.onAuthenticationSucceeded(result)
+
                     val token = getToken()
+
                     if (!token.isNullOrEmpty()) {
-                        startActivity(Intent(this@loginSaveActivity, MainNavBar::class.java).apply {
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                        })
-                        finish()
-                    } else {
-                        Toast.makeText(this@loginSaveActivity, "Token login tidak ditemukan", Toast.LENGTH_SHORT).show()
+                        validateTokenWithServer(token)
+                        return
                     }
+
+                    Toast.makeText(this@loginSaveActivity,
+                        "Token tidak ditemukan. Silakan login ulang.",
+                        Toast.LENGTH_SHORT).show()
                 }
-            })
 
-            val promptInfo = BiometricPrompt.PromptInfo.Builder()
-                .setTitle("Login dengan Fingerprint")
-                .setSubtitle("Gunakan biometrik untuk login")
-                .setNegativeButtonText("Batal")
-                .build()
+            }
+        )
 
-            biometricPrompt.authenticate(promptInfo)
-        } else {
-            Toast.makeText(this, "Biometrik tidak tersedia atau belum terdaftar", Toast.LENGTH_SHORT).show()
-        }
+        val promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Login dengan Fingerprint")
+            .setSubtitle("Gunakan biometrik untuk login")
+            .setNegativeButtonText("Batal")
+            .build()
+
+        biometricPrompt.authenticate(promptInfo)
     }
 
-    // SHARED PREFERENCES TOKEN
+    private fun loginSuccess(user: Akun) {
+        Toast.makeText(this, "Selamat datang ${user.nama}", Toast.LENGTH_SHORT).show()
+        startActivity(Intent(this@loginSaveActivity, MainNavBar::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        })
+        finish()
+    }
+
+    private fun validateTokenWithServer(token: String) {
+        ApiClient.apiService.getUserFromToken("Bearer $token")
+            .enqueue(object : Callback<LoginResponse> {
+                override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                    val body = response.body()
+                    if (response.isSuccessful && body?.user != null) {
+                        val user = body.user!!
+                        if (user.status == 1) {
+                            loginSuccess(Akun(
+                                nama = user.full_name ?: "",
+                                email = user.email ?: "",
+                                lastLogin = "",
+                                role = user.role ?: "",
+                                status = user.status ?: 1,
+                                aktif = true
+                            ))
+                        } else {
+                            Toast.makeText(this@loginSaveActivity, "Akun Anda dinonaktifkan.", Toast.LENGTH_LONG).show()
+                        }
+                    } else {
+                        Toast.makeText(this@loginSaveActivity, "Token tidak valid. Silakan login ulang.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    Toast.makeText(this@loginSaveActivity, "Gagal koneksi: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+            })
+    }
+
     private fun saveToken(token: String) {
         val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
         val sharedPrefs = EncryptedSharedPreferences.create(
@@ -204,10 +240,7 @@ class loginSaveActivity : AppCompatActivity() {
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )
-        with(sharedPrefs.edit()) {
-            putString("token", token)
-            apply()
-        }
+        sharedPrefs.edit().putString("token", token).apply()
     }
 
     private fun getToken(): String? {

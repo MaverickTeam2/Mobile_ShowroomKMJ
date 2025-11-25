@@ -22,6 +22,14 @@
             android:textStyle="bold"
             android:textSize="16sp" />
 
+        <ProgressBar
+            android:id="@+id/progressToggle"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="gone"
+            android:indeterminate="true" />
+
         <Switch
             android:id="@+id/switchAvailable"
             android:layout_width="wrap_content"

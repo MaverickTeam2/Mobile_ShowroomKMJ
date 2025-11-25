@@ -75,10 +75,13 @@ class RegisterActivity : AppCompatActivity() {
                             kode_user = body.kode_user ?: "",
                             username = username,
                             email = email,
+                            no_telp = null,
                             full_name = fullName,
+                            alamat = null,
                             role = "owner",
                             avatar_url = body.avatar_url,
-                            provider_type = "local"
+                            provider_type = "local",
+                            status = 1
                         )
                         dbHelper.insertUser(userData)
 

@@ -12,7 +12,10 @@ data class UserData(
     val username: String?,
     val full_name: String?,
     val email: String?,
+    val no_telp: String?,
+    val alamat: String?,
     val role: String?,
     val avatar_url: String?,
-    val provider_type: String?
+    val provider_type: String?,
+    val status: Int?
 )
