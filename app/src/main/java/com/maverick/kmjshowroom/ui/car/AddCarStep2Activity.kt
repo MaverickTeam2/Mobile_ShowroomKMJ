@@ -139,19 +139,24 @@ class AddCarStep2Activity : AppCompatActivity() {
             .enqueue(object : Callback<MobilDetailResponse> {
                 override fun onResponse(call: Call<MobilDetailResponse>, response: Response<MobilDetailResponse>) {
                     val body = response.body() ?: return
-                    if (!body.success) return
+
+                    // ✅ FIX: Ganti body.success dengan body.code == 200
+                    if (body.code != 200) return
+
                     val m = body.mobil
-                    // Prefill based on response field names
+
+                    // ✅ FIX: Tambah .toString() karena field sekarang Int
                     binding.namaMobil.setText(m.nama_mobil)
-                    binding.jarakTempuh.setText(m.jarak_tempuh)
+                    binding.jarakTempuh.setText(m.jarak_tempuh.toString())
                     binding.warnaExterior.setText(m.warna_exterior)
                     binding.warnaInterior.setText(m.warna_interior)
-                    binding.fullPrice.setText(m.full_prize)
-                    binding.uangMuka.setText(m.uang_muka)
-                    binding.angsuran.setText(m.angsuran)
-                    binding.tenor.setText(m.tenor)
+                    binding.fullPrice.setText(m.full_prize.toString())
+                    binding.uangMuka.setText(m.uang_muka.toString())
+                    binding.angsuran.setText(m.angsuran.toString())
+                    binding.tenor.setText(m.tenor.toString())
 
-                    selectedYear = m.tahun_mobil.toInt()
+                    // ✅ FIX: Tidak perlu .toInt() lagi
+                    selectedYear = m.tahun_mobil
                     binding.btnPilihTahun.text = selectedYear.toString()
 
                     setSpinnerValue(binding.dropdownTipeKendaraan, m.jenis_kendaraan)
@@ -159,7 +164,9 @@ class AddCarStep2Activity : AppCompatActivity() {
                     setSpinnerValue(binding.dropdownSistemPenggerak, m.sistem_penggerak)
                 }
 
-                override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {}
+                override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {
+                    Toast.makeText(this@AddCarStep2Activity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                }
             })
     }
 
