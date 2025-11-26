@@ -1,7 +1,9 @@
 package com.maverick.kmjshowroom.ui.setting.model
 
+import com.maverick.kmjshowroom.Model.ScheduleItem
+
 data class DaySchedule(
     val dayName: String,
     var available: Boolean,
-    val slots: MutableList<String>
+    var slots: MutableList<ScheduleItem>
 )

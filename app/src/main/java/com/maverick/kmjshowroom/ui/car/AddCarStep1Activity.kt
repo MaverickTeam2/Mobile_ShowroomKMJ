@@ -99,7 +99,7 @@ class AddCarStep1Activity : AppCompatActivity() {
             .enqueue(object : Callback<MobilDetailResponse> {
                 override fun onResponse(call: Call<MobilDetailResponse>, response: Response<MobilDetailResponse>) {
                     val body = response.body() ?: return
-                    if (!body.success) return
+                    if (body.code != 200 ) return
 
                     // foto datang sebagai list; isi sesuai tipe_foto
                     val tambahanSlots = listOf(binding.addfoto1, binding.addfoto2, binding.addfoto3, binding.addfoto4, binding.addfoto5, binding.addfoto6)

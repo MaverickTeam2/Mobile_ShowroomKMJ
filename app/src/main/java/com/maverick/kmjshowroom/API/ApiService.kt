@@ -2,6 +2,8 @@ package com.maverick.kmjshowroom.API
 
 import com.maverick.kmjshowroom.Model.*
 import MobilDetailResponse
+import com.google.gson.annotations.SerializedName
+import com.maverick.kmjshowroom.Model.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -12,6 +14,11 @@ interface ApiService {
     @POST("admin/login.php")
     fun login(
         @Body body: Map<String, String>
+    ): Call<LoginResponse>
+
+    @GET("admin/get_user_from_token.php")
+    fun getUserFromToken(
+        @Header("Authorization") token: String
     ): Call<LoginResponse>
 
     @POST("admin/register.php")
@@ -122,4 +129,44 @@ interface ApiService {
     fun getLaporanPenjualan(
         @Query("status") status: String = "completed"
     ): Call<ReportPenjualanResponse>
+
+    @GET("admin/get_contacts_showrooms.php")
+    suspend fun getContacts(): Response<ContactsResponse>
+
+    @POST("admin/create_contact_showrooms.php")
+    suspend fun createContact(@Body body: Map<String, String?>): Response<GenericResponse>
+
+    @POST("admin/update_contact_showrooms.php")
+    suspend fun updateContact(@Body body: Map<String, String?>): Response<GenericResponse>
+
+    @POST("admin/get_schedule_showroom.php")
+    suspend fun getSchedule(): ScheduleResponse
+
+    @POST("admin/toggle_day_schedule_showroom.php")
+    suspend fun toggleDaySchedule(@Body body: Map<String, Int>): GenericScheduleResponse
+
+    @POST("admin/create_schedule_showroom.php")
+    fun createSchedule(
+        @Body req: CreateScheduleRequest
+    ): Call<GenericScheduleResponse>
+
+    @POST("admin/update_schedule_showroom.php")
+    fun updateSchedule(
+        @Body req: UpdateScheduleRequest
+    ): Call<GenericScheduleResponse>
+
+    @GET("admin/delete_schedule_showroom.php")
+    fun deleteSchedule(
+        @Query("id_schedule") id: Int
+    ): Call<GenericScheduleResponse>
+
+    @Multipart
+    @POST("admin/update_profile.php")
+    fun updateProfile(
+        @Part("kode_user") kode_user: RequestBody,
+        @Part("full_name") full_name: RequestBody?,
+        @Part("no_telp") no_telp: RequestBody?,
+        @Part("alamat") alamat: RequestBody?,
+        @Part avatar_file: MultipartBody.Part?
+    ): Call<UpdateProfileResponse>
 }

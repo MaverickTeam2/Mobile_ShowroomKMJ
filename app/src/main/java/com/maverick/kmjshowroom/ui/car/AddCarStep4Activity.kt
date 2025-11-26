@@ -1,8 +1,10 @@
 package com.maverick.kmjshowroom.ui.car
 
+import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -27,10 +29,16 @@ class AddCarStep4Activity : AppCompatActivity() {
     private var selectedStatus = "available"
     private var oldFotoList: List<FotoData> = emptyList()
 
+    // 🔥 LOADING DIALOG BARU
+    private lateinit var loadingDialog: AlertDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = AddCarstep4Binding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // SETUP LOADING
+        setupLoading()
 
         isEdit = intent.getBooleanExtra("is_edit", false)
         kodeMobil = intent.getStringExtra("kode_mobil")
@@ -45,6 +53,18 @@ class AddCarStep4Activity : AppCompatActivity() {
             loadOldFotos(kodeMobil!!)
         }
     }
+
+    // ===================== 🔥 SETUP LOADING =====================
+    private fun setupLoading() {
+        val view = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null)
+        loadingDialog = AlertDialog.Builder(this)
+            .setView(view)
+            .setCancelable(false)
+            .create()
+    }
+
+    private fun showLoading() = loadingDialog.show()
+    private fun hideLoading() = loadingDialog.dismiss()
 
     private fun setupHeader() {
         binding.layoutHeaderadd.iconClose.setOnClickListener { finish() }
@@ -98,7 +118,7 @@ class AddCarStep4Activity : AppCompatActivity() {
         binding.footerSave4.btnDraft.text = "Hapus"
         binding.footerSave4.btnNext.text = if (isEdit) "Update" else "Publish"
 
-        // Tombol HAPUS
+        // TOMBOL DELETE
         binding.footerSave4.btnDraft.setOnClickListener {
             if (kodeMobil == null) {
                 Toast.makeText(this, "Kode mobil kosong", Toast.LENGTH_SHORT).show()
@@ -137,7 +157,7 @@ class AddCarStep4Activity : AppCompatActivity() {
                 })
         }
 
-        // Tombol Publish / Update
+        // TOMBOL PUBLISH / UPDATE
         binding.footerSave4.btnNext.setOnClickListener { submitAll() }
     }
 
@@ -149,15 +169,18 @@ class AddCarStep4Activity : AppCompatActivity() {
                     response: Response<MobilDetailResponse>
                 ) {
                     val body = response.body() ?: return
+                    if (body.code != 200) return
+
                     selectedStatus = body.mobil.status.lowercase()
                     highlightStatus(selectedStatus)
                 }
 
-                override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {}
+                override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {
+                    Log.e("AddCarStep4", "Failed to load status: ${t.message}")
+                }
             })
     }
 
-    // ✅ LOAD FOTO LAMA UNTUK UPDATE
     private fun loadOldFotos(kode: String) {
         ApiClient.apiService.getMobilDetail(kode)
             .enqueue(object : Callback<MobilDetailResponse> {
@@ -166,14 +189,11 @@ class AddCarStep4Activity : AppCompatActivity() {
                     response: Response<MobilDetailResponse>
                 ) {
                     val body = response.body() ?: return
-                    if (body.success) {
-                        oldFotoList = body.foto
-                        Log.d("AddCarStep4", "Loaded ${oldFotoList.size} old photos")
-                    }
+                    if (body.code == 200) oldFotoList = body.foto
                 }
 
                 override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {
-                    Log.e("AddCarStep4", "Failed to load old photos: ${t.message}")
+                    Log.e("AddCarStep4", "Failed to load photos: ${t.message}")
                 }
             })
     }
@@ -186,10 +206,12 @@ class AddCarStep4Activity : AppCompatActivity() {
             .trim()
     }
 
-    /** ===================== 🔥 SUBMIT / API (FINAL FIX) ===================== */
-    // Ganti seluruh fungsi submitAll() dengan versi ini
+    // ===================== 🔥 SUBMIT =====================
     private fun submitAll() {
-        // Ambil data dari step sebelumnya
+
+        // 🔥 TAMPILKAN LOADING SAAT MULAI UPLOAD
+        showLoading()
+
         val nama = intent.getStringExtra("nama_mobil") ?: ""
         val jarak = intent.getStringExtra("jarak_tempuh") ?: ""
         val fullPrize = intent.getStringExtra("full_prize") ?: ""
@@ -204,23 +226,21 @@ class AddCarStep4Activity : AppCompatActivity() {
         val warnaExterior = intent.getStringExtra("warna_exterior") ?: ""
         val fiturList = intent.getIntegerArrayListExtra("fitur") ?: arrayListOf()
 
-        // Foto dari step sebelumnya
         val u360 = intent.getStringExtra("foto_360")
         val uDepan = intent.getStringExtra("foto_depan")
         val uBelakang = intent.getStringExtra("foto_belakang")
         val uSamping = intent.getStringExtra("foto_samping")
         val fotoTambahan = intent.getStringArrayExtra("foto_tambahan") ?: arrayOf()
 
-        // Validasi
         if (nama.isEmpty() || tahun.isEmpty() || jarak.isEmpty()
             || fullPrize.isEmpty() || uangMuka.isEmpty()
             || angsuran.isEmpty() || tenor.isEmpty()
         ) {
+            hideLoading()
             Toast.makeText(this, "Lengkapi data sebelum publish", Toast.LENGTH_SHORT).show()
             return
         }
 
-        // Form fields
         val map = mutableMapOf<String, okhttp3.RequestBody>()
         map["nama_mobil"] = MultipartUtil.createPart(nama)
         map["tahun"] = MultipartUtil.createPart(tahun)
@@ -247,7 +267,6 @@ class AddCarStep4Activity : AppCompatActivity() {
 
         val files = mutableListOf<MultipartBody.Part>()
 
-        // Mapping tipe foto → URI baru
         val newPhotoMap = mapOf(
             "360" to u360,
             "depan" to uDepan,
@@ -267,9 +286,9 @@ class AddCarStep4Activity : AppCompatActivity() {
                 if (!userReplaced) {
                     val rawUrl = old.foto ?: ""
                     val fotoPath =
-                        if (rawUrl.contains("/images/mobil/")) {
+                        if (rawUrl.contains("/images/mobil/"))
                             "/images/mobil/" + rawUrl.substringAfter("/images/mobil/")
-                        } else rawUrl
+                        else rawUrl
 
                     map["foto[$fotoIndex][id_foto]"] =
                         MultipartUtil.createPart((old.id_foto ?: "").toString())
@@ -285,7 +304,6 @@ class AddCarStep4Activity : AppCompatActivity() {
             }
         }
 
-        // Kirim file baru (jika ada penggantian)
         fun addIfChanged(field: String, uri: String?) {
             if (!uri.isNullOrEmpty() && !uri.startsWith("http")) {
                 MultipartUtil.prepareFile(field, Uri.parse(uri), this)?.let { files.add(it) }
@@ -304,14 +322,14 @@ class AddCarStep4Activity : AppCompatActivity() {
             }
         }
 
-        Log.d("AddCarStep4", "FINAL REQUEST => meta: ${fotoIndex} | files: ${files.size}")
-
         ApiClient.apiService.uploadMobil(map, files)
             .enqueue(object : Callback<GenericResponse> {
                 override fun onResponse(
                     call: Call<GenericResponse>,
                     response: Response<GenericResponse>
                 ) {
+                    hideLoading()  // 🔥 SEMBUNYIKAN LOADING
+
                     if (response.isSuccessful && response.body()?.success == true) {
                         Toast.makeText(
                             this@AddCarStep4Activity,
@@ -326,6 +344,7 @@ class AddCarStep4Activity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
+                    hideLoading() // 🔥 SEMBUNYIKAN LOADING
                     Toast.makeText(this@AddCarStep4Activity, t.message, Toast.LENGTH_LONG).show()
                 }
             })
