@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    const val BASE_URL = "https://api.maverick.my.id/api_kmj/"
+    const val BASE_URL = "http://192.168.1.23/api_kmj/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY

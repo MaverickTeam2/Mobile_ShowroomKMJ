@@ -37,31 +37,37 @@ class SharedCarViewModel : ViewModel() {
             try {
                 val response = ApiClient.apiService.getMobilList()
 
-                if (response.isSuccessful && response.body()?.success == true) {
-                    val mobilItems = response.body()?.data ?: emptyList()
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if (responseBody != null) {
+                        val mobilItems = responseBody.data ?: emptyList()
 
-                    val carDataList = mobilItems.map { item ->
-                        CarData(
-                            kodeMobil = item.kode_mobil,
-                            title = item.nama_mobil,
-                            year = item.tahun_mobil.toString(),
-                            warna = item.warna_exterior,
-                            fotoUrl = item.foto,
-                            status = item.status,
-                            jarakTempuh = "${formatNumber(item.jarak_tempuh)} km",
-                            bahanBakar = item.tipe_bahan_bakar,
-                            tipeKendaraan = "", // Bisa ditambah di API jika perlu
-                            angsuran = formatter.format(item.angsuran),
-                            dp = formatter.format(item.dp),
-                            fullPrice = item.full_prize
-                        )
+                        val carDataList = mobilItems.map { item ->
+                            CarData(
+                                kodeMobil = item.kode_mobil,
+                                title = item.nama_mobil,
+                                year = item.tahun_mobil.toString(),
+                                warna = item.warna_exterior,
+                                fotoUrl = item.foto,
+                                status = item.status,
+                                jarakTempuh = "${formatNumber(item.jarak_tempuh)} km",
+                                bahanBakar = item.tipe_bahan_bakar,
+                                tipeKendaraan = "", // Bisa ditambah di API jika perlu
+                                angsuran = formatter.format(item.angsuran),
+                                dp = formatter.format(item.dp),
+                                fullPrice = item.full_prize
+                            )
+                        }
+
+                        carList.value = carDataList
+                        Log.d("SharedCarViewModel", "Loaded ${carDataList.size} cars from API")
+                    } else {
+                        errorMessage.value = "Response body kosong"
+                        Log.e("SharedCarViewModel", "Response body is null")
                     }
-
-                    carList.value = carDataList
-                    Log.d("SharedCarViewModel", "Loaded ${carDataList.size} cars from API")
                 } else {
-                    errorMessage.value = "Gagal memuat data mobil"
-                    Log.e("SharedCarViewModel", "API Error: ${response.message()}")
+                    errorMessage.value = "Gagal memuat data mobil: ${response.code()}"
+                    Log.e("SharedCarViewModel", "API Error: ${response.code()} - ${response.message()}")
                 }
             } catch (e: Exception) {
                 errorMessage.value = "Error: ${e.message}"
