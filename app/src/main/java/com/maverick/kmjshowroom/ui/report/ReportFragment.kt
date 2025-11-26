@@ -8,154 +8,471 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.maverick.kmjshowroom.API.ApiClient
+import com.maverick.kmjshowroom.Model.LaporanGabunganResponse
+import com.maverick.kmjshowroom.Model.ReportPenjualanResponse
+import com.maverick.kmjshowroom.Model.TransaksiLaporan
+import com.maverick.kmjshowroom.Model.MobilLaporan
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.databinding.FragmentReportBinding
+import com.maverick.kmjshowroom.utils.PdfGenerator
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
-import android.widget.Toast
+import java.io.FileWriter
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class ReportFragment : Fragment() {
 
     private var _binding: FragmentReportBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var reportViewModel: ReportViewModel
     private var reportDialog: Dialog? = null
 
+    private var salesReportContent: String = ""
+    private var incomeReportContent: String = ""
+    private var stockReportContent: String = ""
+
+    // Cache data
+    private var cachedTransaksi: List<TransaksiLaporan> = emptyList()
+    private var cachedMobil: List<MobilLaporan> = emptyList()
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
-        reportViewModel = ViewModelProvider(this)[ReportViewModel::class.java]
         _binding = FragmentReportBinding.inflate(inflater, container, false)
-        val root = binding.root
-
-        binding.btnGenerate.setOnClickListener { showReportDialog(generateSalesReport()) }
-        binding.btnGenerateIncome.setOnClickListener { showReportDialog(generateIncomeReport()) }
-        binding.btnGenerateStock?.setOnClickListener { showReportDialog(generateStockReport()) } // TAMBAH ?
-        binding.ivDownload.setOnClickListener {
-            generateAndDownloadPdf(generateSalesReport(), "Laporan_Penjualan_Bulanan.pdf")
-        }
-        binding.ivDownloadIncome.setOnClickListener {
-            generateAndDownloadPdf(generateIncomeReport(), "Analisis_Pendapatan.pdf")
-        }
-        binding.ivDownloadStock?.setOnClickListener {
-            generateAndDownloadPdf(generateStockReport(), "Laporan_Stok_Mobil.pdf")
-        }
-
-        binding.btnExportPDF.setOnClickListener { exportPdf() }
-        binding.btnExportExcel.setOnClickListener { exportExcel() }
-
-        return root
+        setupListeners()
+        loadInitialStats()
+        return binding.root
     }
 
-    private fun generateAndDownloadPdf(content: String, fileName: String) {
-        try {
-            val file = com.maverick.kmjshowroom.utils.PdfGenerator.generatePdf(requireContext(), content, fileName)
-            openFile(file, "application/pdf")
-            Toast.makeText(requireContext(), "Download selesai: $fileName", Toast.LENGTH_SHORT).show()
-        } catch (e: Exception) {
-            Toast.makeText(requireContext(), "Gagal download: ${e.message}", Toast.LENGTH_LONG).show()
-        }
+    private fun setupListeners() {
+        binding.btnGenerate.setOnClickListener { loadAndShowSalesReport() }
+        binding.btnGenerateIncome.setOnClickListener { loadAndShowIncomeReport() }
+        binding.btnGenerateStock?.setOnClickListener { loadAndShowStockReport() }
+
+        binding.ivDownload.setOnClickListener { downloadReportPdf("sales") }
+        binding.ivDownloadIncome.setOnClickListener { downloadReportPdf("income") }
+        binding.ivDownloadStock?.setOnClickListener { downloadReportPdf("stock") }
+
+        binding.btnExportPDF.setOnClickListener { exportAllReportsToPdf() }
+        binding.btnExportExcel.setOnClickListener { exportAllReportsToExcel() }
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-        reportDialog?.dismiss()
+    private fun loadInitialStats() {
+        // Load dari laporan gabungan
+        ApiClient.apiService.getLaporanGabungan().enqueue(object : Callback<LaporanGabunganResponse> {
+            override fun onResponse(call: Call<LaporanGabunganResponse>, response: Response<LaporanGabunganResponse>) {
+                if (response.isSuccessful && response.body()?.status == 200) {
+                    val data = response.body()?.data
+                    cachedTransaksi = data?.transaksi ?: emptyList()
+                    cachedMobil = data?.mobil ?: emptyList()
+
+                    // Hitung stats
+                    val completedTransaksi = cachedTransaksi.filter { it.status == "completed" }
+                    val totalPendapatan = completedTransaksi.sumOf { it.hargaAkhir }
+                    val availableMobil = cachedMobil.filter { it.status == "available" }
+
+                    val formatter = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+
+                    binding.tvStat.text = "${completedTransaksi.size} Sales"
+                    binding.tvStatIncome.text = formatter.format(totalPendapatan)
+                    binding.tvStatStock?.text = "${availableMobil.size} Cars"
+                } else {
+                    setDefaultStats()
+                }
+            }
+
+            override fun onFailure(call: Call<LaporanGabunganResponse>, t: Throwable) {
+                setDefaultStats()
+            }
+        })
     }
 
-    // === FUNGSI GENERATE LAPORAN ===
-    private fun generateIncomeReport(): String {
-        val data = com.maverick.kmjshowroom.Model.PendapatanDummy.data
+    private fun setDefaultStats() {
+        binding.tvStat.text = "0 Sales"
+        binding.tvStatIncome.text = "Rp 0"
+        binding.tvStatStock?.text = "0 Cars"
+    }
+
+    // ==================== SALES REPORT ====================
+    private fun loadAndShowSalesReport() {
+        showLoading("Memuat laporan penjualan...")
+        ApiClient.apiService.getLaporanPenjualan().enqueue(object : Callback<ReportPenjualanResponse> {
+            override fun onResponse(call: Call<ReportPenjualanResponse>, response: Response<ReportPenjualanResponse>) {
+                hideLoading()
+                if (response.isSuccessful && response.body()?.status == true) {
+                    val data = response.body()?.data
+                    salesReportContent = generateSalesReportContent(data)
+                    showReportDialog("Laporan Penjualan Bulanan", salesReportContent)
+                } else {
+                    showError("Gagal memuat laporan: ${response.body()?.message ?: "Unknown error"}")
+                }
+            }
+
+            override fun onFailure(call: Call<ReportPenjualanResponse>, t: Throwable) {
+                hideLoading()
+                showError("Error: ${t.message}")
+            }
+        })
+    }
+
+    private fun generateSalesReportContent(data: com.maverick.kmjshowroom.Model.ReportPenjualanData?): String {
+        if (data == null) return "Data tidak tersedia"
+        val formatter = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+
         return buildString {
-            append("=== ANALISIS PENDAPATAN ===\n\n")
-            data.forEach {
-                append("${it.kode_transaksi} - ${it.nama_pembeli} - Rp${it.harga_akhir}\n")
+            append("LAPORAN PENJUALAN BULANAN\n")
+            append("═".repeat(40))
+            append("\n\n")
+            append("Total Laporan  : ${data.ringkasan.totalLaporan}\n")
+            append("Total Transaksi: ${data.ringkasan.totalTransaksi}\n")
+            append("Total Pendapatan: ${formatter.format(data.ringkasan.totalPendapatan)}\n")
+            append("Rata-rata/Bulan: ${String.format("%.1f", data.ringkasan.rataRataTransaksi)} transaksi\n\n")
+
+            if (data.items.isNotEmpty()) {
+                append("Detail Per Periode:\n")
+                append("─".repeat(40))
+                append("\n")
+                data.items.forEachIndexed { i, item ->
+                    append("${i + 1}. ${item.periode}\n")
+                    append("   Transaksi: ${item.totalTransaksi}\n")
+                    append("   Pendapatan: ${formatter.format(item.totalPendapatan)}\n\n")
+                }
+            } else {
+                append("Belum ada data penjualan.\n")
             }
         }
     }
 
-    private fun generateSalesReport(): String {
+    // ==================== INCOME REPORT ====================
+    private fun loadAndShowIncomeReport() {
+        showLoading("Memuat analisis pendapatan...")
+
+        if (cachedTransaksi.isNotEmpty()) {
+            hideLoading()
+            incomeReportContent = generateIncomeReportContent(cachedTransaksi)
+            showReportDialog("Analisis Pendapatan", incomeReportContent)
+            return
+        }
+
+        ApiClient.apiService.getLaporanGabungan().enqueue(object : Callback<LaporanGabunganResponse> {
+            override fun onResponse(call: Call<LaporanGabunganResponse>, response: Response<LaporanGabunganResponse>) {
+                hideLoading()
+                if (response.isSuccessful && response.body()?.status == 200) {
+                    cachedTransaksi = response.body()?.data?.transaksi ?: emptyList()
+                    incomeReportContent = generateIncomeReportContent(cachedTransaksi)
+                    showReportDialog("Analisis Pendapatan", incomeReportContent)
+                } else {
+                    showError("Gagal memuat laporan pendapatan")
+                }
+            }
+
+            override fun onFailure(call: Call<LaporanGabunganResponse>, t: Throwable) {
+                hideLoading()
+                showError("Error: ${t.message}")
+            }
+        })
+    }
+
+    private fun generateIncomeReportContent(data: List<TransaksiLaporan>): String {
+        val formatter = NumberFormat.getCurrencyInstance(Locale("in", "ID"))
+
         return buildString {
-            append("=== LAPORAN PENJUALAN BULANAN ===\n\n")
-            append("Bulan: November 2025\n")
-            append("Total Transaksi: 45\n")
-            append("Pendapatan Kotor: Rp 1.250.000.000\n")
-            append("Mobil Terjual: 12 unit\n")
-            append("Rata-rata Harga: Rp 104.166.667\n\n")
-            append("Detail:\n")
-            append("- Toyota Avanza: 5 unit\n")
-            append("- Honda HR-V: 4 unit\n")
-            append("- Mitsubishi Xpander: 3 unit\n")
+            append("ANALISIS PENDAPATAN\n")
+            append("═".repeat(40))
+            append("\n\n")
+
+            if (data.isEmpty()) {
+                append("Belum ada transaksi.\n")
+            } else {
+                var total = 0.0
+                append("Daftar Transaksi:\n")
+                append("─".repeat(40))
+                append("\n")
+
+                data.forEachIndexed { i, item ->
+                    append("${i + 1}. ${item.kodeTransaksi}\n")
+                    append("   Pembeli: ${item.namaPembeli}\n")
+                    append("   Mobil  : ${item.namaMobil ?: "-"}\n")
+                    append("   Harga  : ${formatter.format(item.hargaAkhir)}\n")
+                    append("   Tanggal: ${item.tanggal}\n")
+                    append("   Status : ${item.status}\n\n")
+                    total += item.hargaAkhir
+                }
+
+                append("─".repeat(40))
+                append("\n")
+                append("TOTAL: ${formatter.format(total)}\n")
+                append("Jumlah: ${data.size} transaksi\n")
+                if (data.isNotEmpty()) {
+                    append("Rata-rata: ${formatter.format(total / data.size)}\n")
+                }
+            }
         }
     }
 
-    private fun generateStockReport(): String {
+    // ==================== STOCK REPORT ====================
+    private fun loadAndShowStockReport() {
+        showLoading("Memuat laporan stok...")
+
+        if (cachedMobil.isNotEmpty()) {
+            hideLoading()
+            stockReportContent = generateStockReportContent(cachedMobil)
+            showReportDialog("Laporan Stok", stockReportContent)
+            return
+        }
+
+        ApiClient.apiService.getLaporanGabungan().enqueue(object : Callback<LaporanGabunganResponse> {
+            override fun onResponse(call: Call<LaporanGabunganResponse>, response: Response<LaporanGabunganResponse>) {
+                hideLoading()
+                if (response.isSuccessful && response.body()?.status == 200) {
+                    cachedMobil = response.body()?.data?.mobil ?: emptyList()
+                    stockReportContent = generateStockReportContent(cachedMobil)
+                    showReportDialog("Laporan Stok", stockReportContent)
+                } else {
+                    showError("Gagal memuat laporan stok")
+                }
+            }
+
+            override fun onFailure(call: Call<LaporanGabunganResponse>, t: Throwable) {
+                hideLoading()
+                showError("Error: ${t.message}")
+            }
+        })
+    }
+
+    private fun generateStockReportContent(data: List<MobilLaporan>): String {
+        val available = data.filter { it.status == "available" }
+        val sold = data.filter { it.status == "sold" }
+        val reserved = data.filter { it.status == "reserved" }
+
         return buildString {
-            append("=== LAPORAN STOK MOBIL ===\n\n")
-            append("Total Stok: 28 unit\n")
-            append("Tersedia: 22 unit\n")
-            append("Terjual: 6 unit\n")
-            append("Booking: 3 unit\n\n")
-            append("Daftar Mobil:\n")
-            append("- Toyota Avanza [Sisa: 8]\n")
-            append("- Honda HR-V [Sisa: 6]\n")
-            append("- Mitsubishi Xpander [Sisa: 5]\n")
-            append("- Suzuki Ertiga [Sisa: 3]\n")
+            append("LAPORAN STOK MOBIL\n")
+            append("═".repeat(40))
+            append("\n\n")
+            append("Total Stok : ${data.size} unit\n")
+            append("Tersedia   : ${available.size} unit\n")
+            append("Terjual    : ${sold.size} unit\n")
+            append("Reserved   : ${reserved.size} unit\n\n")
+
+            if (data.isNotEmpty()) {
+                append("Daftar Mobil:\n")
+                append("─".repeat(40))
+                append("\n")
+                data.forEachIndexed { i, item ->
+                    append("${i + 1}. ${item.namaMobil}\n")
+                    append("   Tahun: ${item.tahunMobil ?: "-"} | Status: ${item.status}\n\n")
+                }
+            } else {
+                append("Belum ada data mobil.\n")
+            }
         }
     }
 
-    // === TAMPILKAN DI DIALOG ===
-    private fun showReportDialog(content: String) {
+    // ==================== DOWNLOAD & EXPORT ====================
+    private fun downloadReportPdf(type: String) {
+        val content = when (type) {
+            "sales" -> salesReportContent
+            "income" -> incomeReportContent
+            "stock" -> stockReportContent
+            else -> ""
+        }
+
+        if (content.isEmpty()) {
+            showError("Generate laporan terlebih dahulu")
+            return
+        }
+
+        val fileName = when (type) {
+            "sales" -> "Laporan_Penjualan.pdf"
+            "income" -> "Analisis_Pendapatan.pdf"
+            "stock" -> "Laporan_Stok.pdf"
+            else -> "Laporan.pdf"
+        }
+
+        generateAndOpenPdf(content, fileName)
+    }
+
+    private fun exportAllReportsToPdf() {
+        showLoading("Mengumpulkan semua data...")
+
+        ApiClient.apiService.getLaporanGabungan().enqueue(object : Callback<LaporanGabunganResponse> {
+            override fun onResponse(call: Call<LaporanGabunganResponse>, response: Response<LaporanGabunganResponse>) {
+                if (response.isSuccessful && response.body()?.status == 200) {
+                    cachedTransaksi = response.body()?.data?.transaksi ?: emptyList()
+                    cachedMobil = response.body()?.data?.mobil ?: emptyList()
+
+                    incomeReportContent = generateIncomeReportContent(cachedTransaksi)
+                    stockReportContent = generateStockReportContent(cachedMobil)
+
+                    // Load sales report
+                    ApiClient.apiService.getLaporanPenjualan().enqueue(object : Callback<ReportPenjualanResponse> {
+                        override fun onResponse(call: Call<ReportPenjualanResponse>, response: Response<ReportPenjualanResponse>) {
+                            hideLoading()
+                            salesReportContent = if (response.isSuccessful && response.body()?.status == true) {
+                                generateSalesReportContent(response.body()?.data)
+                            } else {
+                                "Data penjualan tidak tersedia"
+                            }
+
+                            val combined = buildString {
+                                append("LAPORAN LENGKAP SHOWROOM KMJ\n")
+                                append("═".repeat(50))
+                                append("\n\n")
+                                append(salesReportContent)
+                                append("\n\n")
+                                append("═".repeat(50))
+                                append("\n\n")
+                                append(incomeReportContent)
+                                append("\n\n")
+                                append("═".repeat(50))
+                                append("\n\n")
+                                append(stockReportContent)
+                            }
+
+                            generateAndOpenPdf(combined, "Laporan_Lengkap_${System.currentTimeMillis()}.pdf")
+                        }
+
+                        override fun onFailure(call: Call<ReportPenjualanResponse>, t: Throwable) {
+                            hideLoading()
+                            showError("Gagal memuat laporan penjualan")
+                        }
+                    })
+                } else {
+                    hideLoading()
+                    showError("Gagal memuat data")
+                }
+            }
+
+            override fun onFailure(call: Call<LaporanGabunganResponse>, t: Throwable) {
+                hideLoading()
+                showError("Error: ${t.message}")
+            }
+        })
+    }
+
+    private fun exportAllReportsToExcel() {
+        showLoading("Mengekspor ke CSV...")
+
+        ApiClient.apiService.getLaporanGabungan().enqueue(object : Callback<LaporanGabunganResponse> {
+            override fun onResponse(call: Call<LaporanGabunganResponse>, response: Response<LaporanGabunganResponse>) {
+                hideLoading()
+                if (response.isSuccessful && response.body()?.status == 200) {
+                    val transaksi = response.body()?.data?.transaksi ?: emptyList()
+                    val mobil = response.body()?.data?.mobil ?: emptyList()
+
+                    try {
+                        val file = generateCsvFile(transaksi, mobil)
+                        openFile(file, "text/csv")
+                        Toast.makeText(requireContext(), "Export CSV berhasil: ${file.name}", Toast.LENGTH_SHORT).show()
+                    } catch (e: Exception) {
+                        showError("Gagal export: ${e.message}")
+                    }
+                } else {
+                    showError("Gagal memuat data")
+                }
+            }
+
+            override fun onFailure(call: Call<LaporanGabunganResponse>, t: Throwable) {
+                hideLoading()
+                showError("Error: ${t.message}")
+            }
+        })
+    }
+
+    private fun generateCsvFile(transaksi: List<TransaksiLaporan>, mobil: List<MobilLaporan>): File {
+        val file = File(requireContext().getExternalFilesDir(null), "Laporan_Lengkap_${System.currentTimeMillis()}.csv")
+        val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale("in", "ID"))
+
+        FileWriter(file).use { writer ->
+            writer.write("LAPORAN LENGKAP SHOWROOM KMJ\n")
+            writer.write("Tanggal Export,${dateFormat.format(Date())}\n\n")
+
+            // Transaksi Section
+            writer.write("=== LAPORAN TRANSAKSI ===\n")
+            writer.write("Kode Transaksi,Nama Pembeli,Nama Mobil,Harga Akhir,Tanggal,Status\n")
+            transaksi.forEach { item ->
+                val namaPembeli = item.namaPembeli.replace(",", ";")
+                val namaMobil = (item.namaMobil ?: "-").replace(",", ";")
+                writer.write("${item.kodeTransaksi},$namaPembeli,$namaMobil,${item.hargaAkhir},${item.tanggal},${item.status}\n")
+            }
+            writer.write("\nTotal Transaksi,${transaksi.size}\n")
+            writer.write("Total Pendapatan,${transaksi.sumOf { it.hargaAkhir }}\n\n")
+
+            // Mobil Section
+            writer.write("=== LAPORAN STOK MOBIL ===\n")
+            writer.write("Kode Mobil,Nama Mobil,Tahun,Status,Harga\n")
+            mobil.forEach { item ->
+                val namaMobil = item.namaMobil.replace(",", ";")
+                writer.write("${item.kodeMobil},$namaMobil,${item.tahunMobil ?: "-"},${item.status},${item.fullPrize ?: 0}\n")
+            }
+            writer.write("\nTotal Mobil,${mobil.size}\n")
+            writer.write("Tersedia,${mobil.count { it.status == "available" }}\n")
+            writer.write("Terjual,${mobil.count { it.status == "sold" }}\n")
+        }
+
+        return file
+    }
+
+    // ==================== HELPER FUNCTIONS ====================
+    private fun generateAndOpenPdf(content: String, fileName: String) {
+        try {
+            val file = PdfGenerator.generatePdf(requireContext(), content, fileName)
+            openFile(file, "application/pdf")
+            Toast.makeText(requireContext(), "PDF berhasil dibuat: $fileName", Toast.LENGTH_LONG).show()
+        } catch (e: Exception) {
+            showError("Gagal membuat PDF: ${e.message}")
+        }
+    }
+
+    private fun showReportDialog(title: String, content: String) {
         reportDialog?.dismiss()
         reportDialog = Dialog(requireContext()).apply {
             setContentView(R.layout.dialog_report)
-            window?.setLayout(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
+            window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             findViewById<TextView>(R.id.tvReportContent).text = content
             findViewById<Button>(R.id.btnClose).setOnClickListener { dismiss() }
             show()
         }
     }
 
-    private fun exportPdf() {
-        val fullReport = buildString {
-            append(generateSalesReport())
-            append("\n\n")
-            append(generateIncomeReport())
-            append("\n\n")
-            append(generateStockReport())
+    private fun openFile(file: File, mimeType: String) {
+        try {
+            val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, mimeType)
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            startActivity(Intent.createChooser(intent, "Buka dengan"))
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "File tersimpan: ${file.absolutePath}", Toast.LENGTH_LONG).show()
         }
-
-        val fileName = "Laporan_Lengkap_KMJ_Showroom.pdf"
-        val file = com.maverick.kmjshowroom.utils.PdfGenerator.generatePdf(
-            requireContext(),
-            fullReport,
-            fileName
-        )
-        openFile(file, "application/pdf")
-        Toast.makeText(requireContext(), "PDF lengkap berhasil diekspor!", Toast.LENGTH_LONG).show()
     }
 
-    private fun exportExcel() {
-        val file = com.maverick.kmjshowroom.utils.ExcelGenerator.generateExcel(requireContext())
-        openFile(file, "application/vnd.ms-excel")
+    private fun showLoading(msg: String = "Memuat...") {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 
-    private fun openFile(file: File, type: String) {
-        val uri = FileProvider.getUriForFile(
-            requireContext(),
-            "${requireContext().packageName}.provider",
-            file
-        )
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(uri, type)
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        }
-        startActivity(intent)
+    private fun hideLoading() {}
+
+    private fun showError(msg: String) {
+        Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        reportDialog?.dismiss()
+        reportDialog = null
+        _binding = null
     }
 }

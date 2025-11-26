@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_card_inner"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:id="@+id/step1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/step1_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_number1_blue" />
+
+        <TextView
+            android:id="@+id/step1_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Informasi\nPembelian"
+            android:textAlignment="center"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line1"
+        android:layout_width="40dp"
+        android:layout_height="2dp"
+        android:layout_marginHorizontal="8dp"
+        android:background="@color/line_default" />
+
+    <LinearLayout
+        android:id="@+id/step2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/step2_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_number2_gray" />
+
+        <TextView
+            android:id="@+id/step2_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Data\nPembelian"
+            android:textAlignment="center"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line2"
+        android:layout_width="40dp"
+        android:layout_height="2dp"
+        android:layout_marginHorizontal="8dp"
+        android:background="@color/line_default" />
+
+    <LinearLayout
+        android:id="@+id/step3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/step3_icon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_number3_gray" />
+
+        <TextView
+            android:id="@+id/step3_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pembayaran"
+            android:textAlignment="center"
+            android:textSize="12sp" />
+    </LinearLayout>
+
+</LinearLayout>

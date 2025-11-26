@@ -24,7 +24,7 @@
 
         <include
             android:id="@+id/progres2"
-            layout="@layout/stepper_progress" />
+            layout="@layout/progres2" />
     </FrameLayout>
 
     <ScrollView

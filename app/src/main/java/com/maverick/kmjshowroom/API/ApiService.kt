@@ -1,18 +1,7 @@
 package com.maverick.kmjshowroom.API
 
-import com.maverick.kmjshowroom.Model.ActivityDetailResponse
-import com.maverick.kmjshowroom.Model.ActivityResponse
+import com.maverick.kmjshowroom.Model.*
 import MobilDetailResponse
-import com.google.gson.annotations.SerializedName
-import com.maverick.kmjshowroom.Model.CheckUserResponse
-import com.maverick.kmjshowroom.Model.DashboardResponse
-import com.maverick.kmjshowroom.Model.LoginResponse
-import com.maverick.kmjshowroom.Model.MobilItem
-import com.maverick.kmjshowroom.Model.MobilListResponse
-import com.maverick.kmjshowroom.Model.RegisterResponse
-import com.maverick.kmjshowroom.Model.GeneralResponse
-import com.maverick.kmjshowroom.Model.UpdateGeneralResponse
-import com.maverick.kmjshowroom.Model.GenericResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -71,4 +60,66 @@ interface ApiService {
         @Field("delete") delete: Boolean = true,
         @Field("kode_mobil") kodeMobil: String
     ): Call<GenericResponse>
+
+    // ==================== TRANSAKSI ENDPOINTS (UPDATED) ====================
+
+    // GET LIST TRANSAKSI
+    @GET("admin/transaksi_get.php")
+    fun getTransaksiList(
+        @Query("action") action: String = "list"
+    ): Call<TransaksiListResponse>
+
+    // GET DETAIL TRANSAKSI
+    @GET("admin/transaksi_get.php")
+    fun getTransaksiDetail(
+        @Query("action") action: String = "detail",
+        @Query("id") kodeTransaksi: String
+    ): Call<TransaksiDetailResponse>
+
+    // CREATE TRANSAKSI (dengan jaminan)
+    @FormUrlEncoded
+    @POST("admin/transaksi_post.php")
+    fun createTransaksi(
+        @Field("action") action: String = "create",
+        @Field("nama_pembeli") namaPembeli: String,
+        @Field("no_hp") noHp: String,
+        @Field("tipe_pembayaran") tipePembayaran: String,
+        @Field("harga_akhir") hargaAkhir: Double,
+        @Field("kode_mobil") kodeMobil: String,
+        @Field("kode_user") kodeUser: String,
+        @Field("status") status: String = "pending",
+        @Field("note") note: String = "",
+        @Field("nama_kredit") namaKredit: String = "",
+        @Field("jaminan_ktp") jaminanKtp: Int = 0,
+        @Field("jaminan_kk") jaminanKk: Int = 0,
+        @Field("jaminan_rekening") jaminanRekening: Int = 0
+    ): Call<CreateTransaksiResponse>
+
+    @FormUrlEncoded
+    @POST("admin/transaksi_post.php")
+    fun updateTransaksi(
+        @Field("action") action: String = "update",
+        @Field("kode_transaksi") kodeTransaksi: String,
+        @Field("nama_pembeli") namaPembeli: String,
+        @Field("no_hp") noHp: String,
+        @Field("tipe_pembayaran") tipePembayaran: String,
+        @Field("harga_akhir") hargaAkhir: Double,
+        @Field("kode_mobil") kodeMobil: String,
+        @Field("kode_user") kodeUser: String,
+        @Field("status") status: String,
+        @Field("note") note: String = "",
+        @Field("nama_kredit") namaKredit: String = "",
+        @Field("jaminan_ktp") jaminanKtp: Int = 0,
+        @Field("jaminan_kk") jaminanKk: Int = 0,
+        @Field("jaminan_rekening") jaminanRekening: Int = 0
+    ): Call<CreateTransaksiResponse>
+
+    @GET("admin/get_laporan_gabungan.php")
+    fun getLaporanGabungan(): Call<LaporanGabunganResponse>
+
+    // LAPORAN PENJUALAN (sudah ada API-nya)
+    @GET("admin/report_penjualan.php")
+    fun getLaporanPenjualan(
+        @Query("status") status: String = "completed"
+    ): Call<ReportPenjualanResponse>
 }

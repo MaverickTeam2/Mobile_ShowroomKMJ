@@ -1,56 +1,89 @@
 package com.maverick.kmjshowroom.ui.transaksi
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.navigation.fragment.findNavController
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputEditText
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.ui.SharedCarViewModel
+import android.view.View
+import android.widget.Button
 
-class AddTrnActivity1 : Fragment() {
 
-    private val sharedCarViewModel: SharedCarViewModel by activityViewModels()
+class AddTrnActivity1 : AppCompatActivity() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.add_trn_1, container, false)
+    private lateinit var sharedCarViewModel: SharedCarViewModel
 
-        val closeButton = view.findViewById<ImageView>(R.id.icon_close)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.add_trn_1)
+
+        sharedCarViewModel = ViewModelProvider(this)[SharedCarViewModel::class.java]
+
+        val closeButton = findViewById<ImageView>(R.id.icon_close)
         closeButton.setOnClickListener {
-            findNavController().navigateUp()
+            finish()
         }
 
-        val dropdown = view.findViewById<AutoCompleteTextView>(R.id.dropdown_text)
-        val txtTipe = view.findViewById<TextInputEditText>(R.id.txttipe)
-        val imgCar = view.findViewById<ImageView>(R.id.imgCar)
-        val txtTitle = view.findViewById<TextView>(R.id.txtTitle)
-        val txtPrice = view.findViewById<TextView>(R.id.txtPrice)
-        val txtDp = view.findViewById<TextView>(R.id.txtDp)
-        val txtKm = view.findViewById<TextView>(R.id.txtKm)
-        val txtYear = view.findViewById<TextView>(R.id.txtYear)
+        val dropdown = findViewById<AutoCompleteTextView>(R.id.dropdown_text)
+        val txtTipe = findViewById<TextInputEditText>(R.id.txttipe)
+        val imgCar = findViewById<ImageView>(R.id.imgCar)
+        val txtTitle = findViewById<TextView>(R.id.txtTitle)
+        val txtPrice = findViewById<TextView>(R.id.txtPrice)
+        val txtDp = findViewById<TextView>(R.id.txtDp)
+        val txtKm = findViewById<TextView>(R.id.txtKm)
+        val txtYear = findViewById<TextView>(R.id.txtYear)
 
-        sharedCarViewModel.carList.observe(viewLifecycleOwner) { cars ->
-            if (cars.isEmpty()) return@observe
+        var selectedKodeMobil = ""
+        var selectedCarName = ""
+        var selectedHarga = 0
+        var selectedDp = ""
 
-            val namaMobilList = cars.map { it.title }
-            val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, namaMobilList)
+        sharedCarViewModel.errorMessage.observe(this) { error ->
+            error?.let {
+                Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        sharedCarViewModel.carList.observe(this) { cars ->
+            if (cars.isEmpty()) {
+                sharedCarViewModel.loadMobilFromApi()
+                return@observe
+            }
+
+            val availableCars = cars.filter { it.status.lowercase() == "available" }
+            val namaMobilList = availableCars.map { it.title }
+
+            val adapter = ArrayAdapter(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                namaMobilList
+            )
             dropdown.setAdapter(adapter)
 
             dropdown.setOnItemClickListener { _, _, position, _ ->
-                val selectedCar = cars[position]
-                sharedCarViewModel.selectedCar.value = selectedCar
+                val selectedCar = availableCars[position]
 
-                sharedCarViewModel.updateRandomTipe()
-                txtTipe.setText(sharedCarViewModel.selectedTipe.value)
-                imgCar.setImageResource(selectedCar.imageRes)
+                selectedKodeMobil = selectedCar.kodeMobil
+                selectedCarName = selectedCar.title
+                selectedHarga = selectedCar.fullPrice
+                selectedDp = selectedCar.dp
+
+                txtTipe.setText(selectedCar.tipeKendaraan.ifEmpty { selectedCar.bahanBakar })
+
+                if (!selectedCar.fotoUrl.isNullOrEmpty()) {
+                    Glide.with(this)
+                        .load(selectedCar.fotoUrl)
+                        .placeholder(R.drawable.placeholder_car)
+                        .error(R.drawable.placeholder_car)
+                        .into(imgCar)
+                } else {
+                    imgCar.setImageResource(R.drawable.placeholder_car)
+                }
+
                 txtTitle.text = selectedCar.title
                 txtPrice.text = selectedCar.angsuran
                 txtDp.text = selectedCar.dp
@@ -59,24 +92,19 @@ class AddTrnActivity1 : Fragment() {
             }
         }
 
-        val btnNext = view.findViewById<View>(R.id.btn_next)
+        val btnNext = findViewById<View>(R.id.btn_next)
         btnNext?.setOnClickListener {
-            val selected = sharedCarViewModel.selectedCar.value
-            if (selected != null) {
-                val bundle = Bundle().apply {
-                    putString("selectedCar", selected.title)
+            if (selectedKodeMobil.isNotEmpty()) {
+                val intent = Intent(this, AddTrnActivity2::class.java).apply {
+                    putExtra("selectedCar", selectedCarName)
+                    putExtra("kodeMobil", selectedKodeMobil)
+                    putExtra("hargaMobil", selectedHarga.toString())
+                    putExtra("dpMobil", selectedDp)
                 }
-                findNavController().navigate(
-                    R.id.action_addTrnActivity1fragment_to_addTrnActivity2fragment,
-                    bundle
-                )
+                startActivity(intent)
             } else {
-                Toast.makeText(requireContext(), "Pilih mobil terlebih dahulu", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Pilih mobil terlebih dahulu", Toast.LENGTH_SHORT).show()
             }
         }
-
-
-
-        return view
     }
 }

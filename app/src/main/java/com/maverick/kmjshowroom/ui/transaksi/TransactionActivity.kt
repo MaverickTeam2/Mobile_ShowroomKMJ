@@ -3,14 +3,12 @@ package com.maverick.kmjshowroom.ui.transaksi
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.maverick.kmjshowroom.API.ApiClient
@@ -24,27 +22,20 @@ import retrofit2.Response
 import java.text.NumberFormat
 import java.util.Locale
 
-class TransaksiFragment : Fragment() {
+class TransaksiActivity : AppCompatActivity() {
 
-    private var _binding: FragmentTransaksiBinding? = null
-    private val binding get() = _binding!!
-
+    private lateinit var binding: FragmentTransaksiBinding
     private lateinit var transaksiAdapter: TransactionAdapter
     private val allTransactions = mutableListOf<Transaction>()
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentTransaksiBinding.inflate(inflater, container, false)
-        val root: View = binding.root
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = FragmentTransaksiBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setupUI()
         setupRecyclerView()
         loadTransaksiFromDatabase()
-
-        return root
     }
 
     override fun onResume() {
@@ -56,23 +47,22 @@ class TransaksiFragment : Fragment() {
         binding.headerInclude.textHeader.text = "TRANSAKSI"
 
         binding.btnTambah.setOnClickListener {
-            val intent = Intent(requireContext(), AddTrnActivity1::class.java)
+            val intent = Intent(this, AddTrnActivity1::class.java)
             startActivity(intent)
         }
     }
 
     private fun setupRecyclerView() {
-        transaksiAdapter = TransactionAdapter(requireContext(), allTransactions).apply {
+        transaksiAdapter = TransactionAdapter(this, allTransactions).apply {
             onDetailClick = { transaction ->
                 showTransactionDetailDialog(transaction)
             }
         }
 
-        val recyclerView = RecyclerView(requireContext()).apply {
-            layoutManager = LinearLayoutManager(requireContext())
+        val recyclerView = RecyclerView(this).apply {
+            layoutManager = LinearLayoutManager(this@TransaksiActivity)
             adapter = transaksiAdapter
         }
-
         binding.transaksiContainer.removeAllViews()
         binding.transaksiContainer.addView(recyclerView)
     }
@@ -103,8 +93,6 @@ class TransaksiFragment : Fragment() {
 
                             priceDisplay = "${formatter.format(angsuranAsli)} x $tenor"
                             dealPriceDisplay = "${formatter.format(angsuranDeal)} x $tenor"
-
-
                         } else {
                             priceDisplay = formatter.format(item.hargaAsli ?: item.hargaAkhir)
                             dealPriceDisplay = formatter.format(item.hargaAkhir)
@@ -135,15 +123,16 @@ class TransaksiFragment : Fragment() {
 
                     if (allTransactions.isEmpty()) {
                         Toast.makeText(
-                            requireContext(),
+                            this@TransaksiActivity,
                             "Belum ada transaksi",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
                 } else {
+                    val errorMsg = response.body()?.code ?: "Unknown error"
                     Toast.makeText(
-                        requireContext(),
-                        "Gagal memuat transaksi: ${response.message()}",
+                        this@TransaksiActivity,
+                        "Gagal memuat transaksi (Code: $errorMsg)",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -151,7 +140,7 @@ class TransaksiFragment : Fragment() {
 
             override fun onFailure(call: Call<TransaksiListResponse>, t: Throwable) {
                 Toast.makeText(
-                    requireContext(),
+                    this@TransaksiActivity,
                     "Error: ${t.message}",
                     Toast.LENGTH_SHORT
                 ).show()
@@ -160,7 +149,7 @@ class TransaksiFragment : Fragment() {
     }
 
     private fun showTransactionDetailDialog(transaction: Transaction) {
-        val dialog = Dialog(requireContext()).apply {
+        val dialog = Dialog(this).apply {
             setContentView(R.layout.dialog_transaction_detail)
             window?.setLayout(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -181,23 +170,18 @@ class TransaksiFragment : Fragment() {
 
             when (transaction.status) {
                 "Completed" -> statusView.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.green)
+                    ContextCompat.getColor(this@TransaksiActivity, R.color.green)
                 )
                 "Pending" -> statusView.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.orange)
+                    ContextCompat.getColor(this@TransaksiActivity, R.color.orange)
                 )
                 "Canceled" -> statusView.setTextColor(
-                    ContextCompat.getColor(requireContext(), R.color.red)
+                    ContextCompat.getColor(this@TransaksiActivity, R.color.red)
                 )
             }
 
             findViewById<Button>(R.id.btnClose).setOnClickListener { dismiss() }
             show()
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
