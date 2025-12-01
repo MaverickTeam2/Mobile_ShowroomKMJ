@@ -66,6 +66,25 @@ class SettingMenuFragment : Fragment() {
         view.findViewById<MaterialCardView>(R.id.itemContact).setOnClickListener {
             findNavController().navigate(R.id.action_to_contactSocial)
         }
+
+        activity?.intent?.getStringExtra("open_page")?.let { target ->
+            when (target) {
+                "edit_profile" -> {
+                    findNavController().navigate(R.id.action_to_editProfile)
+                }
+                "general" -> {
+                    findNavController().navigate(R.id.action_to_general)
+                }
+                "schedule" -> {
+                    findNavController().navigate(R.id.action_to_schedule)
+                }
+                "contact" -> {
+                    findNavController().navigate(R.id.action_to_contactSocial)
+                }
+            }
+
+            activity?.intent?.removeExtra("open_page")
+        }
     }
 
     override fun onResume() {

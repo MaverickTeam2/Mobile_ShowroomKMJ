@@ -11,7 +11,7 @@
         android:id="@+id/icon_profile"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:src="@drawable/ic_profil"
+        android:src="@drawable/ic_setting"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="20dp"

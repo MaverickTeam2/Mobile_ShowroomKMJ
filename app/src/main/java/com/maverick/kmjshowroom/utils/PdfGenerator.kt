@@ -2,77 +2,78 @@ package com.maverick.kmjshowroom.utils
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
-import java.io.File
-import java.io.FileOutputStream
+import java.io.ByteArrayOutputStream
 
 object PdfGenerator {
-    fun generatePdf(context: Context, content: String, fileName: String): File {
-        val pdfDocument = PdfDocument()
-        val paint = Paint()
-        val titlePaint = Paint()
 
-        // Setup paints
-        paint.color = Color.BLACK
-        paint.textSize = 12f
+    fun generatePdf(context: Context, content: String): ByteArray {
+        val pdf = PdfDocument()
 
-        titlePaint.color = Color.BLACK
-        titlePaint.textSize = 16f
-        titlePaint.isFakeBoldText = true
+        val titlePaint = Paint().apply {
+            textSize = 16f
+            isFakeBoldText = true
+        }
 
-        val pageWidth = 595 // A4 width in points
-        val pageHeight = 842 // A4 height in points
+        val textPaint = Paint().apply {
+            textSize = 12f
+        }
+
+        val pageWidth = 595
+        val pageHeight = 842
         val margin = 40f
         val lineHeight = 18f
 
-        val lines = content.split("\n")
-        var currentPage = 1
-        var yPosition = margin + 30f
+        var y = margin + 20
+        var pageNumber = 1
 
-        var pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, currentPage).create()
-        var page = pdfDocument.startPage(pageInfo)
-        var canvas: Canvas = page.canvas
+        var pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+        var page = pdf.startPage(pageInfo)
+        var canvas = page.canvas
+
+        val lines = content.split("\n")
 
         for (line in lines) {
-            if (yPosition > pageHeight - margin) {
-                pdfDocument.finishPage(page)
-                currentPage++
-                pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, currentPage).create()
-                page = pdfDocument.startPage(pageInfo)
+
+            if (y > pageHeight - margin) {
+                pdf.finishPage(page)
+                pageNumber++
+                pageInfo = PdfDocument.PageInfo.Builder(pageWidth, pageHeight, pageNumber).create()
+                page = pdf.startPage(pageInfo)
                 canvas = page.canvas
-                yPosition = margin + 30f
+                y = margin + 20
             }
 
-            when {
-                line.contains("╔") || line.contains("╚") || line.contains("║") -> {
-                    // Header styling
-                    titlePaint.textSize = 14f
-                    canvas.drawText(line.replace("╔", "").replace("╚", "").replace("╗", "").replace("╝", "").replace("║", "").replace("═", "").trim(), margin, yPosition, titlePaint)
-                }
-                line.contains("═") || line.contains("─") -> {
-                    // Draw separator line
-                    paint.strokeWidth = 1f
-                    canvas.drawLine(margin, yPosition - 5f, pageWidth - margin, yPosition - 5f, paint)
-                }
-                else -> {
-                    // Normal text
-                    canvas.drawText(line, margin, yPosition, paint)
+            val clean = line.trim()
+
+            val words = clean.split(" ")
+            var currentLine = ""
+
+            for (word in words) {
+                val check = "$currentLine $word"
+
+                if (textPaint.measureText(check) > (pageWidth - margin * 2)) {
+                    canvas.drawText(currentLine.trim(), margin, y, textPaint)
+                    y += lineHeight
+                    currentLine = word
+                } else {
+                    currentLine = check
                 }
             }
 
-            yPosition += lineHeight
+            if (currentLine.isNotEmpty()) {
+                canvas.drawText(currentLine.trim(), margin, y, textPaint)
+                y += lineHeight
+            }
         }
 
-        pdfDocument.finishPage(page)
+        pdf.finishPage(page)
 
-        val file = File(context.getExternalFilesDir(null), fileName)
-        FileOutputStream(file).use { outputStream ->
-            pdfDocument.writeTo(outputStream)
-        }
-        pdfDocument.close()
+        val outputStream = ByteArrayOutputStream()
+        pdf.writeTo(outputStream)
+        pdf.close()
 
-        return file
+        return outputStream.toByteArray()
     }
 }

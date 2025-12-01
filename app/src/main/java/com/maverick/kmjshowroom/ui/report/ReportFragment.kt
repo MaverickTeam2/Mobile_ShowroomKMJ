@@ -1,7 +1,9 @@
 package com.maverick.kmjshowroom.ui.report
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,8 @@ import com.maverick.kmjshowroom.Model.TransaksiLaporan
 import com.maverick.kmjshowroom.Model.MobilLaporan
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.databinding.FragmentReportBinding
+import com.maverick.kmjshowroom.utils.FileUtils
+import com.maverick.kmjshowroom.utils.LoadingDialog
 import com.maverick.kmjshowroom.utils.PdfGenerator
 import retrofit2.Call
 import retrofit2.Callback
@@ -34,14 +38,13 @@ class ReportFragment : Fragment() {
     private var _binding: FragmentReportBinding? = null
     private val binding get() = _binding!!
     private var reportDialog: Dialog? = null
-
     private var salesReportContent: String = ""
     private var incomeReportContent: String = ""
     private var stockReportContent: String = ""
-
-    // Cache data
     private var cachedTransaksi: List<TransaksiLaporan> = emptyList()
     private var cachedMobil: List<MobilLaporan> = emptyList()
+    private lateinit var loadingDialog: LoadingDialog
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,11 +52,13 @@ class ReportFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentReportBinding.inflate(inflater, container, false)
+        loadingDialog = LoadingDialog(requireContext())
         setupListeners()
         loadInitialStats()
         return binding.root
     }
 
+    @SuppressLint("NewApi")
     private fun setupListeners() {
         binding.btnGenerate.setOnClickListener { loadAndShowSalesReport() }
         binding.btnGenerateIncome.setOnClickListener { loadAndShowIncomeReport() }
@@ -279,6 +284,7 @@ class ReportFragment : Fragment() {
     }
 
     // ==================== DOWNLOAD & EXPORT ====================
+    @SuppressLint("NewApi")
     private fun downloadReportPdf(type: String) {
         val content = when (type) {
             "sales" -> salesReportContent
@@ -364,6 +370,7 @@ class ReportFragment : Fragment() {
         showLoading("Mengekspor ke CSV...")
 
         ApiClient.apiService.getLaporanGabungan().enqueue(object : Callback<LaporanGabunganResponse> {
+            @SuppressLint("NewApi")
             override fun onResponse(call: Call<LaporanGabunganResponse>, response: Response<LaporanGabunganResponse>) {
                 hideLoading()
                 if (response.isSuccessful && response.body()?.status == 200) {
@@ -371,8 +378,21 @@ class ReportFragment : Fragment() {
                     val mobil = response.body()?.data?.mobil ?: emptyList()
 
                     try {
-                        val file = generateCsvFile(transaksi, mobil)
-                        openFile(file, "text/csv")
+                        val csvString = generateCsvContent(transaksi, mobil)
+                        val fileName = "Laporan_Lengkap_${System.currentTimeMillis()}.csv"
+
+                        val file = FileUtils.saveToDownload(
+                            requireContext(),
+                            fileName,
+                            csvString.toByteArray()
+                        )
+
+                        if (file == null) {
+                            showError("File CSV gagal disimpan!")
+                            return
+                        }
+
+                        openFile(file, "application/vnd.ms-excel")
                         Toast.makeText(requireContext(), "Export CSV berhasil: ${file.name}", Toast.LENGTH_SHORT).show()
                     } catch (e: Exception) {
                         showError("Gagal export: ${e.message}")
@@ -389,50 +409,55 @@ class ReportFragment : Fragment() {
         })
     }
 
-    private fun generateCsvFile(transaksi: List<TransaksiLaporan>, mobil: List<MobilLaporan>): File {
-        val file = File(requireContext().getExternalFilesDir(null), "Laporan_Lengkap_${System.currentTimeMillis()}.csv")
+    private fun generateCsvContent(
+        transaksi: List<TransaksiLaporan>,
+        mobil: List<MobilLaporan>
+    ): String {
+        val builder = StringBuilder()
         val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale("in", "ID"))
 
-        FileWriter(file).use { writer ->
-            writer.write("LAPORAN LENGKAP SHOWROOM KMJ\n")
-            writer.write("Tanggal Export,${dateFormat.format(Date())}\n\n")
+        builder.append("LAPORAN LENGKAP SHOWROOM KMJ\n")
+        builder.append("Tanggal Export,${dateFormat.format(Date())}\n\n")
 
-            // Transaksi Section
-            writer.write("=== LAPORAN TRANSAKSI ===\n")
-            writer.write("Kode Transaksi,Nama Pembeli,Nama Mobil,Harga Akhir,Tanggal,Status\n")
-            transaksi.forEach { item ->
-                val namaPembeli = item.namaPembeli.replace(",", ";")
-                val namaMobil = (item.namaMobil ?: "-").replace(",", ";")
-                writer.write("${item.kodeTransaksi},$namaPembeli,$namaMobil,${item.hargaAkhir},${item.tanggal},${item.status}\n")
-            }
-            writer.write("\nTotal Transaksi,${transaksi.size}\n")
-            writer.write("Total Pendapatan,${transaksi.sumOf { it.hargaAkhir }}\n\n")
+        builder.append("=== LAPORAN TRANSAKSI ===\n")
+        builder.append("Kode Transaksi,Nama Pembeli,Nama Mobil,Harga Akhir,Tanggal,Status\n")
+        transaksi.forEach { item ->
+            builder.append("${item.kodeTransaksi},${item.namaPembeli},${item.namaMobil ?: "-"},${item.hargaAkhir},${item.tanggal},${item.status}\n")
+        }
+        builder.append("\n")
 
-            // Mobil Section
-            writer.write("=== LAPORAN STOK MOBIL ===\n")
-            writer.write("Kode Mobil,Nama Mobil,Tahun,Status,Harga\n")
-            mobil.forEach { item ->
-                val namaMobil = item.namaMobil.replace(",", ";")
-                writer.write("${item.kodeMobil},$namaMobil,${item.tahunMobil ?: "-"},${item.status},${item.fullPrize ?: 0}\n")
-            }
-            writer.write("\nTotal Mobil,${mobil.size}\n")
-            writer.write("Tersedia,${mobil.count { it.status == "available" }}\n")
-            writer.write("Terjual,${mobil.count { it.status == "sold" }}\n")
+        builder.append("=== LAPORAN STOK MOBIL ===\n")
+        builder.append("Kode Mobil,Nama Mobil,Tahun,Status,Harga\n")
+        mobil.forEach { item ->
+            builder.append("${item.kodeMobil},${item.namaMobil},${item.tahunMobil ?: "-"},${item.status},${item.fullPrize ?: 0}\n")
         }
 
-        return file
+        return builder.toString()
     }
 
     // ==================== HELPER FUNCTIONS ====================
+    @SuppressLint("NewApi")
     private fun generateAndOpenPdf(content: String, fileName: String) {
         try {
-            val file = PdfGenerator.generatePdf(requireContext(), content, fileName)
+            showLoading("Membuat PDF...")
+
+            val pdfBytes = PdfGenerator.generatePdf(requireContext(), content)
+            val file = FileUtils.saveToDownload(requireContext(), fileName, pdfBytes)
+            if (file == null) {
+                showError("File gagal dibuat!")
+                return
+            }
+            hideLoading()
             openFile(file, "application/pdf")
-            Toast.makeText(requireContext(), "PDF berhasil dibuat: $fileName", Toast.LENGTH_LONG).show()
+
+            Toast.makeText(requireContext(), "PDF tersimpan di folder Download", Toast.LENGTH_LONG).show()
+
         } catch (e: Exception) {
+            hideLoading()
             showError("Gagal membuat PDF: ${e.message}")
         }
     }
+
 
     private fun showReportDialog(title: String, content: String) {
         reportDialog?.dismiss()
@@ -447,17 +472,34 @@ class ReportFragment : Fragment() {
 
     private fun openFile(file: File, mimeType: String) {
         try {
-            val uri = FileProvider.getUriForFile(requireContext(), "${requireContext().packageName}.provider", file)
+            val context = requireContext()
+            val uri = FileProvider.getUriForFile(
+                context,
+                "${context.packageName}.provider",
+                file
+            )
+
             val intent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(uri, mimeType)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
             }
-            startActivity(Intent.createChooser(intent, "Buka dengan"))
+
+            // Cek jika ada aplikasi yang bisa buka file
+            val chooser = Intent.createChooser(intent, "Buka dengan")
+            if (intent.resolveActivity(context.packageManager) != null) {
+                startActivity(chooser)
+            } else {
+                Toast.makeText(context, "Tidak ada aplikasi untuk membuka file ini", Toast.LENGTH_LONG).show()
+            }
+
         } catch (e: Exception) {
+            e.printStackTrace()
             Toast.makeText(requireContext(), "File tersimpan: ${file.absolutePath}", Toast.LENGTH_LONG).show()
         }
     }
+
 
     private fun showLoading(msg: String = "Memuat...") {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
