@@ -23,8 +23,8 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <include
-            android:id="@+id/progres3"
-            layout="@layout/progres3" />
+            android:id="@+id/progres"
+            layout="@layout/stepper_progress" />
     </FrameLayout>
 
     <ScrollView

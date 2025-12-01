@@ -123,7 +123,6 @@ data class JaminanFlags(
     val rekening: Int = 0
 )
 
-// Response untuk create/update transaksi
 data class CreateTransaksiResponse(
     @SerializedName("code")
     val code: String,
@@ -152,5 +151,5 @@ data class Transaction(
     val description: String,
     val price: String,
     val dealPrice: String,
-    val status: String
+    var status: String
 )

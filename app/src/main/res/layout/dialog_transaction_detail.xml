@@ -228,12 +228,13 @@
 
             <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#EEEEEE" android:layout_marginBottom="8dp"/>
 
-            <!-- Status -->
+            <!-- PERBAIKAN: Status dengan Spinner (Dropdown) -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="16dp"
+                android:gravity="center_vertical">
                 <TextView
                     android:layout_width="120dp"
                     android:layout_height="wrap_content"
@@ -241,21 +242,21 @@
                     android:textColor="#555"
                     android:textSize="14sp"
                     android:fontFamily="@font/lato_bold"/>
-                <TextView
-                    android:id="@+id/tvStatus"
+                <Spinner
+                    android:id="@+id/statusSpinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Completed"
-                    android:textColor="#2E7D32"
-                    android:textSize="14sp"
-                    android:fontFamily="@font/lato_bold"/>
+                    android:spinnerMode="dropdown"
+                    android:minHeight="40dp"
+                    android:padding="8dp"
+                    android:background="@android:drawable/btn_dropdown"/>
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- TOMBOL TUTUP PAKAI TextView + Ripple (TANPA app:cornerRadius) -->
+    <!-- TOMBOL TUTUP -->
     <Button
         android:id="@+id/btnClose"
         android:layout_width="wrap_content"
