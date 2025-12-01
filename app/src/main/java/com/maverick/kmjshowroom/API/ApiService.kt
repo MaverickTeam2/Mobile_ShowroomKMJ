@@ -169,4 +169,26 @@ interface ApiService {
         @Part("alamat") alamat: RequestBody?,
         @Part avatar_file: MultipartBody.Part?
     ): Call<UpdateProfileResponse>
+
+    // Tambahkan endpoint ini ke dalam interface ApiService yang sudah ada
+
+    // ==================== MANAGE AKUN ENDPOINTS ====================
+
+    @GET("admin/get_manage_acc_list.php")
+    suspend fun getManageAccList(): Response<ManageAkunResponse>
+
+    @GET("admin/get_manage_acc_detail.php")
+    suspend fun getManageAccDetail(@Query("kode_user") kodeUser: String): Response<ManageAkunDetailResponse>
+
+    @POST("admin/create_manage_acc.php")
+    suspend fun createManageAccount(@Body body: Map<String, String>): Response<GenericResponse>
+
+    @POST("admin/update_user_manage_acc.php")
+    suspend fun updateManageAccount(@Body body: Map<String, String>): Response<GenericResponse>
+
+    @POST("admin/update_status_manage_acc.php")
+    suspend fun updateStatusManageAccount(@Body body: UpdateStatusRequest): Response<GenericResponse>
+
+    @GET("admin/delete_manage_acc.php")
+    suspend fun deleteManageAccount(@Query("kode_user") kodeUser: String): Response<GenericResponse>
 }
