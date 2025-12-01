@@ -88,6 +88,23 @@
 <!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
 <!--                android:resource="@xml/file_paths" />-->
 <!--        </provider>-->
+        <activity
+            android:name=".ui.akun.AddAkunActivity"
+            android:label="Tambah Akun"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.KMJShowroom" />
+
+        <activity
+            android:name=".ui.akun.DetailAkunActivity"
+            android:label="Detail Akun"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/Theme.KMJShowroom" />
+
+        <activity
+            android:name=".ui.akun.EditAkunActivity"
+            android:label="Edit Akun"
+            android:parentActivityName=".ui.akun.DetailAkunActivity"
+            android:theme="@style/Theme.KMJShowroom" />
     </application>
 
 </manifest>

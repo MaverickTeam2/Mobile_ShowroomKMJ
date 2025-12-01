@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.maverick.kmjshowroom.API.ApiClient
 import com.maverick.kmjshowroom.API.MultipartUtil
+import com.maverick.kmjshowroom.Database.UserDatabaseHelper
 import com.maverick.kmjshowroom.Model.GenericResponse
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.databinding.AddCarstep4Binding
@@ -23,13 +24,13 @@ import MobilDetailResponse
 class AddCarStep4Activity : AppCompatActivity() {
 
     private lateinit var binding: AddCarstep4Binding
+    private lateinit var userDb: UserDatabaseHelper
 
     private var isEdit = false
     private var kodeMobil: String? = null
     private var selectedStatus = "available"
     private var oldFotoList: List<FotoData> = emptyList()
 
-    // 🔥 LOADING DIALOG BARU
     private lateinit var loadingDialog: AlertDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +38,8 @@ class AddCarStep4Activity : AppCompatActivity() {
         binding = AddCarstep4Binding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // SETUP LOADING
+        userDb = UserDatabaseHelper(this)
+
         setupLoading()
 
         isEdit = intent.getBooleanExtra("is_edit", false)
@@ -54,7 +56,6 @@ class AddCarStep4Activity : AppCompatActivity() {
         }
     }
 
-    // ===================== 🔥 SETUP LOADING =====================
     private fun setupLoading() {
         val view = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null)
         loadingDialog = AlertDialog.Builder(this)
@@ -118,7 +119,6 @@ class AddCarStep4Activity : AppCompatActivity() {
         binding.footerSave4.btnDraft.text = "Hapus"
         binding.footerSave4.btnNext.text = if (isEdit) "Update" else "Publish"
 
-        // TOMBOL DELETE
         binding.footerSave4.btnDraft.setOnClickListener {
             if (kodeMobil == null) {
                 Toast.makeText(this, "Kode mobil kosong", Toast.LENGTH_SHORT).show()
@@ -157,7 +157,6 @@ class AddCarStep4Activity : AppCompatActivity() {
                 })
         }
 
-        // TOMBOL PUBLISH / UPDATE
         binding.footerSave4.btnNext.setOnClickListener { submitAll() }
     }
 
@@ -189,7 +188,13 @@ class AddCarStep4Activity : AppCompatActivity() {
                     response: Response<MobilDetailResponse>
                 ) {
                     val body = response.body() ?: return
-                    if (body.code == 200) oldFotoList = body.foto
+                    if (body.code == 200) {
+                        oldFotoList = body.foto
+                        Log.d("AddCarStep4", "✅ Loaded ${oldFotoList.size} old photos")
+                        oldFotoList.forEach {
+                            Log.d("AddCarStep4", "  - ID: ${it.id_foto}, Type: ${it.tipe_foto}, URL: ${it.foto}")
+                        }
+                    }
                 }
 
                 override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {
@@ -206,11 +211,26 @@ class AddCarStep4Activity : AppCompatActivity() {
             .trim()
     }
 
-    // ===================== 🔥 SUBMIT =====================
     private fun submitAll() {
 
-        // 🔥 TAMPILKAN LOADING SAAT MULAI UPLOAD
         showLoading()
+
+        // ✅ AMBIL KODE USER DARI SQLITE
+        val currentUser = userDb.getUser()
+        if (currentUser == null) {
+            hideLoading()
+            Toast.makeText(this, "User belum login. Silakan login terlebih dahulu.", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        val kodeUser = currentUser.kode_user ?: ""
+        if (kodeUser.isEmpty()) {
+            hideLoading()
+            Toast.makeText(this, "Kode user tidak valid", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        Log.d("AddCarStep4", "✅ Kode User dari SQLite: $kodeUser")
 
         val nama = intent.getStringExtra("nama_mobil") ?: ""
         val jarak = intent.getStringExtra("jarak_tempuh") ?: ""
@@ -255,6 +275,7 @@ class AddCarStep4Activity : AppCompatActivity() {
         map["warna_interior"] = MultipartUtil.createPart(warnaInterior)
         map["warna_exterior"] = MultipartUtil.createPart(warnaExterior)
         map["status"] = MultipartUtil.createPart(selectedStatus)
+        map["kode_user"] = MultipartUtil.createPart(kodeUser)
 
         fiturList.forEachIndexed { index, id ->
             map["fitur[$index]"] = MultipartUtil.createPart(id.toString())
@@ -267,46 +288,15 @@ class AddCarStep4Activity : AppCompatActivity() {
 
         val files = mutableListOf<MultipartBody.Part>()
 
-        val newPhotoMap = mapOf(
-            "360" to u360,
-            "depan" to uDepan,
-            "belakang" to uBelakang,
-            "samping" to uSamping
-        )
-
-        var fotoIndex = 0
-
-        if (isEdit && oldFotoList.isNotEmpty()) {
-            oldFotoList.forEach { old ->
-                val normalizedType = normalizeType(old.tipe_foto)
-                val newUri = newPhotoMap[normalizedType]
-
-                val userReplaced = !newUri.isNullOrEmpty() && !newUri.startsWith("http")
-
-                if (!userReplaced) {
-                    val rawUrl = old.foto ?: ""
-                    val fotoPath =
-                        if (rawUrl.contains("/images/mobil/"))
-                            "/images/mobil/" + rawUrl.substringAfter("/images/mobil/")
-                        else rawUrl
-
-                    map["foto[$fotoIndex][id_foto]"] =
-                        MultipartUtil.createPart((old.id_foto ?: "").toString())
-                    map["foto[$fotoIndex][tipe_foto]"] =
-                        MultipartUtil.createPart(old.tipe_foto ?: "")
-                    map["foto[$fotoIndex][nama_file]"] =
-                        MultipartUtil.createPart(fotoPath)
-                    map["foto[$fotoIndex][urutan]"] =
-                        MultipartUtil.createPart((fotoIndex + 1).toString())
-
-                    fotoIndex++
-                }
-            }
-        }
-
+        // ✅ Handle foto utama (4 FIXED SLOTS)
         fun addIfChanged(field: String, uri: String?) {
             if (!uri.isNullOrEmpty() && !uri.startsWith("http")) {
-                MultipartUtil.prepareFile(field, Uri.parse(uri), this)?.let { files.add(it) }
+                MultipartUtil.prepareFile(field, Uri.parse(uri), this)?.let {
+                    files.add(it)
+                    Log.d("AddCarStep4", "📷 Adding NEW photo: $field")
+                }
+            } else {
+                Log.d("AddCarStep4", "⏭️ Skipping (unchanged): $field")
             }
         }
 
@@ -315,12 +305,83 @@ class AddCarStep4Activity : AppCompatActivity() {
         addIfChanged("foto_belakang", uBelakang)
         addIfChanged("foto_samping", uSamping)
 
-        fotoTambahan.forEach { uri ->
-            if (!uri.isNullOrEmpty() && !uri.startsWith("http")) {
-                MultipartUtil.prepareFile("foto_tambahan[]", Uri.parse(uri), this)
-                    ?.let { files.add(it) }
+        // ✅ FIX: Handle foto tambahan (6 FIXED SLOTS dengan urutan tetap)
+        if (isEdit && oldFotoList.isNotEmpty()) {
+
+            // Build map: urutan -> FotoData untuk foto tambahan lama
+            val oldTambahanMap = mutableMapOf<Int, FotoData>()
+            oldFotoList.filter { normalizeType(it.tipe_foto) == "tambahan" }
+                .forEach { foto ->
+                    // Parsing urutan dari database
+                    // Urutan 5 = foto_tambahan[0], urutan 6 = foto_tambahan[1], dst
+                    val urutanDb = foto.id_foto.toIntOrNull() ?: 0
+
+                    // Cari urutan berdasarkan posisi di oldFotoList
+                    val index = oldFotoList.indexOf(foto)
+                    if (index >= 4) { // index 4+ = foto tambahan
+                        val slot = index - 4 // slot 0-5
+                        oldTambahanMap[slot] = foto
+                    }
+                }
+
+            Log.d("AddCarStep4", "📸 Old Tambahan Map: ${oldTambahanMap.size} items")
+
+            // Loop 6 FIXED SLOTS (foto_tambahan[0..5])
+            for (slot in 0 until 6) {
+                val uri = fotoTambahan.getOrNull(slot)
+
+                if (uri.isNullOrEmpty()) {
+                    // ✅ Slot kosong - skip
+                    Log.d("AddCarStep4", "⚪ Slot $slot: EMPTY")
+                    continue
+                }
+
+                val isOldPhoto = uri.startsWith("http")
+                val oldFotoInSlot = oldTambahanMap[slot]
+
+                if (isOldPhoto) {
+                    // ✅ Foto TIDAK berubah - skip (PHP akan keep foto ini)
+                    Log.d("AddCarStep4", "✅ Slot $slot: UNCHANGED (${oldFotoInSlot?.id_foto})")
+
+                } else {
+                    // ✅ Foto BERUBAH atau BARU
+
+                    if (oldFotoInSlot != null) {
+                        // REPLACE: Ada foto lama di slot ini
+                        Log.d("AddCarStep4", "🔄 Slot $slot: REPLACE old ID=${oldFotoInSlot.id_foto}")
+
+                        // Kirim file baru + metadata replace
+                        MultipartUtil.prepareFile("foto_tambahan_slot_$slot", Uri.parse(uri), this)?.let {
+                            files.add(it)
+                        }
+                        map["tambahan_slot_$slot"] = MultipartUtil.createPart("replace")
+                        map["tambahan_old_id_$slot"] = MultipartUtil.createPart(oldFotoInSlot.id_foto)
+
+                    } else {
+                        // INSERT: Slot kosong, isi baru
+                        Log.d("AddCarStep4", "🆕 Slot $slot: NEW")
+
+                        MultipartUtil.prepareFile("foto_tambahan_slot_$slot", Uri.parse(uri), this)?.let {
+                            files.add(it)
+                        }
+                        map["tambahan_slot_$slot"] = MultipartUtil.createPart("new")
+                    }
+                }
+            }
+
+        } else {
+            // Mode INSERT (bukan edit) - upload semua foto tambahan yang ada
+            fotoTambahan.forEachIndexed { slot, uri ->
+                if (!uri.isNullOrEmpty() && !uri.startsWith("http")) {
+                    MultipartUtil.prepareFile("foto_tambahan_slot_$slot", Uri.parse(uri), this)?.let {
+                        files.add(it)
+                    }
+                    map["tambahan_slot_$slot"] = MultipartUtil.createPart("new")
+                }
             }
         }
+
+        Log.d("AddCarStep4", "📤 Total files to upload: ${files.size}")
 
         ApiClient.apiService.uploadMobil(map, files)
             .enqueue(object : Callback<GenericResponse> {
@@ -328,7 +389,7 @@ class AddCarStep4Activity : AppCompatActivity() {
                     call: Call<GenericResponse>,
                     response: Response<GenericResponse>
                 ) {
-                    hideLoading()  // 🔥 SEMBUNYIKAN LOADING
+                    hideLoading()
 
                     if (response.isSuccessful && response.body()?.success == true) {
                         Toast.makeText(
@@ -340,12 +401,14 @@ class AddCarStep4Activity : AppCompatActivity() {
                     } else {
                         val msg = response.body()?.message ?: "Gagal"
                         Toast.makeText(this@AddCarStep4Activity, msg, Toast.LENGTH_LONG).show()
+                        Log.e("AddCarStep4", "Response error: $msg")
                     }
                 }
 
                 override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
-                    hideLoading() // 🔥 SEMBUNYIKAN LOADING
+                    hideLoading()
                     Toast.makeText(this@AddCarStep4Activity, t.message, Toast.LENGTH_LONG).show()
+                    Log.e("AddCarStep4", "Network error: ${t.message}")
                 }
             })
     }

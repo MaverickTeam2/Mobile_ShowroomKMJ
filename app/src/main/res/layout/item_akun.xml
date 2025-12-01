@@ -15,7 +15,6 @@
         android:padding="12dp"
         android:gravity="center_vertical">
 
-        <!-- Bagian kiri: foto + info -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -23,9 +22,8 @@
             android:orientation="horizontal"
             android:gravity="top">
 
-            <!-- Foto Profil -->
             <ImageView
-                android:id="@+id/imgProfile"
+                android:id="@+id/foto"
                 android:layout_width="65dp"
                 android:layout_height="65dp"
                 android:layout_marginEnd="10dp"
@@ -35,41 +33,38 @@
                 android:padding="2dp"
                 android:layout_gravity="center"/>
 
-            <!-- Kolom Info -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/txtName"
+                    android:id="@+id/nama"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bugatti Tourbillon Widebody Kit"
+                    android:text="Nama User"
                     android:textStyle="bold"
                     android:textSize="16sp"
                     android:textColor="#1A1A1A" />
 
                 <TextView
-                    android:id="@+id/txtEmail"
+                    android:id="@+id/email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bugatti456@gmail.com"
+                    android:text="email@gmail.com"
                     android:textColor="#555"
                     android:textSize="13sp" />
 
                 <TextView
-                    android:id="@+id/txtLogin"
+                    android:id="@+id/lastLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Last login: 1 month ago"
+                    android:text="Last login: -"
                     android:textColor="#777"
                     android:textSize="12sp"
                     android:layout_marginTop="2dp" />
 
-                <!-- Badge Role dan Status -->
                 <LinearLayout
-                    android:id="@+id/badgeRow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="6dp"
@@ -77,7 +72,7 @@
                     android:gravity="center_vertical">
 
                     <TextView
-                        android:id="@+id/badgeRole"
+                        android:id="@+id/role"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Admin"
@@ -102,7 +97,6 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Bagian kanan bawah (sejajar badge) -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -110,7 +104,7 @@
             android:orientation="horizontal">
 
             <Switch
-                android:id="@+id/switchActive"
+                android:id="@+id/statusSwitch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true" />

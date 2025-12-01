@@ -6,7 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiClient {
-    const val BASE_URL = "https://api.maverick.my.id/api_kmj/"
+    const val BASE_URL = "http://192.168.1.10:80/API_kmj/"
 
     private val loggingInterceptor = HttpLoggingInterceptor().apply {
         level = HttpLoggingInterceptor.Level.BODY
@@ -23,5 +23,15 @@ object ApiClient {
             .client(client)
             .build()
             .create(ApiService::class.java)
+    }
+
+    // TAMBAH HELPER FUNCTION INI
+    fun getImageUrl(path: String?): String {
+        if (path.isNullOrEmpty()) return ""
+
+        return when {
+            path.startsWith("http") -> path // Udah full URL
+            else -> BASE_URL + path // Gabung dengan base URL
+        }
     }
 }

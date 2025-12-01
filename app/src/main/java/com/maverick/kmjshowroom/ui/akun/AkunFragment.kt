@@ -1,40 +1,40 @@
 package com.maverick.kmjshowroom.ui.akun
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.Switch
-import android.widget.TextView
-import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.maverick.kmjshowroom.R
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.maverick.kmjshowroom.API.ApiClient
+import com.maverick.kmjshowroom.Adapter.ManageAkunAdapter
+import com.maverick.kmjshowroom.Model.ManageAkun
+import com.maverick.kmjshowroom.Model.UpdateStatusRequest
 import com.maverick.kmjshowroom.databinding.FragmentAkunBinding
-import com.maverick.kmjshowroom.Model.Akun
+import kotlinx.coroutines.launch
 
 class AkunFragment : Fragment() {
 
     private var _binding: FragmentAkunBinding? = null
     private val binding get() = _binding!!
 
-    // --- Dummy data akun
-    private val akunList = listOf(
-        Akun("Michael Owen", "michael.owen@gmail.com", "Last login: 2 hours ago", "Admin", 1, true),
-        Akun("Samantha Ray", "sam.ray@yahoo.com", "Last login: 3 days ago", "Staff", 1, true),
-        Akun(
-            "Jonathan Vega",
-            "jon.vega@outlook.com",
-            "Last login: 2 weeks ago",
-            "Viewer",
-            0,
-            false
-        ),
-        Akun("Ananta Widayani", "ananta.wi@gmail.com", "Last login: 1 month ago", "Admin", 0, true)
-    )
+    private lateinit var adapter: ManageAkunAdapter
+    private var akunList = mutableListOf<ManageAkun>()
+
+    private val addAkunLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            loadAkunList()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,59 +42,178 @@ class AkunFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAkunBinding.inflate(inflater, container, false)
-        val root: View = binding.root
-
-        populateDummyAkun(inflater)
-
-        return root
+        return binding.root
     }
 
-    // --- Fungsi untuk menambahkan card akun ke container
-    private fun populateDummyAkun(inflater: LayoutInflater) {
-        val container: LinearLayout = binding.akunContainer
-        container.removeAllViews()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        for (akun in akunList) {
-            val itemView = inflater.inflate(R.layout.item_akun, container, false) as CardView
+        setupRecyclerView()
+        setupClickListeners()
+        loadAkunList()
+    }
 
-            val txtName = itemView.findViewById<TextView>(R.id.txtName)
-            val txtEmail = itemView.findViewById<TextView>(R.id.txtEmail)
-            val txtLogin = itemView.findViewById<TextView>(R.id.txtLogin)
-            val badgeRole = itemView.findViewById<TextView>(R.id.badgeRole)
-            val badgeStatus = itemView.findViewById<TextView>(R.id.badgeStatus)
-            val switchActive = itemView.findViewById<Switch>(R.id.switchActive)
-            val btnDelete = itemView.findViewById<ImageButton>(R.id.btnDelete)
-            val imgProfile = itemView.findViewById<ImageView>(R.id.imgProfile)
-
-            // --- Isi data
-            txtName.text = akun.nama
-            txtEmail.text = akun.email
-            txtLogin.text = akun.lastLogin
-            badgeRole.text = akun.role
-            badgeStatus.text = if (akun.status == 1) "Aktif" else "Nonaktif"
-            switchActive.isChecked = akun.aktif
-
-            // --- Ganti tampilan status badge
-            if (akun.status == 1) {
-                badgeStatus.setBackgroundResource(R.drawable.bg_badge_active)
-                badgeStatus.setTextColor(ContextCompat.getColor(context, R.color.green_status))
-            } else {
-                badgeStatus.setBackgroundResource(R.drawable.bg_badge_inactive)
-                badgeStatus.setTextColor(ContextCompat.getColor(context, R.color.red_status))
+    private fun setupRecyclerView() {
+        adapter = ManageAkunAdapter(
+            list = akunList,
+            onClick = { akun ->
+                val intent = Intent(requireContext(), DetailAkunActivity::class.java)
+                intent.putExtra(DetailAkunActivity.EXTRA_KODE_USER, akun.kode_user)
+                startActivity(intent)
+            },
+            onToggleStatus = { akun ->
+                toggleStatusAkun(akun)
+            },
+            onDelete = { akun ->
+                showDeleteConfirmation(akun)
             }
+        )
 
-            // --- Event listener contoh
-            btnDelete.setOnClickListener {
-                container.removeView(itemView)
-            }
-
-            switchActive.setOnCheckedChangeListener { _, isChecked ->
-                badgeStatus.text = if (isChecked) "Aktif" else "Nonaktif"
-            }
-
-            // Tambahkan ke container
-            container.addView(itemView)
+        binding.recyclerAkun.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = this@AkunFragment.adapter
         }
+    }
+
+    private fun setupClickListeners() {
+        binding.btnTambah.setOnClickListener {
+            val intent = Intent(requireContext(), AddAkunActivity::class.java)
+            addAkunLauncher.launch(intent)
+        }
+    }
+
+    private fun loadAkunList() {
+        lifecycleScope.launch {
+            try {
+                Log.d("AkunFragment", "Loading akun list...")
+                val response = ApiClient.apiService.getManageAccList()
+
+                Log.d("AkunFragment", "Response code: ${response.code()}")
+                Log.d("AkunFragment", "Response body: ${response.body()}")
+
+                if (response.isSuccessful && response.body()?.success == true) {
+                    val data = response.body()!!.data
+                    akunList.clear()
+                    akunList.addAll(data)
+                    adapter.updateData(akunList)
+
+                    Log.d("AkunFragment", "Loaded ${akunList.size} accounts")
+                } else {
+                    val errorMsg = response.body()?.message ?: "Gagal memuat data"
+                    Log.e("AkunFragment", "Error: $errorMsg")
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show()
+                }
+
+            } catch (e: Exception) {
+                Log.e("AkunFragment", "Exception: ${e.message}", e)
+                Toast.makeText(
+                    requireContext(),
+                    "Error: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    // In AkunFragment.kt
+
+    private fun toggleStatusAkun(akun: ManageAkun) {
+        lifecycleScope.launch {
+            try {
+                val newStatus = if (akun.isActive) 0 else 1
+
+                // Create an instance of UpdateStatusRequest instead of a HashMap
+                val requestBody = UpdateStatusRequest(
+                    kodeUser = akun.kode_user,
+                    status = newStatus
+                )
+
+                Log.d("AkunFragment", "=== TOGGLE STATUS ===")
+                Log.d("AkunFragment", "Kode User: ${akun.kode_user}")
+                Log.d("AkunFragment", "New Status: $newStatus")
+                Log.d("AkunFragment", "Request Body: $requestBody")
+
+                // Pass the new requestBody object to the service method
+                val response = ApiClient.apiService.updateStatusManageAccount(requestBody)
+
+                Log.d("AkunFragment", "Response Code: ${response.code()}")
+                // ... rest of your code remains the same
+
+                if (response.isSuccessful && response.body()?.success == true) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Status berhasil diperbarui",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    loadAkunList()
+                } else {
+                    val errorMsg = response.body()?.message ?: "Gagal mengubah status"
+                    Log.e("AkunFragment", "Error Message: $errorMsg")
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
+                    loadAkunList()
+                }
+
+            } catch (e: Exception) {
+                Log.e("AkunFragment", "Exception Type: ${e.javaClass.simpleName}")
+                Log.e("AkunFragment", "Exception Message: ${e.message}", e)
+                Toast.makeText(
+                    requireContext(),
+                    "Error: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+                loadAkunList()
+            }
+        }
+    }
+
+
+    private fun showDeleteConfirmation(akun: ManageAkun) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Hapus Akun")
+            .setMessage("Apakah Anda yakin ingin menghapus akun ${akun.full_name}?")
+            .setPositiveButton("Hapus") { _, _ ->
+                deleteAkun(akun)
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    private fun deleteAkun(akun: ManageAkun) {
+        lifecycleScope.launch {
+            try {
+                Log.d("AkunFragment", "Deleting akun: ${akun.kode_user}")
+                val response = ApiClient.apiService.deleteManageAccount(akun.kode_user)
+
+                Log.d("AkunFragment", "Delete Response Code: ${response.code()}")
+                Log.d("AkunFragment", "Delete Response Body: ${response.body()}")
+
+                if (response.isSuccessful && response.body()?.success == true) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Akun berhasil dihapus",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    loadAkunList()
+                } else {
+                    val errorMsg = response.body()?.message ?: response.errorBody()?.string() ?: "Gagal menghapus akun"
+                    Log.e("AkunFragment", "Delete Error: $errorMsg")
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show()
+                }
+
+            } catch (e: Exception) {
+                Log.e("AkunFragment", "Delete Exception: ${e.message}", e)
+                Toast.makeText(
+                    requireContext(),
+                    "Error: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        loadAkunList()
     }
 
     override fun onDestroyView() {

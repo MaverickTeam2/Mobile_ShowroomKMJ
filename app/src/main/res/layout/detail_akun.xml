@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F9FAFB">
+
+    <!-- Progress Bar untuk loading -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_card_tambah_akun"
+            android:padding="20dp"
+            android:elevation="2dp">
+            <!-- Teks "Profile" -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Profile"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#555"
+                android:paddingBottom="16dp" />
+
+            <!-- Foto Profil -->
+            <ImageView
+            android:id="@+id/imgFotoProfil"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:clipToOutline="true"
+            android:layout_marginBottom="16dp"/>
+
+            <!-- Judul utama -->
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Informasi Pribadi"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:paddingBottom="8dp" />
+
+
+            <!-- Nama Depan -->
+            <TextView
+                android:text="Nama depan"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp" />
+
+            <TextView
+                android:id="@+id/tvNamaDepan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textColor="#333"
+                android:background="@drawable/bg_input"
+                android:text="—" />
+
+            <!-- Nama Belakang -->
+            <TextView
+                android:text="Nama belakang"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvNamaBelakang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textColor="#333"
+                android:background="@drawable/bg_input"
+                android:text="—" />
+
+            <!-- Username -->
+            <TextView
+                android:text="Username"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textColor="#333"
+                android:background="@drawable/bg_input"
+                android:text="—" />
+
+            <!-- No Telp -->
+            <TextView
+                android:text="No Telp"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvNoTelp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textColor="#333"
+                android:background="@drawable/bg_input"
+                android:text="—" />
+
+            <!-- Email -->
+            <TextView
+                android:text="Email"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:textColor="#333"
+                android:background="@drawable/bg_input"
+                android:text="—" />
+
+            <!-- Alamat -->
+            <TextView
+                android:text="Alamat"
+                android:textColor="#000"
+                android:textStyle="bold"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvAlamat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="120dp"
+                android:gravity="top|start"
+                android:padding="12dp"
+                android:textColor="#333"
+                android:background="@drawable/bg_input"
+                android:text="—" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEditAkun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:backgroundTint="#FF001333"
+                android:drawablePadding="8dp"
+                android:fontFamily="@font/lato_bold"
+                android:layout_marginTop="12dp"
+                android:paddingHorizontal="12dp"
+                android:paddingStart="10dp"
+                android:text="Edit Akun"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                app:cornerRadius="12dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
