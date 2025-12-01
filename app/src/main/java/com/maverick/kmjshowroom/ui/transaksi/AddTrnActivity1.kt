@@ -10,8 +10,6 @@ import com.google.android.material.textfield.TextInputEditText
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.ui.SharedCarViewModel
 import android.view.View
-import android.widget.Button
-
 
 class AddTrnActivity1 : AppCompatActivity() {
 
@@ -24,7 +22,7 @@ class AddTrnActivity1 : AppCompatActivity() {
         sharedCarViewModel = ViewModelProvider(this)[SharedCarViewModel::class.java]
 
         val closeButton = findViewById<ImageView>(R.id.icon_close)
-        closeButton.setOnClickListener {
+        closeButton?.setOnClickListener {
             finish()
         }
 
@@ -36,6 +34,13 @@ class AddTrnActivity1 : AppCompatActivity() {
         val txtDp = findViewById<TextView>(R.id.txtDp)
         val txtKm = findViewById<TextView>(R.id.txtKm)
         val txtYear = findViewById<TextView>(R.id.txtYear)
+
+        // PERBAIKAN: Container untuk tipe mobil dan detail mobil - HIDDEN di awal
+        val tipeContainer = findViewById<LinearLayout>(R.id.tipeContainer)
+        val carDetailContainer = findViewById<androidx.constraintlayout.widget.ConstraintLayout>(R.id.carDetailContainer)
+
+        tipeContainer?.visibility = View.GONE
+        carDetailContainer?.visibility = View.GONE
 
         var selectedKodeMobil = ""
         var selectedCarName = ""
@@ -89,6 +94,10 @@ class AddTrnActivity1 : AppCompatActivity() {
                 txtDp.text = selectedCar.dp
                 txtKm.text = selectedCar.jarakTempuh
                 txtYear.text = selectedCar.year
+
+                // PERBAIKAN: Tampilkan tipe dan detail mobil setelah dipilih
+                tipeContainer?.visibility = View.VISIBLE
+                carDetailContainer?.visibility = View.VISIBLE
             }
         }
 

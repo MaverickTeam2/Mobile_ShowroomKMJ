@@ -35,9 +35,8 @@ class AddTrnActivity3 : AppCompatActivity() {
         val etDealFull = findViewById<TextInputEditText>(R.id.etDealFull)
         val etDealKredit = findViewById<TextInputEditText>(R.id.etDeal)
         val btnFinish = findViewById<Button>(R.id.btnFinish)
-        val btnSaveDraft = findViewById<Button>(R.id.btnSaveDraft)
 
-        if (btnFinish == null || btnSaveDraft == null) {
+        if (btnFinish == null) {
             Toast.makeText(this, "Error: Button tidak ditemukan", Toast.LENGTH_SHORT).show()
             finish()
             return
@@ -92,40 +91,7 @@ class AddTrnActivity3 : AppCompatActivity() {
             }
         }
 
-        btnSaveDraft.setOnClickListener {
-            val jenis = spinnerJenisPembayaran?.text.toString()
-            if (jenis.isEmpty()) {
-                Toast.makeText(this, "Pilih jenis pembayaran", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val dealPaymentStr = if (jenis == "Full Payment")
-                etDealFull?.text.toString()
-            else
-                etDealKredit?.text.toString()
-
-            if (dealPaymentStr.isEmpty()) {
-                Toast.makeText(this, "Masukkan deal payment", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener
-            }
-
-            val dealPayment = dealPaymentStr.replace("[^\\d]".toRegex(), "").toDoubleOrNull() ?: hargaMobil
-            val tipePembayaran = if (jenis == "Full Payment") "cash" else "kredit"
-
-            createTransaksi(
-                namaPembeli = namaPembeli,
-                noHp = noTelp,
-                tipePembayaran = tipePembayaran,
-                hargaAkhir = dealPayment,
-                kodeMobil = kodeMobil,
-                kodeUser = kodeUser,
-                status = "pending",
-                jaminanKtp = jaminanKtp,
-                jaminanKk = jaminanKk,
-                jaminanRekening = jaminanRekening
-            )
-        }
-
+        // PERBAIKAN: Tombol Finish langsung save dengan status "pending"
         btnFinish.setOnClickListener {
             val jenis = spinnerJenisPembayaran?.text.toString()
             if (jenis.isEmpty()) {
@@ -146,6 +112,7 @@ class AddTrnActivity3 : AppCompatActivity() {
             val dealPayment = dealPaymentStr.replace("[^\\d]".toRegex(), "").toDoubleOrNull() ?: hargaMobil
             val tipePembayaran = if (jenis == "Full Payment") "cash" else "kredit"
 
+            // PERBAIKAN: Status langsung "pending" saat tambah transaksi baru
             createTransaksi(
                 namaPembeli = namaPembeli,
                 noHp = noTelp,
@@ -153,7 +120,7 @@ class AddTrnActivity3 : AppCompatActivity() {
                 hargaAkhir = dealPayment,
                 kodeMobil = kodeMobil,
                 kodeUser = kodeUser,
-                status = "completed",
+                status = "pending", // STATUS DEFAULT: PENDING
                 jaminanKtp = jaminanKtp,
                 jaminanKk = jaminanKk,
                 jaminanRekening = jaminanRekening
