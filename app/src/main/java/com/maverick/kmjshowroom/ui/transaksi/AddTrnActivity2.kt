@@ -27,7 +27,8 @@ class AddTrnActivity2 : AppCompatActivity() {
         val cbKTP = findViewById<CheckBox>(R.id.cbKTP)
         val cbKK = findViewById<CheckBox>(R.id.cbKK)
         val cbRekening = findViewById<CheckBox>(R.id.cbRekening)
-        val btnNext = findViewById<View>(R.id.btn_next)
+        val btnNext = findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_next)
+        btnNext.setText("Selanjutnya")
 
         val selectedCar = intent.getStringExtra("selectedCar") ?: ""
         val kodeMobil = intent.getStringExtra("kodeMobil") ?: ""

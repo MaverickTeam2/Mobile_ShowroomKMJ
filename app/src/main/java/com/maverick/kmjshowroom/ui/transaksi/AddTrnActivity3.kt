@@ -34,13 +34,9 @@ class AddTrnActivity3 : AppCompatActivity() {
         val tvFullPrizeKredit = findViewById<TextInputEditText>(R.id.tvFullPrizeKredit)
         val etDealFull = findViewById<TextInputEditText>(R.id.etDealFull)
         val etDealKredit = findViewById<TextInputEditText>(R.id.etDeal)
-        val btnFinish = findViewById<Button>(R.id.btnFinish)
+        val btnNext = findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_next)
+        btnNext.setText("Kirim")
 
-        if (btnFinish == null) {
-            Toast.makeText(this, "Error: Button tidak ditemukan", Toast.LENGTH_SHORT).show()
-            finish()
-            return
-        }
 
         findViewById<ImageView>(R.id.icon_close)?.setOnClickListener {
             finish()
@@ -92,7 +88,7 @@ class AddTrnActivity3 : AppCompatActivity() {
         }
 
         // PERBAIKAN: Tombol Finish langsung save dengan status "pending"
-        btnFinish.setOnClickListener {
+        btnNext.setOnClickListener {
             val jenis = spinnerJenisPembayaran?.text.toString()
             if (jenis.isEmpty()) {
                 Toast.makeText(this, "Pilih jenis pembayaran terlebih dahulu", Toast.LENGTH_SHORT).show()

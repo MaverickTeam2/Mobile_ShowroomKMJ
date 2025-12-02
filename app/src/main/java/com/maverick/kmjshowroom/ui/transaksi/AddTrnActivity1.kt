@@ -10,6 +10,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.ui.SharedCarViewModel
 import android.view.View
+import com.google.android.material.button.MaterialButton
 
 class AddTrnActivity1 : AppCompatActivity() {
 
@@ -101,7 +102,9 @@ class AddTrnActivity1 : AppCompatActivity() {
             }
         }
 
-        val btnNext = findViewById<View>(R.id.btn_next)
+
+        val btnNext = findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_next)
+        btnNext.setText("Selanjutnya")
         btnNext?.setOnClickListener {
             if (selectedKodeMobil.isNotEmpty()) {
                 val intent = Intent(this, AddTrnActivity2::class.java).apply {
