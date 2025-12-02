@@ -22,24 +22,27 @@ class MainActivity : AppCompatActivity() {
         val startTime = System.currentTimeMillis()
 
         CoroutineScope(Dispatchers.IO).launch {
-            val hasUserInSQLite = checkUserInSQLite()
 
-            val hasUserInServer = withTimeoutOrNull(5000) {
-                checkUserInServer()
-            } ?: false
+            val sqliteCount = getSQLiteCount()
+            val serverCount = getServerUserCount()
 
             val elapsed = System.currentTimeMillis() - startTime
             val remaining = splashMinDuration - elapsed
-
             if (remaining > 0) delay(remaining)
 
             withContext(Dispatchers.Main) {
                 when {
-                    hasUserInServer || hasUserInSQLite -> {
-                        startActivity(Intent(this@MainActivity, loginSaveActivity::class.java))
-                    }
-                    else -> {
+                    serverCount == 0 -> {
                         startActivity(Intent(this@MainActivity, RegisterActivity::class.java))
+                    }
+
+                    sqliteCount == 0 || serverCount > 1 -> {
+                        startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                    }
+
+                    // 3. SQLite ada user (exact 1) → Login Save
+                    else -> {
+                        startActivity(Intent(this@MainActivity, loginSaveActivity::class.java))
                     }
                 }
                 finish()
@@ -47,20 +50,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkUserInSQLite(): Boolean {
-        val dbHelper = UserDatabaseHelper(this)
-        return dbHelper.getUserCount() > 0
+    private fun getSQLiteCount(): Int {
+        val db = UserDatabaseHelper(this)
+        return db.getUserCount()
     }
 
-    private suspend fun checkUserInServer(): Boolean {
+    private suspend fun getServerUserCount(): Int {
         return try {
             val response = ApiClient.apiService.checkUser()
             if (response.isSuccessful) {
-                val body = response.body()
-                (body?.user_count ?: 0) > 0
-            } else false
+                response.body()?.user_count ?: 0
+            } else 0
         } catch (e: Exception) {
-            false
+            0
         }
     }
+
 }
