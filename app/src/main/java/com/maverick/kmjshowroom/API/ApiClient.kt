@@ -24,4 +24,12 @@ object ApiClient {
             .build()
             .create(ApiService::class.java)
     }
+    fun getImageUrl(path: String?): String {
+        if (path.isNullOrEmpty()) return ""
+
+        return when {
+            path.startsWith("http") -> path // Udah full URL
+            else -> BASE_URL + path // Gabung dengan base URL
+        }
+    }
 }

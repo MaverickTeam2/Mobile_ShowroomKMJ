@@ -37,7 +37,7 @@ class SharedCarViewModel : ViewModel() {
             try {
                 val response = ApiClient.apiService.getMobilList()
 
-                if (response.isSuccessful && response.body()?.success == true) {
+                if (response.isSuccessful && response.body()?.code == 200) {
                     val mobilItems = response.body()?.data ?: emptyList()
 
                     val carDataList = mobilItems.map { item ->
