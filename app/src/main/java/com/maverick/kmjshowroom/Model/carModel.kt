@@ -1,5 +1,7 @@
 package com.maverick.kmjshowroom.Model
 
+import java.math.BigInteger
+
 
 data class CarData(
     val kodeMobil: String = "",
@@ -14,5 +16,5 @@ data class CarData(
     val tipeKendaraan: String = "",
     val angsuran: String,
     val dp: String,
-    val fullPrice: Int = 0
+    val fullPrice: BigInteger
 )

@@ -56,8 +56,6 @@ class EditAkunActivity : AppCompatActivity() {
         binding.etEmail.isEnabled = false
         binding.etPassword.visibility = View.GONE
         binding.etKonfirmasiPassword.visibility = View.GONE
-
-        // Sembunyikan label password juga
         binding.root.findViewById<View>(R.id.etPassword)?.let { passwordField ->
             // Cari TextView label di atasnya
             val parent = passwordField.parent as? ViewGroup

@@ -3,6 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"/>
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
@@ -104,16 +108,32 @@
             android:label="Tambah Akun"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.KMJShowroom" />
+
         <activity
             android:name=".ui.akun.DetailAkunActivity"
             android:label="Detail Akun"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.KMJShowroom" />
+
         <activity
             android:name=".ui.akun.EditAkunActivity"
             android:label="Edit Akun"
             android:parentActivityName=".ui.akun.DetailAkunActivity"
             android:theme="@style/Theme.KMJShowroom" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.UCrop" />
     </application>
 
 </manifest>

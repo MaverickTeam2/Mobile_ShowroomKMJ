@@ -22,14 +22,11 @@ class AddCarStep1Activity : AppCompatActivity() {
     private lateinit var binding: AddCarstep1Binding
     private lateinit var pickImageLauncher: ActivityResultLauncher<Intent>
     private var currentTarget: ImageView? = null
-
-    // store URIs as strings to pass between activities
     private var uri360: String? = null
     private var uriDepan: String? = null
     private var uriBelakang: String? = null
     private var uriSamping: String? = null
-    private val tambahanUris = mutableListOf<String?>() // size up to 6
-
+    private val tambahanUris = mutableListOf<String?>()
     private var isEdit = false
     private var kodeMobil: String? = null
 
@@ -132,17 +129,13 @@ class AddCarStep1Activity : AppCompatActivity() {
 
     private fun setupNextButton() {
         binding.footerSave1.btnNext.setOnClickListener {
-            // no required fields in step1 — but we still pass collected URIs forward
             val intent = Intent(this, AddCarStep2Activity::class.java)
             intent.putExtra("is_edit", isEdit)
             intent.putExtra("kode_mobil", kodeMobil)
-
-            // pass image URIs (may be null)
             intent.putExtra("foto_360", uri360)
             intent.putExtra("foto_depan", uriDepan)
             intent.putExtra("foto_belakang", uriBelakang)
             intent.putExtra("foto_samping", uriSamping)
-            // tambahan as string array
             intent.putExtra("foto_tambahan", tambahanUris.map { it ?: "" }.toTypedArray())
 
             startActivity(intent)

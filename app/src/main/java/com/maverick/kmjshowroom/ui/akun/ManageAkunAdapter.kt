@@ -18,13 +18,13 @@ class ManageAkunAdapter(
 
     inner class ViewHolder(val binding: ItemAkunBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
         fun bind(item: ManageAkun) {
             binding.nama.text = item.full_name
             binding.email.text = item.email
             binding.role.text = item.role.uppercase()
-            binding.statusSwitch.isChecked = item.isActive
 
-            // Format last login pakai helper
+            // Format last login
             binding.lastLogin.text = item.formattedLastLogin
 
             // Update badge status
@@ -37,7 +37,7 @@ class ManageAkunAdapter(
                 binding.badgeStatus.setTextColor(binding.root.context.getColor(android.R.color.darker_gray))
             }
 
-            // Update badge role sesuai tipe
+            // Update badge role
             when(item.role.lowercase()) {
                 "owner" -> {
                     binding.role.setTextColor(binding.root.context.getColor(android.R.color.holo_red_dark))
@@ -51,7 +51,7 @@ class ManageAkunAdapter(
                 }
             }
 
-            // GANTI INI - Load Foto pake ApiClient.getImageUrl()
+            // Load foto
             val imageUrl = ApiClient.getImageUrl(item.avatar_url)
             Glide.with(binding.root.context)
                 .load(imageUrl.ifEmpty { R.drawable.sample_profile })
@@ -63,11 +63,34 @@ class ManageAkunAdapter(
             // Klik item
             binding.root.setOnClickListener { onClick(item) }
 
-            // Toggle status
+            // PENTING: Lepas listener dulu sebelum set checked
+            // Ini mencegah trigger callback saat bind
             binding.statusSwitch.setOnCheckedChangeListener(null)
             binding.statusSwitch.isChecked = item.isActive
-            binding.statusSwitch.setOnCheckedChangeListener { _, _ ->
-                onToggleStatus(item)
+
+            // Baru set listener setelah checked di-set
+            binding.statusSwitch.setOnCheckedChangeListener { _, isChecked ->
+                // Cegah Owner dinonaktifkan
+                if (item.role.equals("owner", ignoreCase = true) && !isChecked) {
+                    // Kembalikan ke aktif tanpa trigger callback
+                    binding.statusSwitch.setOnCheckedChangeListener(null)
+                    binding.statusSwitch.isChecked = true
+                    binding.statusSwitch.setOnCheckedChangeListener { _, _ ->
+                        // Re-attach listener kosong
+                    }
+
+                    android.widget.Toast.makeText(
+                        binding.root.context,
+                        "Akun Owner tidak dapat dinonaktifkan!",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
+                    return@setOnCheckedChangeListener
+                }
+
+                // Pastikan state benar-benar berubah
+                if (isChecked != item.isActive) {
+                    onToggleStatus(item)
+                }
             }
 
             // Tombol delete
