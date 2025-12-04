@@ -19,6 +19,7 @@ import com.maverick.kmjshowroom.Model.TransaksiListResponse
 import com.maverick.kmjshowroom.Model.CreateTransaksiResponse
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.databinding.FragmentTransaksiBinding
+import com.maverick.kmjshowroom.ui.setting.SettingActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,6 +48,13 @@ class TransaksiFragment : Fragment() {
         setupSearch()
         loadTransaksiFromDatabase()
 
+        binding.headerInclude.iconProfile.setOnClickListener {
+            startActivity(Intent(requireContext(), SettingActivity::class.java))
+            requireActivity().overridePendingTransition(
+                android.R.anim.slide_in_left,
+                android.R.anim.slide_out_right
+            )
+        }
         return root
     }
 

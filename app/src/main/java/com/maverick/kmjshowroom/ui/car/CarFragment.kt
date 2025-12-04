@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.maverick.kmjshowroom.Model.MobilItem
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.databinding.FragmentCarBinding
+import com.maverick.kmjshowroom.ui.setting.SettingActivity
 
 class CarFragment : Fragment() {
 
@@ -53,6 +54,14 @@ class CarFragment : Fragment() {
         setupSearchBar()
         setupButtonListener()
         observeViewModel()
+
+        binding.headerInclude.iconProfile.setOnClickListener {
+            startActivity(Intent(requireContext(), SettingActivity::class.java))
+            requireActivity().overridePendingTransition(
+                android.R.anim.slide_in_left,
+                android.R.anim.slide_out_right
+            )
+        }
 
         // ✅ Load data hanya jika belum pernah dimuat
         if (viewModel.mobilListLiveData.value == null) {

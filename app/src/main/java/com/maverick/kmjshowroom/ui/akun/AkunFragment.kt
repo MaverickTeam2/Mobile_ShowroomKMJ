@@ -18,6 +18,7 @@ import com.maverick.kmjshowroom.Adapter.ManageAkunAdapter
 import com.maverick.kmjshowroom.Model.ManageAkun
 import com.maverick.kmjshowroom.Model.UpdateStatusRequest
 import com.maverick.kmjshowroom.databinding.FragmentAkunBinding
+import com.maverick.kmjshowroom.ui.setting.SettingActivity
 import kotlinx.coroutines.launch
 
 class AkunFragment : Fragment() {
@@ -50,10 +51,18 @@ class AkunFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        binding.headerInclude.textHeader.text = "AKUN"
         setupRecyclerView()
         setupClickListeners()
         loadAkunList()
+
+        binding.headerInclude.iconProfile.setOnClickListener {
+            startActivity(Intent(requireContext(), SettingActivity::class.java))
+            requireActivity().overridePendingTransition(
+                android.R.anim.slide_in_left,
+                android.R.anim.slide_out_right
+            )
+        }
     }
 
     private fun setupRecyclerView() {

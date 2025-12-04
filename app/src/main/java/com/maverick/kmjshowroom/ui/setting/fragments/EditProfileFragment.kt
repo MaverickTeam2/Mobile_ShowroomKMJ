@@ -193,7 +193,7 @@ class EditProfileFragment : Fragment() {
 
         cameraImageUri = FileProvider.getUriForFile(
             requireContext(),
-            requireContext().packageName + ".fileprovider",
+            requireContext().packageName + ".provider",
             photoFile
         )
 
@@ -214,6 +214,9 @@ class EditProfileFragment : Fragment() {
         val options = UCrop.Options().apply {
             setCompressionQuality(90)
             setFreeStyleCropEnabled(false)
+            setStatusBarColor(android.graphics.Color.BLACK)
+            setToolbarColor(android.graphics.Color.BLACK)
+            setToolbarWidgetColor(android.graphics.Color.WHITE)
         }
 
         val cropIntent = UCrop.of(uri, destination)

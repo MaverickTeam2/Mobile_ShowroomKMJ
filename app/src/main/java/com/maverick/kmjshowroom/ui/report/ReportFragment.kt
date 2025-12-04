@@ -20,6 +20,7 @@ import com.maverick.kmjshowroom.Model.TransaksiLaporan
 import com.maverick.kmjshowroom.Model.MobilLaporan
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.databinding.FragmentReportBinding
+import com.maverick.kmjshowroom.ui.setting.SettingActivity
 import com.maverick.kmjshowroom.utils.FileUtils
 import com.maverick.kmjshowroom.utils.LoadingDialog
 import com.maverick.kmjshowroom.utils.PdfGenerator
@@ -53,8 +54,17 @@ class ReportFragment : Fragment() {
     ): View {
         _binding = FragmentReportBinding.inflate(inflater, container, false)
         loadingDialog = LoadingDialog(requireContext())
+        binding.headerInclude.textHeader.text = "LAPORAN"
+        binding.headerInclude.searchBar.visibility = View.GONE
         setupListeners()
         loadInitialStats()
+        binding.headerInclude.iconProfile.setOnClickListener {
+            startActivity(Intent(requireContext(), SettingActivity::class.java))
+            requireActivity().overridePendingTransition(
+                android.R.anim.slide_in_left,
+                android.R.anim.slide_out_right
+            )
+        }
         return binding.root
     }
 
