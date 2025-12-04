@@ -118,7 +118,8 @@
                 android:contentDescription="Hapus"
                 android:layout_marginStart="8dp"
                 app:tint="#BA2E3A"
-                android:padding="6dp" />
+                android:padding="6dp"
+                android:visibility="gone"/>
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>

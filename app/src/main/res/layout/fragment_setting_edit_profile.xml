@@ -139,7 +139,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@drawable/bg_edittext_disabled"
                 android:enabled="false"
-                android:hint="dianji hikari"
+                android:hint="username"
                 android:padding="12dp" />
 
             <TextView
@@ -159,7 +159,7 @@
                 android:layout_marginTop="4dp"
                 android:background="@drawable/bg_edittext_disabled"
                 android:enabled="false"
-                android:hint="dianji@gmail.com"
+                android:hint="email"
                 android:padding="12dp" />
 
             <TextView

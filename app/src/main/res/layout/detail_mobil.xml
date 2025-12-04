@@ -1,275 +1,306 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/detail_mobil"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F0F5F9">
 
-    <include
-        android:id="@+id/layout_headeradd"
-        layout="@layout/layout_headeradd"/>
-
-    <!-- Agar bisa discroll -->
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/detail_mobil"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:fillViewport="true">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <include
+            android:id="@+id/layout_headeradd"
+            layout="@layout/layout_headeradd"/>
+
+        <!-- Agar bisa discroll -->
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- ====================== FOTO MOBIL ====================== -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Foto Mobil"
-                android:fontFamily="@font/lato_bold"
-                android:textColor="#000"
-                android:textSize="20sp"
-                android:layout_marginBottom="10dp" />
-
-            <GridLayout
-                android:id="@+id/containerFotoMobil"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="2"
-                android:useDefaultMargins="true">
-                <!-- Foto akan ditambahkan secara dinamis -->
-            </GridLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#CCCCCC"
-                android:layout_marginVertical="16dp" />
-
-            <!-- ====================== DETAIL INFORMASI ====================== -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Informasi Mobil"
-                android:fontFamily="@font/lato_bold"
-                android:textColor="#000"
-                android:textSize="20sp"
-                android:layout_marginBottom="10dp" />
-
-            <!-- Nama Mobil -->
-            <TextView
-                android:text="Nama Mobil"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/txtNamaMobil"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Tahun -->
-            <TextView
-                android:text="Tahun"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/txtTahunMobil"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Jarak Tempuh -->
-            <TextView
-                android:text="Jarak Tempuh"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/txtJarakTempuh"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Warna Exterior -->
-            <TextView
-                android:text="Warna Exterior"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/txtWarnaExterior"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Warna Interior -->
-            <TextView
-                android:text="Warna Interior"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/txtWarnaInterior"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Sistem Penggerak -->
-            <TextView
-                android:text="Sistem Penggerak"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/txtSistemPenggerak"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Jenis Kendaraan -->
-            <TextView
-                android:text="Jenis Kendaraan"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/txtJenisKendaraan"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Bahan Bakar -->
-            <TextView
-                android:text="Bahan Bakar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textColor="#000"/>
-
-            <TextView
-                android:id="@+id/txtBahanBakar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <!-- Keuangan -->
-            <TextView
-                android:text="Uang Muka"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/txtUangMuka"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <TextView
-                android:text="Angsuran"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/txtAngsuran"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <TextView
-                android:text="Tenor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/txtTenor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="12dp"/>
-
-            <TextView
-                android:text="Status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/txtStatusMobil"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="--"
-                android:textSize="16sp"
-                android:layout_marginBottom="18dp"/>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#CCCCCC"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- ====================== FITUR MOBIL ====================== -->
-            <TextView
-                android:text="Fitur Mobil"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/lato_bold"
-                android:textColor="#000"
-                android:textSize="20sp"
-                android:layout_marginBottom="10dp" />
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true">
 
             <LinearLayout
-                android:id="@+id/containerFitur"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        </LinearLayout>
-    </ScrollView>
+                <!-- ====================== FOTO MOBIL ====================== -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Foto Mobil"
+                    android:fontFamily="@font/lato_bold"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp" />
 
-    <include
-        android:id="@+id/footer_savedetail"
-        layout="@layout/footer_save" />
+                <GridLayout
+                    android:id="@+id/containerFotoMobil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="2"
+                    android:useDefaultMargins="true">
+                    <!-- Foto akan ditambahkan secara dinamis -->
+                </GridLayout>
 
-</LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#CCCCCC"
+                    android:layout_marginVertical="16dp" />
+
+                <!-- ====================== DETAIL INFORMASI ====================== -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Informasi Mobil"
+                    android:fontFamily="@font/lato_bold"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- Nama Mobil -->
+                <TextView
+                    android:text="Nama Mobil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txtNamaMobil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Tahun -->
+                <TextView
+                    android:text="Tahun"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txtTahunMobil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Jarak Tempuh -->
+                <TextView
+                    android:text="Jarak Tempuh"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txtJarakTempuh"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Warna Exterior -->
+                <TextView
+                    android:text="Warna Exterior"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txtWarnaExterior"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Warna Interior -->
+                <TextView
+                    android:text="Warna Interior"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txtWarnaInterior"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Sistem Penggerak -->
+                <TextView
+                    android:text="Sistem Penggerak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txtSistemPenggerak"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Jenis Kendaraan -->
+                <TextView
+                    android:text="Jenis Kendaraan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txtJenisKendaraan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Bahan Bakar -->
+                <TextView
+                    android:text="Bahan Bakar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="#000"/>
+
+                <TextView
+                    android:id="@+id/txtBahanBakar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <!-- Keuangan -->
+                <TextView
+                    android:text="Harga Full"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/txtHargaFull"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:text="Uang Muka"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/txtUangMuka"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:text="Angsuran"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/txtAngsuran"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:text="Tenor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/txtTenor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="12dp"/>
+
+                <TextView
+                    android:text="Status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/txtStatusMobil"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="--"
+                    android:textSize="16sp"
+                    android:layout_marginBottom="18dp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#CCCCCC"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- ====================== FITUR MOBIL ====================== -->
+                <TextView
+                    android:text="Fitur Mobil"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/lato_bold"
+                    android:textColor="#000"
+                    android:textSize="20sp"
+                    android:layout_marginBottom="10dp" />
+
+                <LinearLayout
+                    android:id="@+id/containerFitur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <include
+            android:id="@+id/footer_savedetail"
+            layout="@layout/footer_save" />
+
+    </LinearLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingProgress"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/car_loading"
+        android:visibility="gone" />
+</FrameLayout>

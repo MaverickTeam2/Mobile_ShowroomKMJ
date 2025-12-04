@@ -29,7 +29,6 @@ class DetailAkunActivity : AppCompatActivity() {
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
-            // Reload data setelah edit
             loadDetailAkun()
         }
     }
@@ -103,7 +102,6 @@ class DetailAkunActivity : AppCompatActivity() {
         binding.tvNamaDepan.text = namaParts.getOrNull(0) ?: "—"
         binding.tvNamaBelakang.text = namaParts.getOrNull(1) ?: "—"
 
-        // Data lainnya
         binding.tvUsername.text = akun.username ?: "—"
         binding.tvNoTelp.text = akun.no_telp ?: "—"
         binding.tvEmail.text = akun.email

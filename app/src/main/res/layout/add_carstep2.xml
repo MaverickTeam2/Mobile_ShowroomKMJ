@@ -79,31 +79,7 @@
                 android:inputType="number"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:text="0" />
-
-            <!-- Harga Penuh -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="@font/lato_bold"
-                android:text="Harga Penuh *"
-                android:textColor="#000"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/harga_penuh"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/bg_card_inner"
-                android:fontFamily="@font/lato_bold"
-                android:inputType="number"
-                android:paddingStart="12dp"
-                android:paddingEnd="12dp"
-                android:text="0" />
-
+                android:hint="0" />
             <!-- Tipe Kendaraan -->
             <TextView
                 android:layout_width="wrap_content"
@@ -260,7 +236,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/lato_bold"
-                android:text="Full Price (Rp) *"
+                android:text="Harga Penuh*"
                 android:textColor="#000"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -275,7 +251,7 @@
                 android:inputType="numberDecimal"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:text="2500" />
+                android:hint="2500" />
 
             <!-- Uang Muka -->
             <TextView
@@ -298,7 +274,7 @@
                 android:inputType="numberDecimal"
                 android:paddingStart="12dp"
                 android:paddingEnd="12dp"
-                android:text="2500" />
+                android:hint="2500" />
 
             <!-- Angsuran dan Tenor -->
             <LinearLayout
@@ -333,7 +309,7 @@
                         android:inputType="numberDecimal"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
-                        android:text="2500" />
+                        android:hint="2500" />
                 </LinearLayout>
 
                 <TextView
@@ -372,7 +348,7 @@
                         android:inputType="number"
                         android:paddingStart="12dp"
                         android:paddingEnd="12dp"
-                        android:text="0" />
+                        android:hint="0" />
                 </LinearLayout>
 
             </LinearLayout>

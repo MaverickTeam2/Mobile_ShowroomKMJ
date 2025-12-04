@@ -1,48 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF0F5F9"
-    android:orientation="vertical"
     tools:context=".ui.akun.AkunFragment">
-
-    <include
-        android:id="@+id/header_include"
-        layout="@layout/layout_header" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:background="#FFF0F5F9"
+        android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnTambah"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:backgroundTint="#FF001333"
-            android:drawableLeft="@drawable/ic_plus_white"
-            android:drawablePadding="8dp"
-            android:fontFamily="@font/lato_bold"
-            android:gravity="start|center_vertical"
-            android:paddingHorizontal="12dp"
-            android:paddingStart="10dp"
-            android:text="Tambah Akun"
-            android:textColor="#FFFFFF"
-            android:textSize="11sp"
-            app:cornerRadius="12dp" />
+        <include
+            android:id="@+id/header_include"
+            layout="@layout/layout_header" />
 
-        <!-- UBAH ID JADI recyclerAkun -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerAkun"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="20dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTambah"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:backgroundTint="#FF001333"
+                android:drawableLeft="@drawable/ic_plus_white"
+                android:drawablePadding="8dp"
+                android:fontFamily="@font/lato_bold"
+                android:gravity="start|center_vertical"
+                android:paddingHorizontal="12dp"
+                android:paddingStart="10dp"
+                android:text="Tambah Akun"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                app:cornerRadius="12dp" />
+
+            <!-- UBAH ID JADI recyclerAkun -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerAkun"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="20dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loadingProgress"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        app:lottie_autoPlay="false"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/car_loading"
+        android:visibility="gone" />
+</FrameLayout>

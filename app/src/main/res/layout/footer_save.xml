@@ -25,7 +25,8 @@
         android:layout_marginRight="10dp"
         app:strokeWidth="2dp"
         app:strokeColor="#B8B8B8"
-        app:cornerRadius="12dp"/>
+        app:cornerRadius="12dp"
+        android:visibility="gone"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_next"

@@ -27,6 +27,9 @@ class AkunFragment : Fragment() {
 
     private lateinit var adapter: ManageAkunAdapter
     private var akunList = mutableListOf<ManageAkun>()
+    private var filteredList = mutableListOf<ManageAkun>()
+
+    private var isToggling = false
 
     private val addAkunLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -55,14 +58,16 @@ class AkunFragment : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = ManageAkunAdapter(
-            list = akunList,
+            list = filteredList,
             onClick = { akun ->
                 val intent = Intent(requireContext(), DetailAkunActivity::class.java)
                 intent.putExtra(DetailAkunActivity.EXTRA_KODE_USER, akun.kode_user)
                 startActivity(intent)
             },
             onToggleStatus = { akun ->
-                toggleStatusAkun(akun)
+                if (!isToggling) {
+                    toggleStatusAkun(akun)
+                }
             },
             onDelete = { akun ->
                 showDeleteConfirmation(akun)
@@ -80,22 +85,39 @@ class AkunFragment : Fragment() {
             val intent = Intent(requireContext(), AddAkunActivity::class.java)
             addAkunLauncher.launch(intent)
         }
+
+        // Setup search functionality
+        binding.headerInclude.searchBar.addTextChangedListener(object : android.text.TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterAkunList(s.toString())
+            }
+
+            override fun afterTextChanged(s: android.text.Editable?) {}
+        })
     }
 
     private fun loadAkunList() {
+        showLoading(true)
+
         lifecycleScope.launch {
             try {
                 Log.d("AkunFragment", "Loading akun list...")
                 val response = ApiClient.apiService.getManageAccList()
 
                 Log.d("AkunFragment", "Response code: ${response.code()}")
-                Log.d("AkunFragment", "Response body: ${response.body()}")
 
                 if (response.isSuccessful && response.body()?.success == true) {
                     val data = response.body()!!.data
                     akunList.clear()
                     akunList.addAll(data)
-                    adapter.updateData(akunList)
+
+                    // Update filtered list juga
+                    filteredList.clear()
+                    filteredList.addAll(data)
+
+                    adapter.updateData(filteredList)
 
                     Log.d("AkunFragment", "Loaded ${akunList.size} accounts")
                 } else {
@@ -111,18 +133,20 @@ class AkunFragment : Fragment() {
                     "Error: ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
+            } finally {
+                showLoading(false)
             }
         }
     }
 
-    // In AkunFragment.kt
-
     private fun toggleStatusAkun(akun: ManageAkun) {
+        // TIDAK ADA LOADING ANIMATION untuk toggle
+        isToggling = true
+
         lifecycleScope.launch {
             try {
                 val newStatus = if (akun.isActive) 0 else 1
 
-                // Create an instance of UpdateStatusRequest instead of a HashMap
                 val requestBody = UpdateStatusRequest(
                     kodeUser = akun.kode_user,
                     status = newStatus
@@ -130,38 +154,60 @@ class AkunFragment : Fragment() {
 
                 Log.d("AkunFragment", "=== TOGGLE STATUS ===")
                 Log.d("AkunFragment", "Kode User: ${akun.kode_user}")
+                Log.d("AkunFragment", "Current Status: ${akun.status}")
                 Log.d("AkunFragment", "New Status: $newStatus")
-                Log.d("AkunFragment", "Request Body: $requestBody")
 
-                // Pass the new requestBody object to the service method
                 val response = ApiClient.apiService.updateStatusManageAccount(requestBody)
 
                 Log.d("AkunFragment", "Response Code: ${response.code()}")
-                // ... rest of your code remains the same
+                Log.d("AkunFragment", "Response Body: ${response.body()}")
+
+                if (!response.isSuccessful) {
+                    val errorBody = response.errorBody()?.string()
+                    Log.e("AkunFragment", "Error Body: $errorBody")
+                }
 
                 if (response.isSuccessful && response.body()?.success == true) {
+                    // UPDATE LOKAL SAJA - JANGAN RELOAD
+                    val index = akunList.indexOfFirst { it.kode_user == akun.kode_user }
+                    if (index != -1) {
+                        // Buat object baru dengan status terupdate
+                        val updatedAkun = akunList[index].copy(status = newStatus)
+                        akunList[index] = updatedAkun
+
+                        // Update juga di filtered list
+                        val filteredIndex = filteredList.indexOfFirst { it.kode_user == akun.kode_user }
+                        if (filteredIndex != -1) {
+                            filteredList[filteredIndex] = updatedAkun
+                            adapter.notifyItemChanged(filteredIndex)
+                        }
+
+                        Log.d("AkunFragment", "Updated status locally for ${akun.full_name}")
+                    }
+
+                    val statusText = if (newStatus == 1) "diaktifkan" else "dinonaktifkan"
                     Toast.makeText(
                         requireContext(),
-                        "Status berhasil diperbarui",
+                        "Akun ${akun.full_name} berhasil $statusText",
                         Toast.LENGTH_SHORT
                     ).show()
-                    loadAkunList()
+
                 } else {
                     val errorMsg = response.body()?.message ?: "Gagal mengubah status"
-                    Log.e("AkunFragment", "Error Message: $errorMsg")
+                    Log.e("AkunFragment", "Error: $errorMsg")
                     Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
-                    loadAkunList()
                 }
 
             } catch (e: Exception) {
-                Log.e("AkunFragment", "Exception Type: ${e.javaClass.simpleName}")
-                Log.e("AkunFragment", "Exception Message: ${e.message}", e)
+                Log.e("AkunFragment", "Exception: ${e.message}", e)
+                e.printStackTrace()
                 Toast.makeText(
                     requireContext(),
                     "Error: ${e.message}",
                     Toast.LENGTH_LONG
                 ).show()
-                loadAkunList()
+            } finally {
+                isToggling = false
             }
         }
     }
@@ -179,13 +225,14 @@ class AkunFragment : Fragment() {
     }
 
     private fun deleteAkun(akun: ManageAkun) {
+        showLoading(true)
+
         lifecycleScope.launch {
             try {
                 Log.d("AkunFragment", "Deleting akun: ${akun.kode_user}")
                 val response = ApiClient.apiService.deleteManageAccount(akun.kode_user)
 
                 Log.d("AkunFragment", "Delete Response Code: ${response.code()}")
-                Log.d("AkunFragment", "Delete Response Body: ${response.body()}")
 
                 if (response.isSuccessful && response.body()?.success == true) {
                     Toast.makeText(
@@ -195,7 +242,7 @@ class AkunFragment : Fragment() {
                     ).show()
                     loadAkunList()
                 } else {
-                    val errorMsg = response.body()?.message ?: response.errorBody()?.string() ?: "Gagal menghapus akun"
+                    val errorMsg = response.body()?.message ?: "Gagal menghapus akun"
                     Log.e("AkunFragment", "Delete Error: $errorMsg")
                     Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_SHORT).show()
                 }
@@ -207,17 +254,60 @@ class AkunFragment : Fragment() {
                     "Error: ${e.message}",
                     Toast.LENGTH_SHORT
                 ).show()
+            } finally {
+                showLoading(false)
             }
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        loadAkunList()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    /**
+     * Filter akun list berdasarkan query
+     */
+    private fun filterAkunList(query: String) {
+        val searchQuery = query.lowercase().trim()
+
+        filteredList.clear()
+
+        if (searchQuery.isEmpty()) {
+            // Jika search kosong, tampilkan semua
+            filteredList.addAll(akunList)
+        } else {
+            // Filter berdasarkan nama, email, username, atau role
+            filteredList.addAll(
+                akunList.filter { akun ->
+                    akun.full_name.lowercase().contains(searchQuery) ||
+                            akun.email.lowercase().contains(searchQuery) ||
+                            akun.username?.lowercase()?.contains(searchQuery) == true ||
+                            akun.role.lowercase().contains(searchQuery)
+                }
+            )
+        }
+
+        adapter.updateData(filteredList)
+
+        Log.d("AkunFragment", "Search: '$query' - Found ${filteredList.size} results")
+    }
+
+    /**
+     * Fungsi untuk menampilkan/menyembunyikan loading animation
+     * HANYA untuk load data awal
+     */
+    private fun showLoading(show: Boolean) {
+        if (show) {
+            binding.recyclerAkun.visibility = View.GONE
+            binding.btnTambah.visibility = View.GONE
+            binding.loadingProgress.visibility = View.VISIBLE
+            binding.loadingProgress.playAnimation()
+        } else {
+            binding.loadingProgress.pauseAnimation()
+            binding.loadingProgress.visibility = View.GONE
+            binding.recyclerAkun.visibility = View.VISIBLE
+            binding.btnTambah.visibility = View.VISIBLE
+        }
     }
 }

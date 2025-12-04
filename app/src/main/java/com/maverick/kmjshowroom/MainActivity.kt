@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
                         startActivity(Intent(this@MainActivity, RegisterActivity::class.java))
                     }
 
-                    sqliteCount == 0 || serverCount > 1 -> {
+                    sqliteCount == 0 && serverCount > 1 -> {
                         startActivity(Intent(this@MainActivity, LoginActivity::class.java))
                     }
 

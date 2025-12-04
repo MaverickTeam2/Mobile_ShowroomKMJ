@@ -38,7 +38,7 @@ class AddCarStep3Activity : AppCompatActivity() {
         binding.footerSave3.btnNext.setOnClickListener {
             val selected = getSelectedFitur()
 
-            // validation: enforce data presence from step2
+            // validasi step2
             val nama = intent.getStringExtra("nama_mobil") ?: ""
             val tahun = intent.getStringExtra("tahun") ?: ""
             val jarak = intent.getStringExtra("jarak_tempuh") ?: ""
@@ -52,7 +52,7 @@ class AddCarStep3Activity : AppCompatActivity() {
             intentNext.putExtra("is_edit", isEdit)
             intentNext.putExtra("kode_mobil", kodeMobil)
 
-            // carry all previous values (step1 + step2)
+            //(step1 + step2)
             intentNext.putExtra("foto_360", intent.getStringExtra("foto_360"))
             intentNext.putExtra("foto_depan", intent.getStringExtra("foto_depan"))
             intentNext.putExtra("foto_belakang", intent.getStringExtra("foto_belakang"))
@@ -75,7 +75,7 @@ class AddCarStep3Activity : AppCompatActivity() {
             intentNext.putExtra("warna_exterior", intent.getStringExtra("warna_exterior"))
             intentNext.putIntegerArrayListExtra("fitur", ArrayList(selected))
 
-            // ✅ KIRIM FOTO LAMA UNTUK UPDATE
+            // foto lama untuk update
             if (isEdit && mobilDetail != null) {
                 val oldList = ArrayList<String>()
                 mobilDetail!!.foto.forEach { f -> oldList.add(f.foto) }

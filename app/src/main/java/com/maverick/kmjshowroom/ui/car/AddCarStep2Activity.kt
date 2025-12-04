@@ -20,7 +20,6 @@ import kotlin.jvm.java
 class AddCarStep2Activity : AppCompatActivity() {
 
     private lateinit var binding: AddCarstep2Binding
-
     private var selectedYear = 0
     private var isEdit = false
     private var kodeMobil: String? = null
@@ -37,6 +36,7 @@ class AddCarStep2Activity : AppCompatActivity() {
         setupDropDowns()
         setupProgressIndicator()
         setupNextButton()
+
         binding.btnPilihTahun.setOnClickListener { showYearPickerDialog() }
 
         if (isEdit && kodeMobil != null) {
@@ -47,7 +47,6 @@ class AddCarStep2Activity : AppCompatActivity() {
     }
 
     private fun setupHeader() { binding.layoutHeaderadd.iconClose.setOnClickListener { finish() } }
-
     private fun setupDropDowns() {
         val tipeKendaraan = listOf("SUV", "Sedan", "Hatchback", "Pickup", "Sport", "Convertible")
         val bahanBakar = listOf("Bensin", "Diesel", "Hybrid", "Listrik")
@@ -80,7 +79,6 @@ class AddCarStep2Activity : AppCompatActivity() {
 
     private fun setupNextButton() {
         binding.footerSave2.btnNext.setOnClickListener {
-            // validate required fields
             val nama = binding.namaMobil.text.toString().trim()
             val jarak = binding.jarakTempuh.text.toString().trim()
             val warnaExterior = binding.warnaExterior.text.toString().trim()
@@ -97,18 +95,17 @@ class AddCarStep2Activity : AppCompatActivity() {
             }
 
             val intentNext = Intent(this, AddCarStep3Activity::class.java)
-            // forward is_edit & kode_mobil
             intentNext.putExtra("is_edit", isEdit)
             intentNext.putExtra("kode_mobil", kodeMobil)
 
-            // forward step1 images if present (received from previous)
+            // step1
             intentNext.putExtra("foto_360", intent.getStringExtra("foto_360"))
             intentNext.putExtra("foto_depan", intent.getStringExtra("foto_depan"))
             intentNext.putExtra("foto_belakang", intent.getStringExtra("foto_belakang"))
             intentNext.putExtra("foto_samping", intent.getStringExtra("foto_samping"))
             intentNext.putExtra("foto_tambahan", intent.getStringArrayExtra("foto_tambahan"))
 
-            // forward step2 data
+            // step2
             intentNext.putExtra("nama_mobil", nama)
             intentNext.putExtra("tahun", selectedYear.toString())
             intentNext.putExtra("jarak_tempuh", jarak)
@@ -140,12 +137,9 @@ class AddCarStep2Activity : AppCompatActivity() {
                 override fun onResponse(call: Call<MobilDetailResponse>, response: Response<MobilDetailResponse>) {
                     val body = response.body() ?: return
 
-                    // ✅ FIX: Ganti body.success dengan body.code == 200
                     if (body.code != 200) return
-
                     val m = body.mobil
 
-                    // ✅ FIX: Tambah .toString() karena field sekarang Int
                     binding.namaMobil.setText(m.nama_mobil)
                     binding.jarakTempuh.setText(m.jarak_tempuh.toString())
                     binding.warnaExterior.setText(m.warna_exterior)
@@ -154,8 +148,6 @@ class AddCarStep2Activity : AppCompatActivity() {
                     binding.uangMuka.setText(m.uang_muka.toString())
                     binding.angsuran.setText(m.angsuran.toString())
                     binding.tenor.setText(m.tenor.toString())
-
-                    // ✅ FIX: Tidak perlu .toInt() lagi
                     selectedYear = m.tahun_mobil
                     binding.btnPilihTahun.text = selectedYear.toString()
 

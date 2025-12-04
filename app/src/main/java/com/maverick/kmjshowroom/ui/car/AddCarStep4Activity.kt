@@ -1,10 +1,9 @@
 package com.maverick.kmjshowroom.ui.car
 
-import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -20,6 +19,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import FotoData
 import MobilDetailResponse
+import android.content.Intent
+import com.maverick.kmjshowroom.MainNavBar
+import kotlin.jvm.java
 
 class AddCarStep4Activity : AppCompatActivity() {
 
@@ -31,7 +33,7 @@ class AddCarStep4Activity : AppCompatActivity() {
     private var selectedStatus = "available"
     private var oldFotoList: List<FotoData> = emptyList()
 
-    private lateinit var loadingDialog: AlertDialog
+    private var loadingCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,8 +41,6 @@ class AddCarStep4Activity : AppCompatActivity() {
         setContentView(binding.root)
 
         userDb = UserDatabaseHelper(this)
-
-        setupLoading()
 
         isEdit = intent.getBooleanExtra("is_edit", false)
         kodeMobil = intent.getStringExtra("kode_mobil")
@@ -55,17 +55,6 @@ class AddCarStep4Activity : AppCompatActivity() {
             loadOldFotos(kodeMobil!!)
         }
     }
-
-    private fun setupLoading() {
-        val view = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null)
-        loadingDialog = AlertDialog.Builder(this)
-            .setView(view)
-            .setCancelable(false)
-            .create()
-    }
-
-    private fun showLoading() = loadingDialog.show()
-    private fun hideLoading() = loadingDialog.dismiss()
 
     private fun setupHeader() {
         binding.layoutHeaderadd.iconClose.setOnClickListener { finish() }
@@ -125,12 +114,16 @@ class AddCarStep4Activity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            showLoading(true)
+
             ApiClient.apiService.deleteMobil(true, kodeMobil!!)
                 .enqueue(object : Callback<GenericResponse> {
                     override fun onResponse(
                         call: Call<GenericResponse>,
                         response: Response<GenericResponse>
                     ) {
+                        showLoading(false)
+
                         if (response.isSuccessful && response.body()?.success == true) {
                             Toast.makeText(
                                 this@AddCarStep4Activity,
@@ -148,6 +141,7 @@ class AddCarStep4Activity : AppCompatActivity() {
                     }
 
                     override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
+                        showLoading(false)
                         Toast.makeText(
                             this@AddCarStep4Activity,
                             "Error: ${t.message}",
@@ -161,12 +155,16 @@ class AddCarStep4Activity : AppCompatActivity() {
     }
 
     private fun loadStatusMobil(kode: String) {
+        showLoading(true)
+
         ApiClient.apiService.getMobilDetail(kode)
             .enqueue(object : Callback<MobilDetailResponse> {
                 override fun onResponse(
                     call: Call<MobilDetailResponse>,
                     response: Response<MobilDetailResponse>
                 ) {
+                    showLoading(false)
+
                     val body = response.body() ?: return
                     if (body.code != 200) return
 
@@ -175,18 +173,23 @@ class AddCarStep4Activity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {
+                    showLoading(false)
                     Log.e("AddCarStep4", "Failed to load status: ${t.message}")
                 }
             })
     }
 
     private fun loadOldFotos(kode: String) {
+        showLoading(true)
+
         ApiClient.apiService.getMobilDetail(kode)
             .enqueue(object : Callback<MobilDetailResponse> {
                 override fun onResponse(
                     call: Call<MobilDetailResponse>,
                     response: Response<MobilDetailResponse>
                 ) {
+                    showLoading(false)
+
                     val body = response.body() ?: return
                     if (body.code == 200) {
                         oldFotoList = body.foto
@@ -198,6 +201,7 @@ class AddCarStep4Activity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {
+                    showLoading(false)
                     Log.e("AddCarStep4", "Failed to load photos: ${t.message}")
                 }
             })
@@ -213,19 +217,18 @@ class AddCarStep4Activity : AppCompatActivity() {
 
     private fun submitAll() {
 
-        showLoading()
-
-        // ✅ AMBIL KODE USER DARI SQLITE
+        showLoading(true)
+        // ambil kode user dari sql lite
         val currentUser = userDb.getUser()
         if (currentUser == null) {
-            hideLoading()
+            showLoading(false)
             Toast.makeText(this, "User belum login. Silakan login terlebih dahulu.", Toast.LENGTH_LONG).show()
             return
         }
 
         val kodeUser = currentUser.kode_user ?: ""
         if (kodeUser.isEmpty()) {
-            hideLoading()
+            showLoading(false)
             Toast.makeText(this, "Kode user tidak valid", Toast.LENGTH_SHORT).show()
             return
         }
@@ -256,7 +259,7 @@ class AddCarStep4Activity : AppCompatActivity() {
             || fullPrize.isEmpty() || uangMuka.isEmpty()
             || angsuran.isEmpty() || tenor.isEmpty()
         ) {
-            hideLoading()
+            showLoading(false)
             Toast.makeText(this, "Lengkapi data sebelum publish", Toast.LENGTH_SHORT).show()
             return
         }
@@ -288,7 +291,7 @@ class AddCarStep4Activity : AppCompatActivity() {
 
         val files = mutableListOf<MultipartBody.Part>()
 
-        // ✅ Handle foto utama (4 FIXED SLOTS)
+        // Handle foto utama (4 FIXED SLOTS)
         fun addIfChanged(field: String, uri: String?) {
             if (!uri.isNullOrEmpty() && !uri.startsWith("http")) {
                 MultipartUtil.prepareFile(field, Uri.parse(uri), this)?.let {
@@ -305,33 +308,26 @@ class AddCarStep4Activity : AppCompatActivity() {
         addIfChanged("foto_belakang", uBelakang)
         addIfChanged("foto_samping", uSamping)
 
-        // ✅ FIX: Handle foto tambahan (6 FIXED SLOTS dengan urutan tetap)
+        // Handle foto tambahan (6 FIXED SLOTS dengan urutan tetap)
         if (isEdit && oldFotoList.isNotEmpty()) {
 
             // Build map: urutan -> FotoData untuk foto tambahan lama
             val oldTambahanMap = mutableMapOf<Int, FotoData>()
             oldFotoList.filter { normalizeType(it.tipe_foto) == "tambahan" }
                 .forEach { foto ->
-                    // Parsing urutan dari database
-                    // Urutan 5 = foto_tambahan[0], urutan 6 = foto_tambahan[1], dst
-                    val urutanDb = foto.id_foto.toIntOrNull() ?: 0
-
-                    // Cari urutan berdasarkan posisi di oldFotoList
                     val index = oldFotoList.indexOf(foto)
-                    if (index >= 4) { // index 4+ = foto tambahan
-                        val slot = index - 4 // slot 0-5
+                    if (index >= 4) {
+                        val slot = index - 4
                         oldTambahanMap[slot] = foto
                     }
                 }
 
             Log.d("AddCarStep4", "📸 Old Tambahan Map: ${oldTambahanMap.size} items")
 
-            // Loop 6 FIXED SLOTS (foto_tambahan[0..5])
             for (slot in 0 until 6) {
                 val uri = fotoTambahan.getOrNull(slot)
 
                 if (uri.isNullOrEmpty()) {
-                    // ✅ Slot kosong - skip
                     Log.d("AddCarStep4", "⚪ Slot $slot: EMPTY")
                     continue
                 }
@@ -340,17 +336,12 @@ class AddCarStep4Activity : AppCompatActivity() {
                 val oldFotoInSlot = oldTambahanMap[slot]
 
                 if (isOldPhoto) {
-                    // ✅ Foto TIDAK berubah - skip (PHP akan keep foto ini)
                     Log.d("AddCarStep4", "✅ Slot $slot: UNCHANGED (${oldFotoInSlot?.id_foto})")
 
                 } else {
-                    // ✅ Foto BERUBAH atau BARU
-
                     if (oldFotoInSlot != null) {
-                        // REPLACE: Ada foto lama di slot ini
                         Log.d("AddCarStep4", "🔄 Slot $slot: REPLACE old ID=${oldFotoInSlot.id_foto}")
 
-                        // Kirim file baru + metadata replace
                         MultipartUtil.prepareFile("foto_tambahan_slot_$slot", Uri.parse(uri), this)?.let {
                             files.add(it)
                         }
@@ -358,7 +349,6 @@ class AddCarStep4Activity : AppCompatActivity() {
                         map["tambahan_old_id_$slot"] = MultipartUtil.createPart(oldFotoInSlot.id_foto)
 
                     } else {
-                        // INSERT: Slot kosong, isi baru
                         Log.d("AddCarStep4", "🆕 Slot $slot: NEW")
 
                         MultipartUtil.prepareFile("foto_tambahan_slot_$slot", Uri.parse(uri), this)?.let {
@@ -370,7 +360,6 @@ class AddCarStep4Activity : AppCompatActivity() {
             }
 
         } else {
-            // Mode INSERT (bukan edit) - upload semua foto tambahan yang ada
             fotoTambahan.forEachIndexed { slot, uri ->
                 if (!uri.isNullOrEmpty() && !uri.startsWith("http")) {
                     MultipartUtil.prepareFile("foto_tambahan_slot_$slot", Uri.parse(uri), this)?.let {
@@ -389,7 +378,7 @@ class AddCarStep4Activity : AppCompatActivity() {
                     call: Call<GenericResponse>,
                     response: Response<GenericResponse>
                 ) {
-                    hideLoading()
+                    showLoading(false)
 
                     if (response.isSuccessful && response.body()?.success == true) {
                         Toast.makeText(
@@ -397,7 +386,12 @@ class AddCarStep4Activity : AppCompatActivity() {
                             if (isEdit) "Berhasil update" else "Berhasil publish",
                             Toast.LENGTH_SHORT
                         ).show()
+                        val intent = Intent(this@AddCarStep4Activity, MainNavBar::class.java)
+                        intent.putExtra("open_page", "car")
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
                         finish()
+
                     } else {
                         val msg = response.body()?.message ?: "Gagal"
                         Toast.makeText(this@AddCarStep4Activity, msg, Toast.LENGTH_LONG).show()
@@ -406,10 +400,26 @@ class AddCarStep4Activity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
-                    hideLoading()
+                    showLoading(false)
                     Toast.makeText(this@AddCarStep4Activity, t.message, Toast.LENGTH_LONG).show()
                     Log.e("AddCarStep4", "Network error: ${t.message}")
                 }
             })
+    }
+    //untuk menyembunyikan loading
+    private fun showLoading(show: Boolean) {
+        if (show) loadingCount++ else loadingCount--
+
+        if (loadingCount > 0) {
+            binding.statusContainer.visibility = View.GONE
+            binding.footerSave4.root.visibility = View.GONE
+            binding.loadingProgress.visibility = View.VISIBLE
+            binding.loadingProgress.playAnimation()
+        } else {
+            binding.loadingProgress.pauseAnimation()
+            binding.loadingProgress.visibility = View.GONE
+            binding.statusContainer.visibility = View.VISIBLE
+            binding.footerSave4.root.visibility = View.VISIBLE
+        }
     }
 }

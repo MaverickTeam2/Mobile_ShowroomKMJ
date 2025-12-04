@@ -4,6 +4,7 @@ import MobilDetailResponse
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -22,6 +23,7 @@ class DetailMobilActivity : AppCompatActivity() {
 
     private lateinit var binding: DetailMobilBinding
     private var kodeMobil: String? = null
+    private var loadingCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,6 +32,7 @@ class DetailMobilActivity : AppCompatActivity() {
 
         kodeMobil = intent.getStringExtra("kode_mobil")
 
+        binding.footerSavedetail.btnDraft.visibility = View.VISIBLE
         binding.footerSavedetail.btnDraft.text = "Hapus"
         binding.footerSavedetail.btnNext.text = "Edit"
 
@@ -38,9 +41,13 @@ class DetailMobilActivity : AppCompatActivity() {
     }
 
     private fun loadDetailMobil() {
+        showLoading(true)
+
         ApiClient.apiService.getMobilDetail(kodeMobil!!)
             .enqueue(object : Callback<MobilDetailResponse> {
                 override fun onResponse(call: Call<MobilDetailResponse>, response: Response<MobilDetailResponse>) {
+                    showLoading(false)
+
                     val body = response.body()
 
                     // 🔍 DEBUG LOG
@@ -64,6 +71,7 @@ class DetailMobilActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<MobilDetailResponse>, t: Throwable) {
+                    showLoading(false)
                     Toast.makeText(this@DetailMobilActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                     Log.e("DetailMobil", "Network error: ${t.message}", t)
                 }
@@ -96,6 +104,7 @@ class DetailMobilActivity : AppCompatActivity() {
         binding.txtSistemPenggerak.text = m.sistem_penggerak
         binding.txtJenisKendaraan.text = m.jenis_kendaraan
         binding.txtBahanBakar.text = m.tipe_bahan_bakar
+        binding.txtHargaFull.text = "Rp ${m.full_prize}"
         binding.txtUangMuka.text = "Rp ${m.uang_muka}"
         binding.txtAngsuran.text = "Rp ${m.angsuran}"
         binding.txtTenor.text = "${m.tenor} bulan"
@@ -146,12 +155,14 @@ class DetailMobilActivity : AppCompatActivity() {
     }
 
     private fun deleteMobil() {
-
+        showLoading(true)
         Toast.makeText(this, "Menghapus mobil...", Toast.LENGTH_SHORT).show()
 
         ApiClient.apiService.deleteMobil(true, kodeMobil!!)
             .enqueue(object : Callback<GenericResponse> {
                 override fun onResponse(call: Call<GenericResponse>, response: Response<GenericResponse>) {
+                    showLoading(false)
+
                     if (response.isSuccessful && response.body()?.success == true) {
                         Toast.makeText(this@DetailMobilActivity, "Mobil berhasil dihapus", Toast.LENGTH_SHORT).show()
                         finish() // kembali ke CarFragment
@@ -161,8 +172,25 @@ class DetailMobilActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<GenericResponse>, t: Throwable) {
+                    showLoading(false)
                     Toast.makeText(this@DetailMobilActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    // fungsi untuk menyembunyikan loading
+    private fun showLoading(show: Boolean) {
+        if (show) loadingCount++ else loadingCount--
+
+        if (loadingCount > 0) {
+            binding.detailMobil.visibility = View.GONE
+            binding.loadingProgress.visibility = View.VISIBLE
+            binding.loadingProgress.playAnimation()
+        } else {
+            binding.loadingProgress.pauseAnimation()
+            binding.loadingProgress.visibility = View.GONE
+
+            binding.detailMobil.visibility = View.VISIBLE
+        }
     }
 }
