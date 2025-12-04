@@ -10,14 +10,15 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.maverick.kmjshowroom.R
-import com.maverick.kmjshowroom.databinding.AddTrn1Binding
+import com.maverick.kmjshowroom.databinding.AddTrn2Binding
 
 class AddTrnActivity2 : AppCompatActivity() {
-    private lateinit var binding: AddTrn1Binding
+    private lateinit var binding: AddTrn2Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.add_trn_2)
+        binding = AddTrn2Binding.inflate(layoutInflater)
+        setContentView(binding.root)
         binding.headerInclude.textHeader.text = "Tambah Transaksi"
 
         val closeButton = findViewById<ImageView>(R.id.icon_close)

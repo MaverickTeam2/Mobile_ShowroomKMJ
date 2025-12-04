@@ -22,7 +22,8 @@ class AddTrnActivity1 : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.add_trn_1)
+        binding = AddTrn1Binding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         binding.headerInclude.textHeader.text = "Tambah Transaksi"
         sharedCarViewModel = ViewModelProvider(this)[SharedCarViewModel::class.java]
