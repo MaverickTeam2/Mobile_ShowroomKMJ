@@ -9,17 +9,21 @@ import com.bumptech.glide.Glide
 import com.google.android.material.textfield.TextInputEditText
 import com.maverick.kmjshowroom.R
 import com.maverick.kmjshowroom.ui.SharedCarViewModel
+import com.maverick.kmjshowroom.databinding.AddTrn1Binding
 import android.view.View
 import com.google.android.material.button.MaterialButton
+import com.maverick.kmjshowroom.databinding.FragmentTransaksiBinding
 
 class AddTrnActivity1 : AppCompatActivity() {
 
     private lateinit var sharedCarViewModel: SharedCarViewModel
+    private lateinit var binding: AddTrn1Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_trn_1)
 
+        binding.headerInclude.textHeader.text = "Tambah Transaksi"
         sharedCarViewModel = ViewModelProvider(this)[SharedCarViewModel::class.java]
 
         val closeButton = findViewById<ImageView>(R.id.icon_close)

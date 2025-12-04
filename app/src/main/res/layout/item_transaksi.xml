@@ -82,11 +82,11 @@
 
             <TextView
                 android:id="@+id/txtCar"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2024 BMW X5"
                 android:fontFamily="@font/lato_bold"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textColor="#4B5563"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -101,11 +101,23 @@
                 android:layout_height="wrap_content"
                 android:text="Deal Payment"
                 android:fontFamily="@font/lato_bold"
-                android:textSize="14sp"
+                android:textSize="13sp"
                 android:textColor="#4B5563"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtCar"
                 app:layout_constraintBaseline_toBaselineOf="@id/txtDealPrice" />
+
+            <TextView
+                android:id="@+id/txtNameKasir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kasir"
+                android:fontFamily="@font/lato_bold"
+                android:textSize="13sp"
+                android:textColor="#4B5563"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtCar"
+                app:layout_constraintBaseline_toBaselineOf="@id/txtKasir" />
 
             <TextView
                 android:id="@+id/txtPrice"
@@ -113,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:text="Rp. 50.000.000"
                 android:fontFamily="@font/lato_black"
-                android:textSize="20sp"
+                android:textSize="14sp"
                 android:textColor="#417EFF"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
@@ -124,9 +136,21 @@
                 android:layout_height="wrap_content"
                 android:text="Rp. 48.000.000"
                 android:fontFamily="@font/lato_black"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:textColor="#001333"
                 app:layout_constraintTop_toBottomOf="@id/txtPrice"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="4dp" />
+
+            <TextView
+                android:id="@+id/txtKasir"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="nama kasir"
+                android:fontFamily="@font/lato_black"
+                android:textSize="14sp"
+                android:textColor="#001333"
+                app:layout_constraintTop_toBottomOf="@id/txtDealPrice"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="4dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>

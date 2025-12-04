@@ -12,6 +12,7 @@ import com.maverick.kmjshowroom.API.ApiClient
 import com.maverick.kmjshowroom.Database.UserDatabaseHelper
 import com.maverick.kmjshowroom.Model.RegisterResponse
 import com.maverick.kmjshowroom.Model.UserData
+import com.maverick.kmjshowroom.utils.LoadingDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,11 +20,13 @@ import retrofit2.Response
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var dbHelper: UserDatabaseHelper
+    private lateinit var loading: LoadingDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_register)
+        loading = LoadingDialog(this)
 
         dbHelper = UserDatabaseHelper(this)
 
@@ -52,6 +55,9 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun registerUser(fullName: String, email: String, username: String, password: String) {
+
+        loading.show("Mendaftarkan akun...")
+
         val requestBody = mapOf(
             "role" to "owner",
             "username" to username,
@@ -66,6 +72,7 @@ class RegisterActivity : AppCompatActivity() {
                 call: Call<RegisterResponse>,
                 response: Response<RegisterResponse>
             ) {
+                loading.dismiss()
                 if (response.isSuccessful) {
                     val body = response.body()
 
@@ -113,6 +120,7 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
+                loading.dismiss()
                 Toast.makeText(this@RegisterActivity, "Error: ${t.message}", Toast.LENGTH_SHORT)
                     .show()
             }

@@ -34,7 +34,8 @@ interface ApiService {
 
     @GET("admin/get_recent_activity.php")
     suspend fun getRecentActivity(
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
+        @Query("filter") filter: String = "all"
     ): Response<ActivityResponse>
 
     @GET("admin/get_activity_detail.php")
@@ -191,4 +192,21 @@ interface ApiService {
 
     @GET("admin/delete_manage_acc.php")
     suspend fun deleteManageAccount(@Query("kode_user") kodeUser: String): Response<GenericResponse>
+
+    @GET("admin/inquire_get_test.php")
+    fun getAppointments(
+        @Query("status") status: String? = null
+    ): Call<AppointmentResponse>
+
+    @POST("admin/inquire_update.php")
+    @FormUrlEncoded
+    fun updateAppointment(
+        @Field("id_inquire") idInquire: Int,
+        @Field("status") status: String
+    ): Call<UpdateStatusResponse>
+
+    @POST("admin/inquire_update_status.php")
+    fun updateAppointmentStatus(
+        @Body request: UpdateAppointmentStatusRequest
+    ): Call<UpdateStatusResponse>
 }

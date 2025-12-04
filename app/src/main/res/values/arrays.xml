@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="filter_options">
+        <item>Semua</item>
+        <item>Pending</item>
+        <item>Responded</item>
+        <item>Selesai</item>
+        <item>Dibatalkan</item>
+    </string-array>
+    <string-array name="filter_options_recent">
+        <item>Semua</item>
+        <item>Mobil</item>
+        <item>Transaksi</item>
+    </string-array>
+</resources>

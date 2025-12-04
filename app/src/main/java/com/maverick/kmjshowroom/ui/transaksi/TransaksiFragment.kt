@@ -3,6 +3,8 @@ package com.maverick.kmjshowroom.ui.transaksi
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +32,7 @@ class TransaksiFragment : Fragment() {
 
     private lateinit var transaksiAdapter: TransactionAdapter
     private val allTransactions = mutableListOf<Transaction>()
+    private val filteredTransactions = mutableListOf<Transaction>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,6 +44,7 @@ class TransaksiFragment : Fragment() {
 
         setupUI()
         setupRecyclerView()
+        setupSearch()
         loadTransaksiFromDatabase()
 
         return root
@@ -54,6 +58,10 @@ class TransaksiFragment : Fragment() {
     private fun setupUI() {
         binding.headerInclude.textHeader.text = "TRANSAKSI"
 
+        // Tampilkan search bar
+        binding.headerInclude.searchBar.visibility = View.VISIBLE
+        binding.headerInclude.searchBar.inputType = android.text.InputType.TYPE_CLASS_TEXT
+
         binding.btnTambah.setOnClickListener {
             val intent = Intent(requireContext(), AddTrnActivity1::class.java)
             startActivity(intent)
@@ -61,7 +69,7 @@ class TransaksiFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        transaksiAdapter = TransactionAdapter(requireContext(), allTransactions).apply {
+        transaksiAdapter = TransactionAdapter(requireContext(), filteredTransactions).apply {
             onDetailClick = { transaction ->
                 showTransactionDetailDialog(transaction)
             }
@@ -74,6 +82,49 @@ class TransaksiFragment : Fragment() {
 
         binding.transaksiContainer.removeAllViews()
         binding.transaksiContainer.addView(recyclerView)
+    }
+
+    private fun setupSearch() {
+        binding.headerInclude.searchBar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                filterTransactions(s.toString())
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+    }
+
+    private fun filterTransactions(query: String) {
+        filteredTransactions.clear()
+
+        if (query.isEmpty()) {
+            filteredTransactions.addAll(allTransactions)
+        } else {
+            val searchQuery = query.lowercase().trim()
+
+            allTransactions.forEach { transaction ->
+                val matchesKode = transaction.id.lowercase().contains(searchQuery)
+                val matchesNama = transaction.customerName.lowercase().contains(searchQuery)
+                val matchesMobil = transaction.car.lowercase().contains(searchQuery)
+                val matchesKasir = transaction.kasir.lowercase().contains(searchQuery)
+
+                if (matchesKode || matchesNama || matchesMobil || matchesKasir) {
+                    filteredTransactions.add(transaction)
+                }
+            }
+        }
+
+        transaksiAdapter.notifyDataSetChanged()
+
+        if (filteredTransactions.isEmpty() && query.isNotEmpty()) {
+            Toast.makeText(
+                requireContext(),
+                "Tidak ada transaksi yang sesuai dengan pencarian",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun loadTransaksiFromDatabase() {
@@ -122,12 +173,15 @@ class TransaksiFragment : Fragment() {
                                 else -> item.status.replaceFirstChar {
                                     if (it.isLowerCase()) it.titlecase() else it.toString()
                                 }
-                            }
+                            },
+                            kasir = item.kasir ?: "-"
                         )
                         allTransactions.add(transaction)
                     }
 
-                    transaksiAdapter.notifyDataSetChanged()
+                    // Apply current search filter
+                    val currentQuery = binding.headerInclude.searchBar.text.toString()
+                    filterTransactions(currentQuery)
 
                     if (allTransactions.isEmpty()) {
                         Toast.makeText(
@@ -156,7 +210,6 @@ class TransaksiFragment : Fragment() {
     }
 
     private fun showTransactionDetailDialog(transaction: Transaction) {
-        // ✅ PERBAIKAN: Deklarasikan dialog dulu, bukan pakai .apply
         val dialog = Dialog(requireContext())
         dialog.setContentView(R.layout.dialog_transaction_detail)
         dialog.window?.setLayout(
@@ -173,15 +226,14 @@ class TransaksiFragment : Fragment() {
         dialog.findViewById<TextView>(R.id.tvDesc).text = transaction.description.ifEmpty { "-" }
         dialog.findViewById<TextView>(R.id.tvPrice).text = transaction.price
         dialog.findViewById<TextView>(R.id.tvDeal).text = transaction.dealPrice
+        dialog.findViewById<TextView>(R.id.tvKasir).text = transaction.kasir
 
-        // ✅ PERBAIKAN: Deklarasikan statusSpinner di luar agar accessible di callback
         val statusSpinner = dialog.findViewById<Spinner>(R.id.statusSpinner)
         val statusOptions = arrayOf("Pending", "Completed", "Canceled")
         val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, statusOptions)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         statusSpinner.adapter = spinnerAdapter
 
-        // Set posisi spinner sesuai status saat ini
         val currentPosition = when (transaction.status) {
             "Pending" -> 0
             "Completed" -> 1
@@ -190,13 +242,10 @@ class TransaksiFragment : Fragment() {
         }
         statusSpinner.setSelection(currentPosition)
 
-        // Variable untuk tracking apakah ini perubahan pertama kali (initial load)
         var isInitialSelection = true
 
-        // Handle perubahan status
         statusSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                // Skip perubahan pertama kali (saat dialog baru dibuka)
                 if (isInitialSelection) {
                     isInitialSelection = false
                     return
@@ -204,7 +253,6 @@ class TransaksiFragment : Fragment() {
 
                 val newStatus = statusOptions[position]
 
-                // Jika status berubah dari status awal
                 if (newStatus != transaction.status) {
                     updateTransactionStatus(transaction.id, newStatus) { success ->
                         if (success) {
@@ -217,7 +265,6 @@ class TransaksiFragment : Fragment() {
                                 Toast.LENGTH_SHORT
                             ).show()
                         } else {
-                            // ✅ Sekarang statusSpinner bisa diakses di sini
                             statusSpinner.setSelection(currentPosition)
                         }
                     }
@@ -250,7 +297,6 @@ class TransaksiFragment : Fragment() {
                     if (response.isSuccessful && response.body()?.code == "200") {
                         val detail = response.body()?.data
                         detail?.let { d ->
-                            // ✅ PERBAIKAN: Batasi panjang kode_user maksimal 10 karakter
                             val kodeUser = d.kasir?.takeIf { it.length <= 10 && it.isNotEmpty() } ?: "US001"
 
                             ApiClient.apiService.updateTransaksi(

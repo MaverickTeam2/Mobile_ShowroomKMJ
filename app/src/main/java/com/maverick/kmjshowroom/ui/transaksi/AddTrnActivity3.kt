@@ -11,6 +11,7 @@ import com.maverick.kmjshowroom.Database.UserDatabaseHelper
 import com.maverick.kmjshowroom.MainNavBar
 import com.maverick.kmjshowroom.Model.CreateTransaksiResponse
 import com.maverick.kmjshowroom.R
+import com.maverick.kmjshowroom.databinding.AddTrn1Binding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -20,10 +21,12 @@ import java.util.Locale
 class AddTrnActivity3 : AppCompatActivity() {
 
     private lateinit var dbHelper: UserDatabaseHelper
+    private lateinit var binding: AddTrn1Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.add_trn_3)
+        binding.headerInclude.textHeader.text = "Tambah Transaksi"
 
         dbHelper = UserDatabaseHelper(this)
 

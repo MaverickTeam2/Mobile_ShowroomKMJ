@@ -36,11 +36,14 @@ class MainActivity : AppCompatActivity() {
                         startActivity(Intent(this@MainActivity, RegisterActivity::class.java))
                     }
 
+                    sqliteCount == 1 -> {
+                        startActivity(Intent(this@MainActivity, loginSaveActivity::class.java))
+                    }
+
                     sqliteCount == 0 || serverCount > 1 -> {
                         startActivity(Intent(this@MainActivity, LoginActivity::class.java))
                     }
 
-                    // 3. SQLite ada user (exact 1) → Login Save
                     else -> {
                         startActivity(Intent(this@MainActivity, loginSaveActivity::class.java))
                     }

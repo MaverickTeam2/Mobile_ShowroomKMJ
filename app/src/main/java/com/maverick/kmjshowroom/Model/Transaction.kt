@@ -2,7 +2,6 @@ package com.maverick.kmjshowroom.Model
 
 import com.google.gson.annotations.SerializedName
 
-
 // Response untuk list transaksi
 data class TransaksiListResponse(
     @SerializedName("code")
@@ -151,5 +150,6 @@ data class Transaction(
     val description: String,
     val price: String,
     val dealPrice: String,
-    var status: String
+    var status: String,
+    val kasir: String
 )

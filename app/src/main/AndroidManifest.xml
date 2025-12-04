@@ -4,7 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
@@ -19,6 +20,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KMJShowroom"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ui.appointment.AppointmentActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -42,7 +47,7 @@
         <activity
             android:name=".ui.setting.SettingActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -74,47 +79,36 @@
         <activity
             android:name=".ui.car.AddCarStep4Activity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.car.DetailMobilActivity"
-            android:screenOrientation="portrait" />
-
-
         <activity
-            android:name=".ui.transaksi.TransaksiActivity"
-            android:exported="false" />
-
-
+            android:name=".ui.car.DetailMobilActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.transaksi.AddTrnActivity1"
             android:exported="false" />
-
         <activity
             android:name=".ui.transaksi.AddTrnActivity2"
             android:exported="false" />
-
         <activity
             android:name=".ui.transaksi.AddTrnActivity3"
-            android:exported="false" />
-<!--        <provider-->
-<!--            android:name="androidx.core.content.FileProvider"-->
-<!--            android:authorities="${applicationId}.provider"-->
-<!--            android:exported="false"-->
-<!--            android:grantUriPermissions="true">-->
-<!--            <meta-data-->
-<!--                android:name="android.support.FILE_PROVIDER_PATHS"-->
-<!--                android:resource="@xml/file_paths" />-->
-<!--        </provider>-->
+            android:exported="false" /> <!-- <provider -->
+        <!-- android:name="androidx.core.content.FileProvider" -->
+        <!-- android:authorities="${applicationId}.provider" -->
+        <!-- android:exported="false" -->
+        <!-- android:grantUriPermissions="true"> -->
+        <!-- <meta-data -->
+        <!-- android:name="android.support.FILE_PROVIDER_PATHS" -->
+        <!-- android:resource="@xml/file_paths" /> -->
+        <!-- </provider> -->
         <activity
             android:name=".ui.akun.AddAkunActivity"
             android:label="Tambah Akun"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.KMJShowroom" />
-
         <activity
             android:name=".ui.akun.DetailAkunActivity"
             android:label="Detail Akun"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.KMJShowroom" />
-
         <activity
             android:name=".ui.akun.EditAkunActivity"
             android:label="Edit Akun"

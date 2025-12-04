@@ -17,23 +17,12 @@
         android:layout_marginTop="35dp"
         android:layout_marginLeft="15dp"/>
 
-    <!-- Tombol Profile -->
-    <ImageView
-        android:id="@+id/icon_profile"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_profil"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="35dp"
-        android:layout_marginRight="15dp"/>
-
     <!-- Title -->
     <TextView
         android:id="@+id/text_header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Add new car"
+        android:text="Tambah Mobil"
         android:textColor="#F1FFBD"
         android:fontFamily="@font/lato_bold"
         android:textSize="16sp"

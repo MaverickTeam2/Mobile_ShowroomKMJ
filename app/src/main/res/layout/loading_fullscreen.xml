@@ -18,21 +18,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ProgressBar
+        <!--  Diganti ProgressBar dengan Lottie Animation -->
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/progressBar"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:indeterminate="true" />
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/car_loading" />
 
         <TextView
             android:id="@+id/tvLoading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Processing..."
-            android:textColor="#FFFFFF"
+            android:layout_marginTop="8dp"
+            android:text="Memproses..."
+            android:textColor="#ffffff"
             android:textSize="14sp" />
 
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

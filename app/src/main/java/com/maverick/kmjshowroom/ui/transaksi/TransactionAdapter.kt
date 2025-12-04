@@ -22,6 +22,7 @@ class TransactionAdapter(
         val txtDate: TextView = view.findViewById(R.id.txtDate)
         val txtCustomerName: TextView = view.findViewById(R.id.txtCustomerName)
         val txtPhoneNumber: TextView = view.findViewById(R.id.txtPhoneNumber)
+        val txtKasir: TextView = itemView.findViewById(R.id.txtKasir)
         val txtCar: TextView = view.findViewById(R.id.txtCar)
         val txtDescription: TextView = view.findViewById(R.id.txtDescription)
         val txtPrice: TextView = view.findViewById(R.id.txtPrice)
@@ -43,6 +44,7 @@ class TransactionAdapter(
         holder.txtDate.text = transaction.date
         holder.txtCustomerName.text = transaction.customerName
         holder.txtPhoneNumber.text = transaction.phoneNumber.ifEmpty { "-" }
+        holder.txtKasir.text = transaction.kasir
         holder.txtCar.text = transaction.car
         holder.txtDescription.text = transaction.description.ifEmpty { "-" }
         holder.txtPrice.text = transaction.price

@@ -14,6 +14,7 @@ import com.maverick.kmjshowroom.API.ApiClient
 import com.maverick.kmjshowroom.Database.UserDatabaseHelper
 import com.maverick.kmjshowroom.Model.LoginResponse
 import com.maverick.kmjshowroom.Model.UserData
+import com.maverick.kmjshowroom.utils.LoadingDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,11 +22,13 @@ import retrofit2.Response
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var dbHelper: UserDatabaseHelper
+    private lateinit var loading: LoadingDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         setContentView(R.layout.activity_login)
+        loading = LoadingDialog(this)
 
         dbHelper = UserDatabaseHelper(this)
 
@@ -56,6 +59,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun loginUser(username: String, password: String) {
+        loading.show("Memverifikasi akun...")
         val requestBody = mapOf(
             "identifier" to username,
             "password" to password,
@@ -64,6 +68,7 @@ class LoginActivity : AppCompatActivity() {
 
         ApiClient.apiService.login(requestBody).enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                loading.dismiss()
                 if (response.isSuccessful) {
                     val loginResponse = response.body()
 
@@ -125,6 +130,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                loading.dismiss()
                 Toast.makeText(
                     this@LoginActivity,
                     "Gagal terhubung ke server: ${t.localizedMessage}",

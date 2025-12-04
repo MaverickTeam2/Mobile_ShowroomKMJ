@@ -18,6 +18,7 @@ import com.maverick.kmjshowroom.API.ApiClient
 import com.maverick.kmjshowroom.Database.UserDatabaseHelper
 import com.maverick.kmjshowroom.Model.Akun
 import com.maverick.kmjshowroom.Model.LoginResponse
+import com.maverick.kmjshowroom.utils.LoadingDialog
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,10 +26,12 @@ import retrofit2.Response
 class loginSaveActivity : AppCompatActivity() {
 
     private lateinit var dbHelper: UserDatabaseHelper
+    private lateinit var loading: LoadingDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        loading = LoadingDialog(this)
         dbHelper = UserDatabaseHelper(this)
 
         setContentView(R.layout.activity_login_save)
@@ -101,6 +104,7 @@ class loginSaveActivity : AppCompatActivity() {
     }
 
     private fun loginWithApi(username: String, password: String, dialog: android.app.Dialog?) {
+        loading.show("Memproses login...")
         val requestBody = mapOf(
             "identifier" to username,
             "password" to password,
@@ -109,6 +113,7 @@ class loginSaveActivity : AppCompatActivity() {
 
         ApiClient.apiService.login(requestBody).enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                loading.dismiss()
                 if (response.isSuccessful) {
                     val body = response.body()
                     if (body != null) {
@@ -157,6 +162,7 @@ class loginSaveActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                loading.dismiss()
                 Toast.makeText(this@loginSaveActivity, "Tidak bisa terhubung ke server: ${t.message}", Toast.LENGTH_SHORT).show()
             }
         })
@@ -202,9 +208,11 @@ class loginSaveActivity : AppCompatActivity() {
     }
 
     private fun validateTokenWithServer(token: String) {
+        loading.show("Memverifikasi token...")
         ApiClient.apiService.getUserFromToken("Bearer $token")
             .enqueue(object : Callback<LoginResponse> {
                 override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                    loading.dismiss()
                     val body = response.body()
                     if (response.isSuccessful && body?.user != null) {
                         val user = body.user!!
@@ -226,6 +234,7 @@ class loginSaveActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                    loading.dismiss()
                     Toast.makeText(this@loginSaveActivity, "Gagal koneksi: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })

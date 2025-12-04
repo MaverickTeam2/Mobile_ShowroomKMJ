@@ -8,6 +8,6 @@ data class DashboardResponse(
 data class DashboardData(
     val total_mobil_available: Int,
     val total_transaksi_bulan_ini: Int,
-    val total_pendapatan_bulan_ini: Int,
+    val total_pendapatan_bulan_ini: Long,
     val total_mobil_reserved: Int
 )
